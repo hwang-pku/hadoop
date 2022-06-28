@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Collection;
 
 import org.apache.curator.test.TestingServer;
 import org.apache.hadoop.conf.Configuration;
@@ -35,17 +36,25 @@ import org.apache.zookeeper.data.Stat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runner.RunWith;
 
 /**
  * Test the manager for ZooKeeper Curator.
  */
+@RunWith(Parameterized.class)
 public class TestZKCuratorManager {
 
   private TestingServer server;
   private ZKCuratorManager curator;
+  private Boolean isBadValue;
+  private String numRetries;
 
   @Before
   public void setup() throws Exception {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.zk.num-retries", this.numRetries);
     this.server = new TestingServer();
 
     Configuration conf = new Configuration();
@@ -56,6 +65,21 @@ public class TestZKCuratorManager {
     this.curator.start();
   }
 
+  public TestZKCuratorManager (String numRetries) {
+      this.numRetries = numRetries;
+  }
+
+  @Parameterized.Parameters
+  public static Collection retryTimes() {
+      return Arrays.asList(new Object[][] {
+                { "1000" },
+                { "2000" },
+                { "3000" },
+                { "foobar" }
+        });
+  }
+
+
   @After
   public void teardown() throws Exception {
     this.curator.close();
@@ -63,18 +87,6 @@ public class TestZKCuratorManager {
       this.server.close();
       this.server = null;
     }
-  }
-
-  @Test
-  public void testReadWriteData() throws Exception {
-    String testZNode = "/test";
-    String expectedString = "testString";
-    assertFalse(curator.exists(testZNode));
-    curator.create(testZNode);
-    assertTrue(curator.exists(testZNode));
-    curator.setData(testZNode, expectedString, -1);
-    String testString = curator.getStringData("/test");
-    assertEquals(expectedString, testString);
   }
 
   @Test
@@ -99,59 +111,4 @@ public class TestZKCuratorManager {
     assertEquals(2, children.size());
   }
 
-  @Test
-  public void testGetStringData() throws Exception {
-    String node1 = "/node1";
-    String node2 = "/node2";
-    assertFalse(curator.exists(node1));
-    curator.create(node1);
-    assertNull(curator.getStringData(node1));
-
-    byte[] setData = "setData".getBytes("UTF-8");
-    curator.setData(node1, setData, -1);
-    assertEquals("setData", curator.getStringData(node1));
-
-    Stat stat = new Stat();
-    assertFalse(curator.exists(node2));
-    curator.create(node2);
-    assertNull(curator.getStringData(node2, stat));
-
-    curator.setData(node2, setData, -1);
-    assertEquals("setData", curator.getStringData(node2, stat));
-
-  }
-  @Test
-  public void testTransaction() throws Exception {
-    List<ACL> zkAcl = ZKUtil.parseACLs(CommonConfigurationKeys.ZK_ACL_DEFAULT);
-    String fencingNodePath = "/fencing";
-    String node1 = "/node1";
-    String node2 = "/node2";
-    byte[] testData = "testData".getBytes("UTF-8");
-    assertFalse(curator.exists(fencingNodePath));
-    assertFalse(curator.exists(node1));
-    assertFalse(curator.exists(node2));
-    ZKCuratorManager.SafeTransaction txn = curator.createTransaction(
-        zkAcl, fencingNodePath);
-    txn.create(node1, testData, zkAcl, CreateMode.PERSISTENT);
-    txn.create(node2, testData, zkAcl, CreateMode.PERSISTENT);
-    assertFalse(curator.exists(fencingNodePath));
-    assertFalse(curator.exists(node1));
-    assertFalse(curator.exists(node2));
-    txn.commit();
-    assertFalse(curator.exists(fencingNodePath));
-    assertTrue(curator.exists(node1));
-    assertTrue(curator.exists(node2));
-    assertTrue(Arrays.equals(testData, curator.getData(node1)));
-    assertTrue(Arrays.equals(testData, curator.getData(node2)));
-
-    byte[] setData = "setData".getBytes("UTF-8");
-    txn = curator.createTransaction(zkAcl, fencingNodePath);
-    txn.setData(node1, setData, -1);
-    txn.delete(node2);
-    assertTrue(curator.exists(node2));
-    assertTrue(Arrays.equals(testData, curator.getData(node1)));
-    txn.commit();
-    assertFalse(curator.exists(node2));
-    assertTrue(Arrays.equals(setData, curator.getData(node1)));
-  }
 }

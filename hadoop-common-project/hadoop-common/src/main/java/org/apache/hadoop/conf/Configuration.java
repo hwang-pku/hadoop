@@ -225,6 +225,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @InterfaceStability.Stable
 public class Configuration implements Iterable<Map.Entry<String,String>>,
                                       Writable {
+  public static HashMap<String, String> MYHACK = new HashMap();
+
   private static final Logger LOG =
       LoggerFactory.getLogger(Configuration.class);
 
@@ -1219,6 +1221,9 @@ public class Configuration implements Iterable<Map.Entry<String,String>>,
    *         or null if no such property exists.
    */
   public String get(String name) {
+    if (MYHACK.containsKey(name)) {
+      return MYHACK.get(name);
+    }
     String[] names = handleDeprecation(deprecationContext.get(), name);
     String result = null;
     for(String n : names) {
