@@ -18,22 +18,48 @@
 package org.apache.hadoop.crypto;
 
 import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Arrays;
 
 import org.apache.hadoop.conf.Configuration;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Before;
 import static org.mockito.Mockito.*;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runner.RunWith;
 
 /**
  * To test proper closing of underlying stream of CryptoOutputStream.
  */
+@RunWith(Parameterized.class)
 public class TestCryptoOutputStreamClosing {
   private static CryptoCodec codec;
+  private String cipherType;
 
   @BeforeClass
   public static void init() throws Exception {
     codec = CryptoCodec.getInstance(new Configuration());
+  }
+
+  public TestCryptoOutputStreamClosing(String cipherType) {
+    this.cipherType = cipherType;
+  }
+
+  @Parameterized.Parameters
+  public static Collection cipherTypes() {
+    return Arrays.asList(new Object[][] {
+    { "AES/CTR/NoPadding" },
+    { "AES/CTR/Padding" }
+    });
+  }
+
+  @Before
+  public void setup() throws Exception {
+      Configuration.MYHACK.clear();
+      Configuration.MYHACK.put("hadoop.security.crypto.cipher.suite", this.cipherType);
   }
 
   @Test
