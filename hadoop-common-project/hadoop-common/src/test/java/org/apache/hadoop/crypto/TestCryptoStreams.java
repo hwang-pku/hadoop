@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.EnumSet;
+import java.util.Collection;
+import java.util.Arrays;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.ByteBufferPositionedReadable;
@@ -44,9 +46,14 @@ import org.apache.hadoop.io.DataOutputBuffer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import static org.apache.hadoop.fs.contract.ContractTestUtils.assertCapabilities;
 
+@RunWith(Parameterized.class)
 public class TestCryptoStreams extends CryptoStreamsTestBase {
   /**
    * Data storage.
@@ -55,15 +62,34 @@ public class TestCryptoStreams extends CryptoStreamsTestBase {
    */
   private byte[] buf;
   private int bufLen;
+  private String cipherType;
   
   @BeforeClass
   public static void init() throws Exception {
     Configuration conf = new Configuration();
     codec = CryptoCodec.getInstance(conf);
   }
+
+  @Before
+  public void setup() throws Exception {
+      Configuration.MYHACK.clear();
+      Configuration.MYHACK.put("hadoop.security.crypto.cipher.suite", this.cipherType);
+  }
   
   @AfterClass
   public static void shutdown() throws Exception {
+  }
+
+  public TestCryptoStreams(String cipherType) {
+    this.cipherType = cipherType;
+  }
+
+  @Parameterized.Parameters
+  public static Collection retryTimes() {
+    return Arrays.asList(new Object[][] {
+    { "AES/CTR/NoPadding" },
+    { "AES/CTR/Padding" }
+    });
   }
   
   @Override
