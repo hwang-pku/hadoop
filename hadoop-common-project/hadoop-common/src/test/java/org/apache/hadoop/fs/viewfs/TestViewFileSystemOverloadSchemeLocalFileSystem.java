@@ -20,6 +20,8 @@ package org.apache.hadoop.fs.viewfs;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,12 +37,17 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 /**
  *
  * Test the TestViewFileSystemOverloadSchemeLF using a file with authority:
  * file://mountTableName/ i.e, the authority is used to load a mount table.
  */
+@RunWith(Parameterized.class)
 public class TestViewFileSystemOverloadSchemeLocalFileSystem {
   private static final String FILE = "file";
   private static final Log LOG =
@@ -51,8 +58,14 @@ public class TestViewFileSystemOverloadSchemeLocalFileSystem {
   private FileSystemTestHelper fileSystemTestHelper =
       new FileSystemTestHelper();
 
+  @Parameter(0)
+  public String renameStrategy;// = "SAME_MOUNTPOINT";
+
   @Before
   public void setUp() throws Exception {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("fs.viewfs.rename.strategy",
+        this.renameStrategy);
     conf = new Configuration();
     conf.set(String.format("fs.%s.impl", FILE),
         ViewFileSystemOverloadScheme.class.getName());
@@ -65,6 +78,15 @@ public class TestViewFileSystemOverloadSchemeLocalFileSystem {
     targetTestRoot = fileSystemTestHelper.getAbsoluteTestRootPath(fsTarget);
     fsTarget.delete(targetTestRoot, true);
     fsTarget.mkdirs(targetTestRoot);
+  }
+  
+  @Parameters(name = "renameStrategy={0}")
+  public static Collection params() {
+      return Arrays.asList(new Object[][] {
+          {"SAME_MOUNTPOINT"},
+          {"SAME_TARGET_URI_ACROSS_MOUNTPOINT"},
+          {"SAME_FILESYSTEM_ACROSS_MOUNTPOINT"}
+      });
   }
 
   /**
