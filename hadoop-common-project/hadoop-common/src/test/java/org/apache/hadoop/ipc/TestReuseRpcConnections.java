@@ -19,6 +19,9 @@
 package org.apache.hadoop.ipc;
 import static org.junit.Assert.*;
 import java.util.Set;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.fs.PathIOException;
@@ -28,15 +31,47 @@ import org.apache.hadoop.io.retry.TestConnectionRetryPolicy;
 import org.apache.hadoop.ipc.Client.ConnectionId;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
  * This class mainly tests behaviors of reusing RPC connections for various
  * retry policies.
  */
+@RunWith(Parameterized.class)
 public class TestReuseRpcConnections extends TestRpcBase {
+  private int rpcTimeoutMs;
+  private int ipcMaxClientNum;
+
   @Before
   public void setup() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("ipc.client.rpc-timeout.ms", Integer.toString(rpcTimeoutMs));
+    Configuration.MYHACK.put("ipc.server.max.connections", Integer.toString(ipcMaxClientNum));
+    //System.out.println("rpcTimeoutMs=" + rpcTimeoutMs + " ipcMaxClientNum=" + ipcMaxClientNum + " ");
     setupConf();
+  }
+
+  public TestReuseRpcConnections(int timeoutMs, int clientNum) {
+    this.rpcTimeoutMs = timeoutMs;
+    this.ipcMaxClientNum = clientNum;
+  }
+  
+  @Parameters
+  public static Collection bufferSize() {
+    return Arrays.asList(new Object[][] {
+        {1,1},
+        {10,5},
+        {20,10}
+    }
+    );
+    //int[] timeouts = {0, 10, 20};
+    //int[] clientNums= {1, 5, 10};
+    /*return Arrays.asList(Arrays.stream(timeouts).boxed()
+        .flatMap(ai -> Arrays.stream(clientNums).boxed()
+                .map(bi -> new Object[]{ai, bi}))
+        .toArray());*/
   }
 
   private static RetryPolicy getDefaultRetryPolicy(
