@@ -22,6 +22,8 @@ import static org.apache.hadoop.test.GenericTestUtils.assertExceptionContains;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
@@ -40,8 +42,12 @@ import org.apache.hadoop.fs.shell.CopyCommands.Put;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.mockito.stubbing.OngoingStubbing;
 
+@RunWith(Parameterized.class)
 public class TestCopy {
   static Configuration conf;
   static Path path = new Path("mockfs:/file");
@@ -50,6 +56,8 @@ public class TestCopy {
   static FileSystem mockFs;
   static PathData target;
   static FileStatus fileStat;
+  private int bufferSize;
+  private boolean automaticClose;
   
   @BeforeClass
   public static void setup() throws IOException {
@@ -66,6 +74,26 @@ public class TestCopy {
     target = new PathData(path.toString(), conf);
     cmd = new CopyCommands.Put();
     cmd.setConf(conf);
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("fs.automatic.close", Boolean.toString(this.automaticClose));
+    Configuration.MYHACK.put("io.file.buffer.size", Integer.toString(this.bufferSize));
+  }
+
+  public TestCopy(int bufferSize, boolean automaticClose) {
+    this.bufferSize = bufferSize;
+    this.automaticClose = automaticClose;
+  }
+  
+  @Parameters(name = "bufferSize={0}, automaticClose={1}")
+  public static Collection params() {
+      return Arrays.asList(new Object[][] {
+          {128, true},
+          {256, true},
+          {512, true},
+          {128, false},
+          {256, false},
+          {512, false}
+      });
   }
 
   @Test
