@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Random;
 import java.util.zip.GZIPInputStream;
 
@@ -34,12 +35,16 @@ import org.slf4j.LoggerFactory;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 /**
  * Verify resettable compressor.
  */
+@RunWith(Parameterized.class)
 public class TestGzipCodec {
 
   private static final Logger LOG =
@@ -48,12 +53,28 @@ public class TestGzipCodec {
   private static final String DATA1 = "Dogs don't know it's not bacon!\n";
   private static final String DATA2 = "It's baconnnn!!\n";
   private GzipCodec codec = new GzipCodec();
+  private Integer bufferSize;
 
   @Before
   public void setUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("io.file.buffer.size", Integer.toString(this.bufferSize));
     codec.setConf(new Configuration(false));
   }
+  
+  public TestGzipCodec(Integer bufferSize) {
+    this.bufferSize = bufferSize;
+  }
 
+  @Parameterized.Parameters
+  public static Collection bufferSize() {
+    return Arrays.asList(new Object[][] {
+    { 1024 },
+    { 2048 },
+    { 4096 }
+    });
+  }
+  
   // Test simple compression.
   @Test
   public void testSingleCompress() throws IOException {
