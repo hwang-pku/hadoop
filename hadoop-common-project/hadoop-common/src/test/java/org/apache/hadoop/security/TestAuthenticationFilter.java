@@ -80,6 +80,7 @@ public class TestAuthenticationFilter {
           throws Throwable {
           Object[] args = invocationOnMock.getArguments();
 
+          Configuration.MYHACK.clear();
           assertEquals("authentication", args[0]);
 
           assertEquals(AuthenticationFilter.class.getName(), args[1]);
@@ -87,8 +88,8 @@ public class TestAuthenticationFilter {
           Map<String, String> conf = (Map<String, String>) args[2];
           assertEquals("/", conf.get("cookie.path"));
 
-          assertEquals("simple", conf.get("type"));
-          assertEquals("36000", conf.get("token.validity"));
+          assertEquals(authType, conf.get("type"));
+          assertEquals(Integer.toString(tokenValidTime), conf.get("token.validity"));
           assertNull(conf.get("cookie.domain"));
           assertEquals("true", conf.get("simple.anonymous.allowed"));
           assertEquals("HTTP/barhost@LOCALHOST",
