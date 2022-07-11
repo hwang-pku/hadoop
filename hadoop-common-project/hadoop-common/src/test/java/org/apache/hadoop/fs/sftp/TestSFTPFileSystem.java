@@ -24,6 +24,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Collection;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -58,7 +59,11 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
+@RunWith(Parameterized.class)
 public class TestSFTPFileSystem {
 
   private static final String TEST_SFTP_DIR = "testsftp";
@@ -74,6 +79,25 @@ public class TestSFTPFileSystem {
   private static SshServer sshd = null;
   private static Configuration conf = null;
   private static int port;
+  private int bytesPerChecksum;
+
+  @Before
+  public void setUpConfiguration() {
+      Configuration.MYHACK.clear();
+      Configuration.MYHACK.put("file.bytes.per.checksum", Integer.toString(this.bytesPerChecksum));
+  }
+
+  //file.bytes-per-checksum
+  public TestSFTPFileSystem(int bytesPerChecksum) {
+      this.bytesPerChecksum = bytesPerChecksum;
+  }
+
+  @Parameters
+  public static Collection params() {
+      return Arrays.asList(new Object[][] {
+          {128}, {256}, {512}, {1024}
+      });
+  }
 
   private static void startSshdServer() throws IOException {
     sshd = SshServer.setUpDefaultServer();
