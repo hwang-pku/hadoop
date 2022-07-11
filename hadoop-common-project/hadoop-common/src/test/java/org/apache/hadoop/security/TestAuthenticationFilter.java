@@ -25,13 +25,44 @@ import org.apache.hadoop.security.authentication.server.AuthenticationFilter;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.http.FilterContainer;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.util.Map;
+import java.util.Arrays;
+import java.util.Collection;
 
+@RunWith(Parameterized.class)
 public class TestAuthenticationFilter {
+  private String authType;
+  private int tokenValidTime;
+
+  @Before
+  public void setUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.http.authentication.type", this.authType);
+    Configuration.MYHACK.put("hadoop.http.authentication.token.validity", Integer.toString(this.tokenValidTime));
+  }
+
+  public TestAuthenticationFilter(String authType, int tokenValidTime) {
+    this.authType = authType;
+    this.tokenValidTime = tokenValidTime;
+  }
+
+  @Parameters(name = "authType={0}, tokenValidTime={1}")
+  public static Collection params () {
+      return Arrays.asList(new Object[][] {
+          {"simple", 18000},
+          {"kerberos", 18000},
+          {"simple", 36000},
+          {"kerberos", 36000}
+      });
+  }
 
   @SuppressWarnings("unchecked")
   @Test
