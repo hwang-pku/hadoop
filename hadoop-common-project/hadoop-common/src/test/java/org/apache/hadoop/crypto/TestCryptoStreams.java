@@ -53,7 +53,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 import static org.apache.hadoop.fs.contract.ContractTestUtils.assertCapabilities;
 
-@RunWith(Parameterized.class)
 public class TestCryptoStreams extends CryptoStreamsTestBase {
   /**
    * Data storage.
@@ -80,18 +79,6 @@ public class TestCryptoStreams extends CryptoStreamsTestBase {
   public static void shutdown() throws Exception {
   }
 
-  public TestCryptoStreams(String cipherType) {
-    this.cipherType = cipherType;
-  }
-
-  @Parameterized.Parameters
-  public static Collection retryTimes() {
-    return Arrays.asList(new Object[][] {
-    { "AES/CTR/NoPadding" },
-    { "AES/CTR/Padding" }
-    });
-  }
-  
   @Override
   protected OutputStream getOutputStream(int bufferSize, byte[] key, byte[] iv) 
       throws IOException {

@@ -17,6 +17,8 @@
  */
 package org.apache.hadoop.fs.viewfs;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -26,11 +28,15 @@ import java.net.URISyntaxException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test the TestViewFSOverloadSchemeCentralMountTableConfig with mount-table
  * configuration files in configured fs location.
  */
+@RunWith(Parameterized.class)
 public class TestViewFSOverloadSchemeCentralMountTableConfig
     extends TestViewFileSystemOverloadSchemeLocalFileSystem {
   private Path oldMountTablePath;
@@ -54,6 +60,17 @@ public class TestViewFSOverloadSchemeCentralMountTableConfig
     latestMountTablepath = new Path(f2.toURI());
     f2.createNewFile();
   }
+
+  /*
+  @Parameters(name = "renameStrategy={0}")
+  public static Collection params() {
+      return Arrays.asList(new Object[][] {
+          {"SAME_MOUNTPOINT"},
+          {"SAME_TARGET_URI_ACROSS_MOUNTPOINT"},
+          {"SAME_FILESYSTEM_ACROSS_MOUNTPOINT"}
+      });
+  }
+  */
 
   /**
    * This method saves the mount links in a local files.

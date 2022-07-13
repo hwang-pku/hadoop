@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -39,7 +40,9 @@ import java.util.Collection;
 
 @RunWith(Parameterized.class)
 public class TestAuthenticationFilter {
+  @Parameter(0)
   private String authType;
+  @Parameter(1)
   private int tokenValidTime;
 
   @Before
@@ -47,11 +50,6 @@ public class TestAuthenticationFilter {
     Configuration.MYHACK.clear();
     Configuration.MYHACK.put("hadoop.http.authentication.type", this.authType);
     Configuration.MYHACK.put("hadoop.http.authentication.token.validity", Integer.toString(this.tokenValidTime));
-  }
-
-  public TestAuthenticationFilter(String authType, int tokenValidTime) {
-    this.authType = authType;
-    this.tokenValidTime = tokenValidTime;
   }
 
   @Parameters(name = "authType={0}, tokenValidTime={1}")
