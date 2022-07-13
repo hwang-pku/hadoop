@@ -24,16 +24,48 @@ import org.apache.hadoop.service.launcher.testservices.LaunchableRunningService;
 import org.apache.hadoop.service.launcher.testservices.RunningService;
 import static org.apache.hadoop.service.launcher.LauncherArguments.*;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Test how configuration files are loaded off the command line.
  */
+@RunWith(Parameterized.class)
 public class TestServiceConf
     extends AbstractServiceLauncherTestBase {
+
+  @Parameter(0)
+  public String timeout;
+
+  @Parameters(name = "timeout={0}")
+  public static Collection params() {
+      return Arrays.asList(new Object[][] {
+          { "1s" },
+          { "10s" },
+          { "30s" },
+          { "1m" },
+          { "10m" },
+          { "30m" },
+          { "1h" },
+      });
+  }
+  
+  @Before
+  public void setUp() throws Exception {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.service.shutdown.timeout", timeout);
+  }
+
+    
 
   @Test
   public void testRunService() throws Throwable {
