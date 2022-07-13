@@ -18,10 +18,18 @@
 package org.apache.hadoop.util;
 
 import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
+import org.slf4j.Logger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +44,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public class TestShutdownHookManager {
 
   static final Logger LOG =
@@ -46,6 +55,28 @@ public class TestShutdownHookManager {
    * don't have shared context.
    */
   private final ShutdownHookManager mgr = new ShutdownHookManager();
+
+  @Parameter(0)
+  public String timeout;
+
+  @Before
+  public void setUp() {
+      Configuration.MYHACK.clear();
+      Configuration.MYHACK.put("hadoop.service.shutdown.timeout", timeout);
+  }
+
+  @Parameters(name = "timeout={0}")
+  public static Collection params() {
+      return Arrays.asList(new Object[][] {
+  //        { "1s" }, too short that causes timeout
+          { "10s" },
+          { "30s" },
+          { "1m" },
+          { "10m" },
+          { "30m" },
+          { "1h" },
+      });
+  }
 
   /**
    * Verify hook registration, then execute the hook callback stage
@@ -74,7 +105,9 @@ public class TestShutdownHookManager {
     mgr.addShutdownHook(hook1, 0);
     assertTrue(mgr.hasShutdownHook(hook1));
     assertEquals(1, mgr.getShutdownHooksInOrder().size());
-    assertEquals(SERVICE_SHUTDOWN_TIMEOUT_DEFAULT,
+    assertEquals((new Configuration()).getTimeDuration(SERVICE_SHUTDOWN_TIMEOUT,
+                SERVICE_SHUTDOWN_TIMEOUT_DEFAULT,
+                TimeUnit.SECONDS),
         mgr.getShutdownHooksInOrder().get(0).getTimeout());
 
     mgr.addShutdownHook(hook2, 1);
@@ -159,6 +192,7 @@ public class TestShutdownHookManager {
     // set the shutdown timeout and verify it can be read back.
     Configuration conf = new Configuration();
     long shutdownTimeout = 5;
+    Configuration.MYHACK.clear();
     conf.setTimeDuration(SERVICE_SHUTDOWN_TIMEOUT,
         shutdownTimeout, TimeUnit.SECONDS);
     assertEquals(SERVICE_SHUTDOWN_TIMEOUT,
@@ -175,6 +209,7 @@ public class TestShutdownHookManager {
     // set the shutdown timeout and verify it can be read back.
     Configuration conf = new Configuration();
     long shutdownTimeout = 50;
+    Configuration.MYHACK.clear();
     conf.setTimeDuration(SERVICE_SHUTDOWN_TIMEOUT,
         shutdownTimeout, TimeUnit.NANOSECONDS);
     assertEquals(SERVICE_SHUTDOWN_TIMEOUT,
