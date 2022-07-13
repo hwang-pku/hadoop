@@ -23,18 +23,25 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.InetSocketAddress;
+import java.util.Collection;
+import java.util.Arrays;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.ha.HAServiceProtocol.HAServiceState;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 import org.apache.hadoop.thirdparty.com.google.common.base.Charsets;
 import org.apache.hadoop.thirdparty.com.google.common.base.Joiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RunWith(Parameterized.class)
 public class TestHAAdmin {
   private static final Logger LOG = LoggerFactory.getLogger(TestHAAdmin.class);
   
@@ -44,8 +51,14 @@ public class TestHAAdmin {
   private String errOutput;
   private String output;
 
+  @Parameter(0)
+  public int timeoutMs;
+
   @Before
   public void setup() throws IOException {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("ha.failover-controller.cli-check.rpc-timeout.ms",
+        Integer.toString(timeoutMs));
     tool = new HAAdmin() {
       @Override
       protected HAServiceTarget resolveTarget(String target) {
@@ -56,6 +69,17 @@ public class TestHAAdmin {
     tool.setConf(new Configuration());
     tool.errOut = new PrintStream(errOutBytes);
     tool.out = new PrintStream(outBytes);
+  }
+
+  @Parameters(name = "timeoutMs = {0}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {10000},
+        {20000},
+        {30000},
+        {40000},
+        {50000}
+    });
   }
   
   private void assertOutputContains(String string) {
