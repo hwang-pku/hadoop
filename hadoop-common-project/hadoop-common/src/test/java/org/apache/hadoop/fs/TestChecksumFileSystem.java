@@ -19,6 +19,7 @@
 package org.apache.hadoop.fs;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -27,16 +28,44 @@ import static org.apache.hadoop.fs.FileSystemTestHelper.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.test.GenericTestUtils;
 import org.junit.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import static org.junit.Assert.*;
 
+@RunWith(Parameterized.class)
 public class TestChecksumFileSystem {
   static final String TEST_ROOT_DIR =
       GenericTestUtils.getTempPath("work-dir/localfs");
 
   static LocalFileSystem localFs;
 
+  @Parameter(0)
+  public int bytesPerChecksum;
+  @Parameter(1)
+  public int bufferSize;
+
+  @Parameters
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {128, 4096},
+        {128, 8192},
+        {256, 4096},
+        {256, 8192},
+        {512, 4096},
+        {512, 8192},
+        {1024, 4096},
+        {1024, 8192}
+    });
+  }
+
   @Before
   public void resetLocalFs() throws Exception {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("io.file.buffer.size", Integer.toString(bufferSize));
+    Configuration.MYHACK.put("io.file.bytes.per.checksum",
+        Integer.toString(bytesPerChecksum));
     localFs = FileSystem.getLocal(new Configuration());
     localFs.setVerifyChecksum(true);
   }
