@@ -22,6 +22,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.StringReader;
@@ -30,17 +32,51 @@ import org.apache.hadoop.conf.Configuration;
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
+@RunWith(Parameterized.class)
 public class TestStat extends FileSystemTestHelper {
   static {
     FileSystem.enableSymlinks();
   }
   private static Stat stat;
+  @Parameter(0)
+  public Boolean isSymlinksEnabled;
+  @Parameter(1)
+  public Boolean isAutomaticCloseEnabled;
+  @Parameter(2)
+  public String authMode;
 
   @BeforeClass
   public static void setup() throws Exception {
     stat = new Stat(new Path("/dummypath"),
         4096l, false, FileSystem.get(new Configuration()));
+  }
+
+  @Before
+  public void paramSetup() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("fs.automatic.close", Boolean.toString(isAutomaticCloseEnabled));
+    Configuration.MYHACK.put("fs.client.resolve.remote.symlinks", Boolean.toString(isSymlinksEnabled));
+    Configuration.MYHACK.put("hadoop.security.authentication", authMode);
+  }
+
+  @Parameters
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+      {true, true, "simple"},
+      {true, false, "simple"},
+      {false, true, "simple"},
+      {false, false, "simple"},
+      {true, true, "kerberos"},
+      {true, false, "kerberos"},
+      {false, true, "kerberos"},
+      {false, false, "kerberos"},
+    });
   }
 
   private class StatOutput {
