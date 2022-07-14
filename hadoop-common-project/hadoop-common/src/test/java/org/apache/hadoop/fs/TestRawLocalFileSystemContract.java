@@ -20,6 +20,8 @@ package org.apache.hadoop.fs;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.test.GenericTestUtils;
@@ -29,6 +31,10 @@ import org.apache.hadoop.util.Shell;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assume.assumeTrue;
@@ -41,12 +47,49 @@ import org.slf4j.LoggerFactory;
  * Root directory related tests from super class will work into target
  * directory since we have no permission to write / on local filesystem.
  */
+@RunWith(Parameterized.class)
 public class TestRawLocalFileSystemContract extends FileSystemContractBaseTest {
 
   private static final Logger LOG =
       LoggerFactory.getLogger(TestRawLocalFileSystemContract.class);
   private final static Path TEST_BASE_DIR =
       new Path(GenericTestUtils.getRandomizedTestDir().getAbsolutePath());
+
+  @Parameter(0)
+  public boolean isSymlinkSupported;
+  @Parameter(1)
+  public boolean isKerberosAutorenewalEnabled;
+  @Parameter(2)
+  public int bytesPerChecksum;
+
+  @Parameters(name = "isSymlinkSupported={0}, isKerberosAutorenewalEnabled={1}, bytesPerChecksum={2}")
+  public static Collection getParameters() {
+    return Arrays.asList(new Object[][] {
+      {true, true, 128},
+      {true, true, 256},
+      {true, true, 512},
+      {true, false, 128},
+      {true, false, 256},
+      {true, false, 512},
+      {false, true, 128},
+      {false, true, 256},
+      {false, true, 512},
+      {false, false, 128},
+      {false, false, 256},
+      {false, false, 512},
+    });
+  }
+
+  @Before
+  public void paramSetUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("fs.client.resolve.remote.symlinks",
+      Boolean.toString(isSymlinkSupported));
+    Configuration.MYHACK.put("hadoop.kerberos.keytab.login.autorenewal.enabled",
+      Boolean.toString(isKerberosAutorenewalEnabled));
+    Configuration.MYHACK.put("file.bytes-per-checksum",
+      Integer.toString(bytesPerChecksum));
+  }
 
   // These are the string values that DF sees as "Filesystem" for a
   // Docker container accessing a Mac or Windows host's filesystem.
