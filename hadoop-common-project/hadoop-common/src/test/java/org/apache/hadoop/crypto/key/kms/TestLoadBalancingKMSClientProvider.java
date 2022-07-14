@@ -39,6 +39,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Collection;
 
 import javax.net.ssl.SSLHandshakeException;
 
@@ -59,15 +60,29 @@ import org.apache.hadoop.security.token.Token;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 import org.junit.rules.Timeout;
 import org.mockito.Mockito;
 
 import org.apache.hadoop.thirdparty.com.google.common.collect.Sets;
 
+@RunWith(Parameterized.class)
 public class TestLoadBalancingKMSClientProvider {
 
   @Rule
   public Timeout testTimeout = new Timeout(30 * 1000);
+
+  @Parameter(0)
+  public int bitlength;
+
+  @Parameters(name = "bitlength={0}")
+  public static Collection params() {
+    return Arrays.asList(128, 256, 512, 1024);
+  }
 
   @BeforeClass
   public static void setup() throws IOException {
