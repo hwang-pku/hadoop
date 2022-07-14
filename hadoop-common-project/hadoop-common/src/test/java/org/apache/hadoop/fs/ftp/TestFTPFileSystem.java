@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Collection;
 
 import org.apache.hadoop.thirdparty.com.google.common.base.Preconditions;
 import org.apache.commons.net.ftp.FTP;
@@ -43,6 +45,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -52,15 +58,62 @@ import static org.junit.Assert.assertEquals;
  * Test basic @{link FTPFileSystem} class methods. Contract tests are in
  * TestFTPContractXXXX.
  */
+@RunWith(Parameterized.class)
 public class TestFTPFileSystem {
 
   private FtpTestServer server;
   private java.nio.file.Path testDir;
   @Rule
   public Timeout testTimeout = new Timeout(180000);
+  @Parameter(0)
+  public String transferMode;
+  public int FTPTransferMode;
+  @Parameter(1)
+  public String dataConnectionMode;
+  public int FTPDataConnectionMode;
+
+  @Parameters(name = "transferMode={0}, dataConnectionMode={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {"STREAM_TRANSFER_MODE", "ACTIVE_LOCAL_DATA_CONNECTION_MODE"},
+        {"STREAM_TRANSFER_MODE", "PASSIVE_LOCAL_DATA_CONNECTION_MODE"},
+        {"STREAM_TRANSFER_MODE", "PASSIVE_REMOTE_DATA_CONNECTION_MODE"},
+        {"BLOCK_TRANSFER_MODE", "ACTIVE_LOCAL_DATA_CONNECTION_MODE"},
+        {"BLOCK_TRANSFER_MODE", "PASSIVE_LOCAL_DATA_CONNECTION_MODE"},
+        {"BLOCK_TRANSFER_MODE", "PASSIVE_REMOTE_DATA_CONNECTION_MODE"},
+        {"COMPRESSED_TRANSFER_MODE", "ACTIVE_LOCAL_DATA_CONNECTION_MODE"},
+        {"COMPRESSED_TRANSFER_MODE", "PASSIVE_LOCAL_DATA_CONNECTION_MODE"},
+        {"COMPRESSED_TRANSFER_MODE", "PASSIVE_REMOTE_DATA_CONNECTION_MODE"}
+    });
+  }
 
   @Before
   public void setUp() throws Exception {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("fs.ftp.transfer.mode", transferMode);
+    Configuration.MYHACK.put("fs.ftp.data.connection.mode", dataConnectionMode);
+    switch(transferMode) {
+    case "STREAM_TRANSFER_MODE":
+      FTPTransferMode = FTP.STREAM_TRANSFER_MODE;
+      break;
+    case "BLOCK_TRANSFER_MODE":
+      FTPTransferMode = FTP.BLOCK_TRANSFER_MODE;
+      break;
+    case "COMPRESSED_TRANSFER_MODE":
+      FTPTransferMode = FTP.COMPRESSED_TRANSFER_MODE;
+      break;
+    }
+    switch(dataConnectionMode) {
+    case "ACTIVE_LOCAL_DATA_CONNECTION_MODE":
+      FTPDataConnectionMode = FTPClient.ACTIVE_LOCAL_DATA_CONNECTION_MODE;
+      break;
+    case "PASSIVE_LOCAL_DATA_CONNECTION_MODE":
+      FTPDataConnectionMode = FTPClient.PASSIVE_LOCAL_DATA_CONNECTION_MODE;
+      break;
+    case "PASSIVE_REMOTE_DATA_CONNECTION_MODE":
+      FTPDataConnectionMode = FTPClient.PASSIVE_REMOTE_DATA_CONNECTION_MODE;
+      break;
+    }
     testDir = Files.createTempDirectory(
         GenericTestUtils.getTestDir().toPath(), getClass().getName()
     );
@@ -92,6 +145,7 @@ public class TestFTPFileSystem {
 
     FileSystem fs = FileSystem.get(configuration);
     byte[] bytesExpected = "hello world".getBytes(StandardCharsets.UTF_8);
+    //This failed with message "Unable to create file: test1.txt, Aborting" for "PASSIVE_REMOTE_DATA_CONNECTION_MODE"
     try (FSDataOutputStream outputStream = fs.create(new Path("test1.txt"))) {
       outputStream.write(bytesExpected);
     }
@@ -133,8 +187,9 @@ public class TestFTPFileSystem {
   public void testFTPTransferMode() throws Exception {
     Configuration conf = new Configuration();
     FTPFileSystem ftp = new FTPFileSystem();
-    assertEquals(FTP.BLOCK_TRANSFER_MODE, ftp.getTransferMode(conf));
+    assertEquals(FTPTransferMode, ftp.getTransferMode(conf));
 
+    Configuration.MYHACK.clear(); //Not necessary
     conf.set(FTPFileSystem.FS_FTP_TRANSFER_MODE, "STREAM_TRANSFER_MODE");
     assertEquals(FTP.STREAM_TRANSFER_MODE, ftp.getTransferMode(conf));
 
@@ -150,9 +205,9 @@ public class TestFTPFileSystem {
     Configuration conf = new Configuration();
     FTPClient client = new FTPClient();
     FTPFileSystem ftp = new FTPFileSystem();
-    assertEquals(FTPClient.ACTIVE_LOCAL_DATA_CONNECTION_MODE,
-        client.getDataConnectionMode());
+    assertEquals(FTPClient.ACTIVE_LOCAL_DATA_CONNECTION_MODE, client.getDataConnectionMode());
 
+    Configuration.MYHACK.clear(); //Not necessary.
     ftp.setDataConnectionMode(client, conf);
     assertEquals(FTPClient.ACTIVE_LOCAL_DATA_CONNECTION_MODE,
         client.getDataConnectionMode());
@@ -167,7 +222,6 @@ public class TestFTPFileSystem {
     ftp.setDataConnectionMode(client, conf);
     assertEquals(FTPClient.PASSIVE_LOCAL_DATA_CONNECTION_MODE,
         client.getDataConnectionMode());
-
   }
 
   @Test
