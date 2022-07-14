@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.fs;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 
@@ -25,14 +27,49 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.test.GenericTestUtils;
 
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import static org.junit.Assert.*;
 
+@RunWith(Parameterized.class)
 public class TestAvroFSInput {
 
   private static final String INPUT_DIR = "AvroFSInput";
+  @Parameter(0)
+  public int checksumSize;
+  @Parameter(1)
+  public String umask;
 
   private Path getInputPath() {
     return new Path(GenericTestUtils.getTempPath(INPUT_DIR));
+  }
+
+  @Before
+  public void setUp() {
+      Configuration.MYHACK.clear();
+      Configuration.MYHACK.put("fs.permissions.umask-mode", umask);
+      Configuration.MYHACK.put("file.bytes-per-checksum", Integer.toString(checksumSize));
+  }
+
+  @Parameters(name = "checksumSize={0}, umask={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {128, "u=rwx,g=rwx,o="},
+        {256, "u=rwx,g=rwx,o="},
+        {512, "u=rwx,g=rwx,o="},
+        {1024, "u=rwx,g=rwx,o="},
+        {128, "022"},
+        {256, "022"},
+        {512, "022"},
+        {1024, "022"},
+        {128, "777"},
+        {256, "777"},
+        {512, "777"},
+        {1024, "777"}
+    });
   }
 
   @Test
