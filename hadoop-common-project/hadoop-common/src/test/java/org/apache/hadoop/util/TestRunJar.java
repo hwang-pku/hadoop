@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.regex.Pattern;
@@ -50,7 +52,12 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
+@RunWith(Parameterized.class)
 public class TestRunJar {
   private static final String FOOBAR_TXT = "foobar.txt";
   private static final String FOOBAZ_TXT = "foobaz.txt";
@@ -62,8 +69,27 @@ public class TestRunJar {
   private static final long MOCKED_NOW = 1_460_389_972_000L;
   private static final long MOCKED_NOW_PLUS_TWO_SEC = MOCKED_NOW + 2_000;
 
+  @Parameter(0)
+  public String autorenewalEnabled;
+  @Parameter(1)
+  public String groupMapping;
+
+  @Parameters(name = "autorenewalEnabled={0}, groupMapping={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        { "true", "org.apache.hadoop.security.JniBasedUnixGroupsMappingWithFallback" },
+        { "true", "org.apache.hadoop.security.ShellBasedUnixGroupsMapping" },
+        { "false", "org.apache.hadoop.security.JniBasedUnixGroupsMappingWithFallback" },
+        { "false", "org.apache.hadoop.security.ShellBasedUnixGroupsMapping" },
+    });
+  }
+
   @Before
   public void setUp() throws Exception {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.kerberos.keytab.login.autorenewal.enabled",
+        this.autorenewalEnabled);
+    Configuration.MYHACK.put("hadoop.security.group.mapping", this.groupMapping);
     TEST_ROOT_DIR = GenericTestUtils.getTestDir(getClass().getSimpleName());
     if (!TEST_ROOT_DIR.exists()) {
       TEST_ROOT_DIR.mkdirs();
