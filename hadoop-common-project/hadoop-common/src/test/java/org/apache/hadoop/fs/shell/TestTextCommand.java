@@ -25,6 +25,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.Collection;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.nio.file.Files;
@@ -35,11 +37,17 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.test.GenericTestUtils;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 /**
  * This class tests the logic for displaying the binary formats supported
  * by the Text command.
  */
+@RunWith(Parameterized.class)
 public class TestTextCommand {
   private static final File TEST_ROOT_DIR =
       GenericTestUtils.getTestDir("testText");
@@ -47,6 +55,27 @@ public class TestTextCommand {
     new File(TEST_ROOT_DIR, "weather.avro").toURI().getPath();
   private static final String TEXT_FILENAME =
     new File(TEST_ROOT_DIR, "testtextfile.txt").toURI().getPath();
+  @Parameter(0)
+  public String shutdownTimeout;
+
+  @Parameters(name = "shutdownTimeout={0}")
+  public static Collection parameters() {
+    return Arrays.asList(new Object[][] {
+      { "10s" },
+      { "30s" },
+      { "1m" },
+      { "10m" },
+      { "30m" },
+      { "1h" }
+    });
+  }
+
+  @Before
+  public void setUp() {
+      Configuration.MYHACK.clear();
+      Configuration.MYHACK.put("hadoop.service.shutdown.timeout",
+          shutdownTimeout);
+  }
 
   /**
    * Tests whether binary Avro data files are displayed correctly.
