@@ -24,6 +24,8 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,6 +39,10 @@ import org.apache.hadoop.fs.Path;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 
 /**
@@ -48,13 +54,49 @@ import org.junit.Test;
  *
  */
 
+@RunWith(Parameterized.class)
 public class TestViewFileSystemLocalFileSystem extends ViewFileSystemBaseTest {
   private static final Log LOG =
       LogFactory.getLog(TestViewFileSystemLocalFileSystem.class);
+  @Parameter(0)
+  public String renameStrategy;
+  @Parameter(1)
+  public boolean resolveRemoteSymlinks;
+  @Parameter(2)
+  public int bufferSize;
+
+  @Parameters(name = "renameStrategy={0}, resolveRemoteSymlinks={1}, bufferSize={2}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        { "SAME_MOUNTPOINT", true, 128 },
+        { "SAME_MOUNTPOINT", false, 128 },
+        { "SAME_TARGET_URI_ACROSS_MOUNTPOINT", true, 128 },
+        { "SAME_TARGET_URI_ACROSS_MOUNTPOINT", false, 128 },
+        { "SAME_FILESYSTEM_ACROSS_MOUNTPOINT", true, 128 },
+        { "SAME_FILESYSTEM_ACROSS_MOUNTPOINT", false, 128 },
+        { "SAME_MOUNTPOINT", true, 16 },
+        { "SAME_MOUNTPOINT", false, 16 },
+        { "SAME_TARGET_URI_ACROSS_MOUNTPOINT", true, 16 },
+        { "SAME_TARGET_URI_ACROSS_MOUNTPOINT", false, 16 },
+        { "SAME_FILESYSTEM_ACROSS_MOUNTPOINT", true, 16 },
+        { "SAME_FILESYSTEM_ACROSS_MOUNTPOINT", false, 16 },
+        { "SAME_MOUNTPOINT", true, 1 },
+        { "SAME_MOUNTPOINT", false, 1 },
+        { "SAME_TARGET_URI_ACROSS_MOUNTPOINT", true, 1 },
+        { "SAME_TARGET_URI_ACROSS_MOUNTPOINT", false, 1 },
+        { "SAME_FILESYSTEM_ACROSS_MOUNTPOINT", true, 1 },
+        { "SAME_FILESYSTEM_ACROSS_MOUNTPOINT", false, 1 },
+    });
+  }
 
   @Override
   @Before
   public void setUp() throws Exception {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("fs.viewfs.rename.strategy", renameStrategy);
+    Configuration.MYHACK.put("fs.client.resolve.remote.symlinks",
+        Boolean.toString(resolveRemoteSymlinks));
+    Configuration.MYHACK.put("file.stream-buffer-size", Integer.toString(bufferSize));
     // create the test root on local_fs
     fsTarget = FileSystem.getLocal(new Configuration());
     super.setUp();
