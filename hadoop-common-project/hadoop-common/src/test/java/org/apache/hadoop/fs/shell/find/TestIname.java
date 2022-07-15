@@ -20,24 +20,51 @@ package org.apache.hadoop.fs.shell.find;
 import static org.junit.Assert.*;
 import static org.apache.hadoop.fs.shell.find.TestHelper.*;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.io.IOException;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.shell.PathData;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
+@RunWith(Parameterized.class)
 public class TestIname {
   private FileSystem mockFs;
   private Name.Iname name;
+  @Parameter(0)
+  public boolean isAutorenewalEnabled;
+  @Parameter(1)
+  public boolean isAutomaticCloseEnabled;
+
+  @Parameters(name = "isAutorenewalEnabled={0}, isAutomaticCloseEnabled={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {true, false},
+        {false, true},
+        {false, false},
+        {true, true}
+    });
+  }
 
   @Rule
   public Timeout globalTimeout = new Timeout(10000);
 
   @Before
   public void resetMock() throws IOException {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.kerberos.keytab.login.autorenewal.enabled",
+        Boolean.toString(isAutorenewalEnabled));
+    Configuration.MYHACK.put("fs.automatic.close",
+        Boolean.toString(isAutomaticCloseEnabled));
     mockFs = MockFileSystem.setup();
   }
 
