@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
@@ -42,11 +43,16 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+@RunWith(Parameterized.class)
 public class TestFind {
 
   @Rule
@@ -54,9 +60,30 @@ public class TestFind {
 
   private static FileSystem mockFs;
   private static Configuration conf;
+  @Parameter(0)
+  public boolean backgroundReload;
+  @Parameter(1)
+  public int minSecondsBeforeRelogin;
+
+  @Parameters(name = "backgroundReload={0}, minSecondsBeforeRelogin={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {false, 10},
+        {false, 30},
+        {false, 60},
+        {true, 10},
+        {true, 30},
+        {true, 60}
+    });
+  }
 
   @Before
   public void setup() throws IOException {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.security.groups.cache.background.reload",
+        Boolean.toString(backgroundReload));
+    Configuration.MYHACK.put("hadoop.kerberos.min.seconds.before.relogin",
+        Integer.toString(minSecondsBeforeRelogin));
     mockFs = MockFileSystem.setup();
     conf = mockFs.getConf();
   }
