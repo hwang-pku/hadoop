@@ -21,25 +21,46 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.hadoop.fs.shell.PathData;
 
 import java.io.PrintStream;
 
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.conf.Configuration;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
+@RunWith(Parameterized.class)
 public class TestPrint0 {
   private FileSystem mockFs;
+  @Parameter(0)
+  public boolean isAutoRenewalEnabled;
+
+  @Parameters(name = "isAutoRenewalEnabled = {0}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {true}, {false}
+    });
+  }
 
   @Rule
   public Timeout globalTimeout = new Timeout(10000);
 
   @Before
   public void resetMock() throws IOException {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.kerberos.keytab.login.autorenewal.enabled",
+        Boolean.toString(isAutoRenewalEnabled));
     mockFs = MockFileSystem.setup();
   }
 
