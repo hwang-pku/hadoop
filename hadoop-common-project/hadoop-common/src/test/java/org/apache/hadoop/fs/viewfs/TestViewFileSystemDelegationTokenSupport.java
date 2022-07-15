@@ -25,6 +25,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Collection;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FsConstants;
@@ -36,6 +37,11 @@ import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.security.token.TokenIdentifier;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 /**
  * Test ViewFileSystem's support for having delegation tokens fetched and cached
@@ -44,6 +50,7 @@ import org.junit.Test;
  * Currently this class just ensures that getCanonicalServiceName() always
  * returns <code>null</code> for ViewFileSystem instances.
  */
+@RunWith(Parameterized.class)
 public class TestViewFileSystemDelegationTokenSupport {
   
   private static final String MOUNT_TABLE_NAME = "vfs-cluster";
@@ -51,6 +58,30 @@ public class TestViewFileSystemDelegationTokenSupport {
   static FileSystem viewFs;
   static FakeFileSystem fs1;
   static FakeFileSystem fs2;
+  @Parameter(0)
+  public String renameStrategy;
+  @Parameter(1)
+  public String authToLocalMechanism;
+
+  @Parameters(name = "rename strategy: {0}, authToLocalMechanism: {1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        { "SAME_MOUNTPOINT", "hadoop" },
+        { "SAME_MOUNTPOINT", "MIT" },
+        { "SAME_TARGET_URI_ACROSS_MOUNTPOINT", "hadoop" },
+        { "SAME_TARGET_URI_ACROSS_MOUNTPOINT", "MIT" },
+        { "SAME_FILESYSTEM_ACROSS_MOUNTPOINT", "hadoop" },
+        { "SAME_FILESYSTEM_ACROSS_MOUNTPOINT", "MIT" },
+    });
+  }
+
+  @Before
+  public void setUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.security.auth_to_local.mechanism",
+        authToLocalMechanism);
+    Configuration.MYHACK.put("fs.viewfs.rename.strategy", renameStrategy);
+  }
 
   @BeforeClass
   public static void setup() throws Exception {
