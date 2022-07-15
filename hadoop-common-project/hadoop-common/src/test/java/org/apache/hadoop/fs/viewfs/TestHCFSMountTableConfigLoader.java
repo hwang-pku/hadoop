@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -33,10 +35,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 /**
  * Tests the mount table loading.
  */
+@RunWith(Parameterized.class)
 public class TestHCFSMountTableConfigLoader {
 
   private static final String DOT = ".";
@@ -68,6 +75,36 @@ public class TestHCFSMountTableConfigLoader {
       new StringBuilder(Constants.CONFIG_VIEWFS_PREFIX).append(DOT)
           .append(TABLE_NAME).append(DOT).append(Constants.CONFIG_VIEWFS_LINK)
           .append(DOT).append(SRC_TWO).toString();
+  @Parameter(0)
+  public boolean isRemoteSymlinks;
+  @Parameter(1)
+  public int ioFileBufferSize;
+  @Parameter(2)
+  public int fileStreamBufferSize;
+
+  @Parameters(name = "isRemoteSymlinks={0}, io.file.buffer.size={1}, file.stream-buffer-size={2}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {true, 1, 1},
+        {true, 64, 1},
+        {true, 256, 1},
+        {true, 1, 64},
+        {true, 64, 64},
+        {true, 256, 64},
+        {true, 1, 256},
+        {true, 64, 256},
+        {true, 256, 256},
+        {false, 1, 1},
+        {false, 64, 1},
+        {false, 256, 1},
+        {false, 1, 64},
+        {false, 64, 64},
+        {false, 256, 64},
+        {false, 1, 256},
+        {false, 64, 256},
+        {false, 256, 256},
+    });
+  }
 
   @BeforeClass
   public static void init() throws Exception {
@@ -80,6 +117,12 @@ public class TestHCFSMountTableConfigLoader {
 
   @Before
   public void setUp() throws Exception {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("fs.client.resolve.remote.symlinks",
+        Boolean.toString(isRemoteSymlinks));
+    Configuration.MYHACK.put("io.file.buffer.size", Integer.toString(ioFileBufferSize));
+    Configuration.MYHACK.put("file.stream-buffer-size",
+        Integer.toString(fileStreamBufferSize));
     conf = new Configuration();
     conf.set(String.format(
         FsConstants.FS_VIEWFS_OVERLOAD_SCHEME_TARGET_FS_IMPL_PATTERN, "file"),
