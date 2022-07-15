@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
@@ -45,8 +47,13 @@ import org.apache.hadoop.util.ToolRunner;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.junit.rules.TemporaryFolder;
 
+@RunWith(Parameterized.class)
 public class TestAclCommands {
   @Rule
   public TemporaryFolder testFolder = new TemporaryFolder();
@@ -54,9 +61,21 @@ public class TestAclCommands {
   private String path;
 
   private Configuration conf = null;
+  @Parameter(0)
+  public String authType;
+
+  @Parameters
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        { "simple" },
+        { "kerberos" }
+    });
+  }
 
   @Before
   public void setup() throws IOException {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.security.authentication", authType);
     conf = new Configuration();
     path = testFolder.newFile("file").getPath();
   }
