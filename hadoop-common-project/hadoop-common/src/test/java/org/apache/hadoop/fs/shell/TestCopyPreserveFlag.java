@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -38,7 +40,12 @@ import org.apache.hadoop.fs.shell.CopyCommands.CopyFromLocal;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
+@RunWith(Parameterized.class)
 public class TestCopyPreserveFlag {
   private static final int MODIFICATION_TIME = 12345000;
   private static final int ACCESS_TIME = 23456000;
@@ -57,9 +64,30 @@ public class TestCopyPreserveFlag {
   private FileSystem fs;
   private Path testDir;
   private Configuration conf;
+  @Parameter(0)
+  public int reloadThreads;
+  @Parameter(1)
+  public boolean isReload;
+
+  @Parameters(name = "reloadThreads={0}, isReload={1}")
+  public static Collection parameters() {
+    return Arrays.asList(new Object[][] {
+      {0, false},
+      {1, true},
+      {2, true},
+      {3, true},
+      {4, true},
+      {5, true},
+    });
+  }
 
   @Before
   public void initialize() throws Exception {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.security.groups.cache.background.reload.threads",
+      String.valueOf(reloadThreads));
+    Configuration.MYHACK.put("hadoop.security.groups.cache.background.reload",
+      String.valueOf(isReload));
     conf = new Configuration(false);
     conf.set("fs.file.impl", LocalFileSystem.class.getName());
     fs = FileSystem.getLocal(conf);
