@@ -21,24 +21,46 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.hadoop.conf.Configuration;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Test Regex Mount Point.
  */
+@RunWith(Parameterized.class)
 public class TestRegexMountPoint {
+
   private static final Logger LOGGER =
       LoggerFactory.getLogger(TestRegexMountPoint.class.getName());
 
   private InodeTree inodeTree;
   private Configuration conf;
+  @Parameter(0)
+  public String groupMapping;
+
+  @Parameters(name = "groupMapping={0}")
+  public static Collection getParameters() {
+    return Arrays.asList(new Object[][] {
+        {"org.apache.hadoop.security.JniBasedUnixGroupsMappingWithFallback"},
+        {"org.apache.hadoop.security.JniBasedUnixGroupsMapping"},
+        {"org.apache.hadoop.security.ShellBasedUnixGroupsMapping"},
+        {"org.apache.hadoop.security.ShellBasedUnixGroupsNetgroupMapping"},
+        {"org.apache.hadoop.security.ShellBasedIdMapping"},
+        {"org.apache.hadoop.security.RuleBasedLdapGroupsMapping"}
+    });
+  }
 
   class TestRegexMountPointFileSystem {
     public URI getUri() {
@@ -56,6 +78,8 @@ public class TestRegexMountPoint {
 
   @Before
   public void setUp() throws Exception {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.security.group.mapping", groupMapping);
     conf = new Configuration();
     ConfigUtil.addLink(conf, TestRegexMountPoint.class.getName(), "/mnt",
         URI.create("file:///"));
