@@ -22,6 +22,8 @@ import static org.junit.Assert.*;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.hadoop.thirdparty.com.google.common.collect.Lists;
 import org.apache.hadoop.conf.Configuration;
@@ -32,6 +34,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -39,12 +45,21 @@ import org.slf4j.Logger;
 
 import static org.mockito.Mockito.mock;
 
+@RunWith(Parameterized.class)
 public class TestShellCommandFencer {
   private ShellCommandFencer fencer = createFencer();
   private static final HAServiceTarget TEST_TARGET =
       new DummyHAService(HAServiceState.ACTIVE,
           new InetSocketAddress("dummyhost", 1234));
   private static final Logger LOG = ShellCommandFencer.LOG;
+  @Parameter(0)
+  public int connectTimeout;
+  @Parameters(name = "connect-timeout={0}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {100}, {500}, {1000}, {5000}, {10000}, {30000}
+    });
+  }
 
   @BeforeClass
   public static void setupLogMock() {
@@ -58,6 +73,9 @@ public class TestShellCommandFencer {
 
   @Before
   public void resetLogSpy() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("dfs.ha.fencing.ssh.connect-timeout",
+        Integer.toString(connectTimeout));
     Mockito.reset(ShellCommandFencer.LOG);
   }
   
