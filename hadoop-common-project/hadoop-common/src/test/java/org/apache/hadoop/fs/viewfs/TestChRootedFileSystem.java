@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,16 +39,49 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import static org.mockito.Mockito.*;
 
+@RunWith(Parameterized.class)
 public class TestChRootedFileSystem {
   FileSystem fSys; // The ChRoootedFs
   FileSystem fSysTarget; //
   Path chrootedTo;
   FileSystemTestHelper fileSystemTestHelper;
+  @Parameter(0)
+  public int bytesPerChecksum;
+  @Parameter(1)
+  public boolean automaticClose;
+  @Parameter(2)
+  public boolean resolveRemoteSymlinks;
+
+  @Parameters(name = "bytesPerChecksum={0}, automaticClose={1}, resolveRemoteSymlinks={2}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {128, true, true},
+        {128, true, false},
+        {128, false, true},
+        {128, false, false},
+        {256, true, true},
+        {256, true, false},
+        {256, false, true},
+        {256, false, false},
+        {512, true, true},
+        {512, true, false},
+        {512, false, true},
+        {512, false, false},
+    });
+  }
   
   @Before
   public void setUp() throws Exception {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("fs.automatic.close", Boolean.toString(automaticClose));
+    Configuration.MYHACK.put("fs.client.resolve.remote.symlinks", Boolean.toString(resolveRemoteSymlinks));
+    Configuration.MYHACK.put("fs.viewfs.bytes.per.checksum", Integer.toString(bytesPerChecksum));
     // create the test root on local_fs
     Configuration conf = new Configuration();
     fSysTarget = FileSystem.getLocal(conf);
@@ -56,7 +91,6 @@ public class TestChRootedFileSystem {
     fSysTarget.delete(chrootedTo, true);
     
     fSysTarget.mkdirs(chrootedTo);
-
 
     // ChRoot to the root of the testDirectory
     fSys = new ChRootedFileSystem(chrootedTo.toUri(), conf);
