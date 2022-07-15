@@ -32,6 +32,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
@@ -44,17 +46,36 @@ import org.apache.hadoop.fs.permission.FsPermission;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.mockito.InOrder;
 
 /**
  * JUnit test class for {@link org.apache.hadoop.fs.shell.Ls}
  *
  */
+@RunWith(Parameterized.class)
 public class TestLs {
   private static Configuration conf;
   private static FileSystem mockFs;
 
   private static final Date NOW = new Date();
+  @Parameter(0)
+  public boolean isSlowLookupsEnabled;
+  @Parameter(1)
+  public String authType;
+  
+  @Parameters(name = "slowLookupsEnabled={0}, authType={1}")
+  public static Collection getParameters() {
+    return Arrays.asList(new Object[][] {
+      {true, "simple"},
+      {true, "kerberos"},
+      {false, "simple"},
+      {false, "kerberos"}
+    });
+  }
 
   @BeforeClass
   public static void setup() throws IOException {
@@ -66,6 +87,10 @@ public class TestLs {
 
   @Before
   public void resetMock() throws IOException, URISyntaxException {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.security.dns.log-slow-lookups.enabled",
+        Boolean.toString(isSlowLookupsEnabled));
+    Configuration.MYHACK.put("hadoop.security.authentication", authType);
     reset(mockFs);
     AclStatus mockAclStatus = mock(AclStatus.class);
     when(mockAclStatus.getEntries()).thenReturn(new ArrayList<AclEntry>());
