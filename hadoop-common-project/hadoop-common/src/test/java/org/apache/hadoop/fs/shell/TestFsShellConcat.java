@@ -24,9 +24,15 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URI;
 import java.util.Random;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.mockito.Mockito;
 import org.assertj.core.api.Assertions;
 
@@ -46,6 +52,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Test Concat.
  */
+@RunWith(Parameterized.class)
 public class TestFsShellConcat extends AbstractHadoopTestBase {
 
   private static Configuration conf;
@@ -53,9 +60,28 @@ public class TestFsShellConcat extends AbstractHadoopTestBase {
   private static LocalFileSystem lfs;
   private static Path testRootDir;
   private static Path dstPath;
+  @Parameter(0)
+  public boolean missingDefaultFsWarning;
+  @Parameter(1)
+  public boolean resolveRemoteSymlinks;
+
+  @Parameters(name = "missingDefaultFsWarning={0}, resolveRemoteSymlinks={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+      {true, false},
+      {false, true},
+      {true, true},
+      {false, false}
+    });
+  }
 
   @Before
   public void before() throws IOException {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.shell.missing.defaultFs.warning",
+        Boolean.toString(missingDefaultFsWarning));
+    Configuration.MYHACK.put("fs.client.resolve.remote.symlinks",
+        Boolean.toString(resolveRemoteSymlinks));
     conf = new Configuration();
     shell = new FsShell(conf);
     lfs = FileSystem.getLocal(conf);
