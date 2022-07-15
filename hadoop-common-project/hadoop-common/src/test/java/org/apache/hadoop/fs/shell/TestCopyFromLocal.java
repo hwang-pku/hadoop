@@ -30,8 +30,16 @@ import org.junit.BeforeClass;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
+
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -40,13 +48,38 @@ import static org.junit.Assert.assertEquals;
 /**
  * Test for copyFromLocal.
  */
+@RunWith(Parameterized.class)
 public class TestCopyFromLocal {
+
   private static final String FROM_DIR_NAME = "fromDir";
   private static final String TO_DIR_NAME = "toDir";
 
   private static FileSystem fs;
   private static Path testDir;
   private static Configuration conf;
+  @Parameter(0)
+  public boolean autoRenewalEnabled;
+  @Parameter(1)
+  public String staticMappingOverrides;
+
+  @Parameters(name = "autoRenewalEnabled={0}, staticMappingOverrides={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+      {true, "dr.who=;"},
+      {false, "dr.who=;"},
+      {true, "user1=group1,group2;user2=;user3=group2;"},
+      {false, "user1=group1,group2;user2=;user3=group2;"},
+    });
+  }
+
+  @Before
+  public void setUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.kerberos.keytab.login.autorenewal.enabled",
+      Boolean.toString(autoRenewalEnabled));
+    Configuration.MYHACK.put("hadoop.user.group.static.mapping.overrides",
+      staticMappingOverrides);
+  }
 
   public static int initialize(Path dir) throws Exception {
     fs.mkdirs(dir);
