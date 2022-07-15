@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
@@ -38,11 +40,16 @@ import org.apache.hadoop.fs.shell.CommandFormat.NotEnoughArgumentsException;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 /**
  * JUnit test class for {@link org.apache.hadoop.fs.shell.Count}
  * 
  */
+@RunWith(Parameterized.class)
 public class TestCount {
   private static final String WITH_QUOTAS = "Content summary with quotas";
   private static final String NO_QUOTAS = "Content summary without quotas";
@@ -52,6 +59,20 @@ public class TestCount {
   private static Configuration conf;
   private static FileSystem mockFs;
   private static FileStatus fileStat;
+  @Parameter(0)
+  public String authType;
+  @Parameter(1)
+  public String authMechanism;
+
+  @Parameters(name = "authType={0}, authMechanism={1}")
+    public static Collection params() {
+        return Arrays.asList(new Object[][] {
+            { "simple", "kerberos" },
+            { "simple", "MIT" },
+            { "kerberos", "kerberos" },
+            { "kerberos", "MIT" },
+        });
+    }
 
   @BeforeClass
   public static void setup() {
@@ -64,6 +85,10 @@ public class TestCount {
 
   @Before
   public void resetMock() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.security.authentication", authType);
+    Configuration.MYHACK.put("hadoop.security.auth_to_local.mechanism",
+        authMechanism);
     reset(mockFs);
   }
 
