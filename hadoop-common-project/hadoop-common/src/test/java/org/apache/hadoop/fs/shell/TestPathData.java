@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -37,16 +38,52 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
+@RunWith(Parameterized.class)
 public class TestPathData {
+
   private static final String TEST_ROOT_DIR =
       GenericTestUtils.getTestDir("testPD").getAbsolutePath();
   protected Configuration conf;
   protected FileSystem fs;
   protected Path testDir;
+  @Parameter(0)
+  public String groupMapping;
+  @Parameter(1)
+  public boolean resolveSymlinks;
+
+  @Parameters(name = "groupMapping={0}, resolveSymlinks={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        { "org.apache.hadoop.security.JniBasedUnixGroupsMappingWithFallback",
+          true },
+        { "org.apache.hadoop.security.JniBasedUnixGroupsMappingWithFallback",
+          false },
+        { "org.apache.hadoop.security.ShellBasedUnixGroupsMapping",
+          true },
+        { "org.apache.hadoop.security.ShellBasedUnixGroupsMapping",
+          false },
+        { "org.apache.hadoop.security.SimpleGroupsMapping",
+          true },
+        { "org.apache.hadoop.security.SimpleGroupsMapping",
+          false },
+        { "org.apache.hadoop.security.UserToGroupMapping",
+          true },
+        { "org.apache.hadoop.security.UserToGroupMapping",
+          false },
+    });
+  }
   
   @Before
   public void initialize() throws Exception {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.security.group.mapping", groupMapping);
+    Configuration.MYHACK.put("fs.client.resolve.remote.symlinks",
+        Boolean.toString(resolveSymlinks));
     conf = new Configuration();
     fs = FileSystem.getLocal(conf);
     testDir = new Path(TEST_ROOT_DIR);
