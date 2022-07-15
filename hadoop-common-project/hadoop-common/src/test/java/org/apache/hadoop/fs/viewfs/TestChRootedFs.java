@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.util.EnumSet;
+import java.util.Arrays;
+import java.util.Collection;
 
 import static org.apache.hadoop.fs.FileContextTestHelper.*;
 
@@ -37,16 +39,44 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.mockito.Mockito;
 
+@RunWith(Parameterized.class)
 public class TestChRootedFs {
   FileContextTestHelper fileContextTestHelper = new FileContextTestHelper();
   FileContext fc; // The ChRoootedFs
   FileContext fcTarget; // 
   Path chrootedTo;
+  @Parameter(0)
+  public int secBeforeRelogin;
+  @Parameter(1)
+  public boolean backgroundReload;
+  
+  @Parameters(name = "secBeforeRelogin={0}, backgroundReload={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {1, true},
+        {10, true},
+        {30, true},
+        {60, true},
+        {1, false},
+        {10, false},
+        {30, false},
+        {60, false}
+    });
+  }
 
   @Before
   public void setUp() throws Exception {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.security.groups.cache.background.reload",
+        Boolean.toString(backgroundReload));
+    Configuration.MYHACK.put("hadoop.kerberos.min.seconds.before.relogin",
+        Integer.toString(secBeforeRelogin));
     // create the test root on local_fs
     fcTarget = FileContext.getLocalFSFileContext();
     chrootedTo = fileContextTestHelper.getAbsoluteTestRootPath(fcTarget);
