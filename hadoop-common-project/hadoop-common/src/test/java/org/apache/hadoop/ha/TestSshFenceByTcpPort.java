@@ -19,6 +19,8 @@ package org.apache.hadoop.ha;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.net.InetSocketAddress;
 
 import org.apache.hadoop.conf.Configuration;
@@ -27,8 +29,14 @@ import org.apache.hadoop.ha.SshFenceByTcpPort.Args;
 import org.apache.hadoop.test.GenericTestUtils;
 import org.junit.Assume;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.slf4j.event.Level;
 
+@RunWith(Parameterized.class)
 public class TestSshFenceByTcpPort {
 
   static {
@@ -47,6 +55,30 @@ public class TestSshFenceByTcpPort {
       Integer.parseInt(TEST_FENCING_PORT));
   private static final HAServiceTarget TEST_TARGET =
     new DummyHAService(HAServiceState.ACTIVE, TEST_ADDR);
+  @Parameter(0)
+  public int opRetries;
+  @Parameter(1)
+  public boolean reuseAddr;
+
+  @Parameters(name = "opRetries={0}, reuseAddr={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+      {1, true},
+      {1, false},
+      {2, true},
+      {2, false},
+      {3, true},
+      {3, false},
+    });
+  }
+
+  @Before
+  public void setUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("ha.failover-controller.active-standby-elector.zk.op.retries",
+        Integer.toString(opRetries));
+    Configuration.MYHACK.put("ipc.server.reuseaddr", Boolean.toString(reuseAddr));
+  }
 
   /**
    *  Connect to Google's DNS server - not running ssh!
