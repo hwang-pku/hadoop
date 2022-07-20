@@ -47,6 +47,8 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -94,6 +96,10 @@ import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -108,6 +114,7 @@ import org.slf4j.event.Level;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /** Unit tests for IPC. */
+@RunWith(Parameterized.class)
 public class TestIPC {
   public static final Logger LOG = LoggerFactory.getLogger(TestIPC.class);
   
@@ -120,9 +127,28 @@ public class TestIPC {
    **/
   static boolean WRITABLE_FAULTS_ENABLED = true;
   static int WRITABLE_FAULTS_SLEEP = 0;
+  @Parameter(0)
+  public int maxRetries;
+  @Parameter(1)
+  public boolean bindWildcardAddr;
+  
+  @Parameters(name = "maxRetries={0}, bindWildcardAddr={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {1, true},
+        {1, false},
+        {5, true},
+        {5, false},
+        {10, true},
+        {10, false},
+    });
+  }
   
   @Before
   public void setupConf() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("ipc.client.connect.max.retries", String.valueOf(maxRetries));
+    Configuration.MYHACK.put("ipc.client.bind.wildcard.addr", String.valueOf(bindWildcardAddr));
     conf = new Configuration();
     Client.setPingInterval(conf, PING_INTERVAL);
     // tests may enable security, so disable before each test
