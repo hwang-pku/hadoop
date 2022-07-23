@@ -20,6 +20,8 @@ package org.apache.hadoop.log;
 import java.io.File;
 import java.net.SocketException;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.logging.Log;
@@ -49,6 +51,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLException;
@@ -61,6 +67,7 @@ import static org.junit.Assert.fail;
 /**
  * Test LogLevel.
  */
+@RunWith(Parameterized.class)
 public class TestLogLevel extends KerberosSecurityTestcase {
   private static final File BASEDIR = GenericTestUtils.getRandomizedTestDir();
   private static String keystoresDir;
@@ -75,6 +82,26 @@ public class TestLogLevel extends KerberosSecurityTestcase {
   private final static String PRINCIPAL = "loglevel.principal";
   private final static String KEYTAB  = "loglevel.keytab";
   private static final String PREFIX = "hadoop.http.authentication.";
+
+  @Parameter(0)
+  public String staticUser;
+  @Parameter(1)
+  public String kerberosPrincipal;
+
+  @Parameters(name = "staticUser={0}, kerberosPrincipal={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        { "dr.who", "HTTP/_HOST@LOCALHOST" },
+        { "dr.who", "HTTP/DR@WHO" },
+        { "dr.who", "HTTP/GOOGLE@COM" },
+        { "xxx", "HTTP/_HOST@LOCALHOST" },
+        { "xxx", "HTTP/DR@WHO" },
+        { "xxx", "HTTP/GOOGLE@COM" },
+        { "google.com", "HTTP/_HOST@LOCALHOST" },
+        { "google.com", "HTTP/DR@WHO" },
+        { "google.com", "HTTP/GOOGLE@COM" },
+    });
+  }
 
   @BeforeClass
   public static void setUp() throws Exception {
