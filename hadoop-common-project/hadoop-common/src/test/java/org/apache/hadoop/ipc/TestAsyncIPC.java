@@ -32,12 +32,19 @@ import org.apache.hadoop.util.concurrent.AsyncGetFuture;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -46,10 +53,25 @@ import java.util.concurrent.TimeoutException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+@RunWith(Parameterized.class)
 public class TestAsyncIPC {
 
   private static Configuration conf;
   private static final Logger LOG = LoggerFactory.getLogger(TestAsyncIPC.class);
+  @Parameter(0)
+  public int maxConnections;
+  @Parameter(1)
+  public boolean tcpNoDelay;
+
+  @Parameters(name = "maxConnections={0}, tcpNoDelay={1}")
+  public static Collection params() {
+    List<Object[]> params = new ArrayList<Object[]>();
+    for (int i = 1; i <= 10; i++) {
+      params.add(new Object[] { i, true });
+      params.add(new Object[] { i, false });
+    }
+    return params;
+  }
 
   static <T extends Writable> AsyncGetFuture<T, IOException>
       getAsyncRpcResponseFuture() {
@@ -58,6 +80,11 @@ public class TestAsyncIPC {
 
   @Before
   public void setupConf() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("ipc.server.max.connections",
+        Integer.toString(maxConnections));
+    Configuration.MYHACK.put("ipc.client.tcpnodelay",
+        Boolean.toString(tcpNoDelay));
     conf = new Configuration();
     conf.setInt(CommonConfigurationKeys.IPC_CLIENT_ASYNC_CALLS_MAX_KEY, 10000);
     Client.setPingInterval(conf, TestIPC.PING_INTERVAL);
