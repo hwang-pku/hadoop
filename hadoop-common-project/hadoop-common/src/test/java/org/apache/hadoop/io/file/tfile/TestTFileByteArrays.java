@@ -22,6 +22,8 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.Random;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.junit.Assert;
 
@@ -39,6 +41,10 @@ import org.apache.hadoop.test.GenericTestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 /**
  * 
@@ -46,6 +52,7 @@ import org.junit.Test;
  * and LZO compression classes.
  * 
  */
+@RunWith(Parameterized.class)
 public class TestTFileByteArrays {
   private static String ROOT = GenericTestUtils.getTestDir().getAbsolutePath();
   private final static int BLOCK_SIZE = 512;
@@ -74,6 +81,24 @@ public class TestTFileByteArrays {
   private boolean usingNative = ZlibFactory.isNativeZlibLoaded(conf);
   private int records1stBlock = usingNative ? 5674 : 4480;
   private int records2ndBlock = usingNative ? 5574 : 4263;
+
+  @Parameter(0)
+  public boolean autoClose;
+  @Parameter(1)
+  public String securityAuth;
+
+  @Parameters(name = "autoClose={0}, securityAuth={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] { { true, "simple" },
+        { true, "kerberos" }, { false, "simple" }, { false, "kerberos" } });
+  }
+
+  @Before
+  public void confSetUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.security.authentication", securityAuth);
+    Configuration.MYHACK.put("fs.automatic.close", Boolean.toString(autoClose));
+  }
 
   public void init(String compression, String comparator,
       int numRecords1stBlock, int numRecords2ndBlock) {
