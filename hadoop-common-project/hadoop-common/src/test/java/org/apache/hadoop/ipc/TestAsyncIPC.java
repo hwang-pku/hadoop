@@ -66,7 +66,7 @@ public class TestAsyncIPC {
   @Parameters(name = "maxConnections={0}, tcpNoDelay={1}")
   public static Collection params() {
     List<Object[]> params = new ArrayList<Object[]>();
-    for (int i = 1; i <= 10; i++) {
+    for (int i = 10000; i <= 10010; i++) { // A suitable limit is needed here
       params.add(new Object[] { i, true });
       params.add(new Object[] { i, false });
     }
