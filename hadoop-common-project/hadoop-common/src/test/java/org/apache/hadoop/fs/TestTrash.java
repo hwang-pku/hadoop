@@ -31,11 +31,17 @@ import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertTrue;
@@ -52,15 +58,35 @@ import org.apache.hadoop.util.Time;
 /**
  * This class tests commands from Trash.
  */
+@RunWith(Parameterized.class)
 public class TestTrash {
 
   private final static File BASE_PATH = new File(GenericTestUtils.getTempPath(
       "testTrash"));
 
   private final static Path TEST_DIR = new Path(BASE_PATH.getAbsolutePath());
+  @Parameter(0)
+  public boolean resolveSymlinks;
+  @Parameter(1)
+  public int trashInterval;
+
+  @Parameters(name = "resolveSymlinks={0}, trashInterval={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {true, 0},
+        {true, 100},
+        {true, 1000},
+        {false, 0},
+        {false, 100},
+        {false, 1000},
+    });
+  }
 
   @Before
   public void setUp() throws IOException {
+    Configuration.MYHACK.put("fs.trash.interval", Integer.toString(trashInterval));
+    Configuration.MYHACK.put("fs.client.resolve.remote.symlinks",
+        Boolean.toString(resolveSymlinks));
     // ensure each test initiates a FileSystem instance,
     // avoid getting an old instance from cache.
     FileSystem.closeAll();
@@ -649,6 +675,7 @@ public class TestTrash {
 
   @Test
   public void testCheckpointInterval() throws IOException {
+    Configuration.MYHACK.clear();
     // Verify if fs.trash.checkpoint.interval is set to positive number
     // but bigger than fs.trash.interval,
     // the value should be reset to fs.trash.interval
