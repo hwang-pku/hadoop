@@ -23,6 +23,8 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Random;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,6 +45,11 @@ import org.apache.hadoop.ipc.Server.Call;
 import org.apache.hadoop.net.NetUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +57,7 @@ import org.slf4j.LoggerFactory;
  * This test provokes partial writes in the server, which is 
  * serving multiple clients.
  */
+@RunWith(Parameterized.class)
 public class TestIPCServerResponder {
 
   public static final Logger LOG =
@@ -66,6 +74,29 @@ public class TestIPCServerResponder {
   static {
     for (int i = 0; i < BYTE_COUNT; i++)
       BYTES[i] = (byte) ('a' + (i % 26));
+  }
+  @Parameter(0)
+  public boolean fallbackToSimpleAuthAllowed;
+  @Parameter(1)
+  public boolean bindWildcardAddr;
+
+  @Parameters(name = "fallback-to-simple-auth-allowed={0}, bind-wildcard-addr={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {true, true},
+        {true, false},
+        {false, true},
+        {false, false}
+    });
+  }
+
+  @Before 
+  public void setUp() {
+      Configuration.MYHACK.clear();
+      Configuration.MYHACK.put("ipc.client.fallback-to-simple-auth-allowed",
+              Boolean.toString(fallbackToSimpleAuthAllowed));
+      Configuration.MYHACK.put("ipc.client.bind.wildcard.addr",
+              Boolean.toString(bindWildcardAddr));
   }
 
   static Writable call(Client client, Writable param,
