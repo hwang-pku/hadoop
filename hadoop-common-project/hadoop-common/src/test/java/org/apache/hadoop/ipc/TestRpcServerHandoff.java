@@ -21,6 +21,8 @@ package org.apache.hadoop.ipc;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Random;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -36,9 +38,15 @@ import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.net.NetUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RunWith(Parameterized.class)
 public class TestRpcServerHandoff {
 
   public static final Logger LOG =
@@ -47,6 +55,31 @@ public class TestRpcServerHandoff {
   private static final String BIND_ADDRESS = "0.0.0.0";
   private static final Configuration conf = new Configuration();
 
+  @Parameter(0)
+  public int connectTimeout;
+  @Parameter(1)
+  public int maxResponseLength;
+
+  @Parameters(name = "connectTimeout={0}, maxResponseLength={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {1000, 2000},
+        {1000, 2048},
+        {3000, 2000},
+        {3000, 2048},
+        {100000, 2000},
+        {100000, 2048},
+    });
+  }
+
+  @Before
+  public void setUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("ipc.client.connect.timeout",
+      Integer.toString(connectTimeout));
+    Configuration.MYHACK.put("ipc.maximum.response.length",
+      Integer.toString(maxResponseLength));
+  }
 
   public static class ServerForHandoffTest extends Server {
 
@@ -60,6 +93,7 @@ public class TestRpcServerHandoff {
     protected ServerForHandoffTest(int handlerCount) throws IOException {
       super(BIND_ADDRESS, 0, BytesWritable.class, handlerCount, conf);
     }
+
 
     @Override
     public Writable call(RPC.RpcKind rpcKind, String protocol, Writable param,
