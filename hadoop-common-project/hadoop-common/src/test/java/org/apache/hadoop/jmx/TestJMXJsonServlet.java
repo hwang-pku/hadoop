@@ -20,23 +20,62 @@ package org.apache.hadoop.jmx;
 
 import org.apache.hadoop.http.HttpServer2;
 import org.apache.hadoop.http.HttpServerFunctionalTest;
+import org.apache.hadoop.conf.Configuration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.apache.hadoop.jmx.JMXJsonServlet.ACCESS_CONTROL_ALLOW_METHODS;
 import static org.apache.hadoop.jmx.JMXJsonServlet.ACCESS_CONTROL_ALLOW_ORIGIN;
 
+@RunWith(Parameterized.class)
 public class TestJMXJsonServlet extends HttpServerFunctionalTest {
   private static HttpServer2 server;
   private static URL baseUrl;
+  @Parameter(0)
+  public String authType;
+  @Parameter(1)
+  public boolean serveAliases;
+  @Parameter(2)
+  public boolean endpointEnabled;
+
+  @Parameters
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {"simple", true, true},
+        {"simple", true, false},
+        {"simple", false, true},
+        {"simple", false, false},
+        {"kerberos", true, true},
+        {"kerberos", true, false},
+        {"kerberos", false, true},
+        {"kerberos", false, false},
+    });
+  }
+  
+  @Before
+  public void confSetUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.http.authentication.type", authType);
+    Configuration.MYHACK.put("hadoop.jetty.logs.serve.aliases",
+        String.valueOf(serveAliases));
+    Configuration.MYHACK.put("hadoop.prometheus.endpoint.enabled",
+        String.valueOf(endpointEnabled));
+  }
 
   @BeforeClass public static void setup() throws Exception {
     server = createTestServer();
