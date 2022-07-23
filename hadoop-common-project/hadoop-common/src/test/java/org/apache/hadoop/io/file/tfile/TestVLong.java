@@ -20,9 +20,15 @@ package org.apache.hadoop.io.file.tfile;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -35,15 +41,36 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(Parameterized.class)
 public class TestVLong {
+    
   private static String ROOT = GenericTestUtils.getTestDir().getAbsolutePath();
   private Configuration conf;
   private FileSystem fs;
   private Path path;
   private String outputFile = "TestVLong";
+  @Parameter(0)
+  public int bufferSize;
+  @Parameter(1)
+  public String groupMapping;
+
+  @Parameters(name = "bufferSize={0}, groupMapping={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {1, "org.apache.hadoop.security.JniBasedUnixGroupsMappingWithFallback"},
+        {1024, "org.apache.hadoop.security.JniBasedUnixGroupsMappingWithFallback"},
+        {1, "org.apache.hadoop.security.JniBasedUnixGroupsMapping"},
+        {1024, "org.apache.hadoop.security.JniBasedUnixGroupsMapping"},
+        {1, "org.apache.hadoop.security.ShellBasedUnixGroupsMapping"},
+        {1024, "org.apache.hadoop.security.ShellBasedUnixGroupsMapping"},
+    });
+  }
 
   @Before
   public void setUp() throws IOException {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.security.group.mapping", groupMapping);
+    Configuration.MYHACK.put("io.file.buffer.size", Integer.toString(bufferSize));
     conf = new Configuration();
     path = new Path(ROOT, outputFile);
     fs = path.getFileSystem(conf);
