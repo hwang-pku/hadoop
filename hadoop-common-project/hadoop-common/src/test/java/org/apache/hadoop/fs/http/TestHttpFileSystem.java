@@ -26,9 +26,16 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -39,7 +46,32 @@ import static org.junit.Assert.assertEquals;
 /**
  * Testing HttpFileSystem.
  */
+@RunWith(Parameterized.class)
 public class TestHttpFileSystem {
+  @Parameter(0)
+  public boolean resolveSymlinks;
+  @Parameter(1)
+  public String authToLocalMechanism;
+
+  @Parameters(name = "resolveSymlinks={0}, authToLocalMechanism={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {true, "hadoop"},
+        {true, "MIT"},
+        {false, "hadoop"},
+        {false, "MIT"}
+    });
+  }
+
+  @Before
+  public void setUp() {
+      Configuration.MYHACK.clear();
+      Configuration.MYHACK.put("fs.client.resolve.remote.symlinks",
+        Boolean.toString(resolveSymlinks));
+      Configuration.MYHACK.put("hadoop.security.auth_to_local.mechanism",
+        authToLocalMechanism);
+  }
+
   @Test
   public void testHttpFileSystem() throws IOException, URISyntaxException,
       InterruptedException {
