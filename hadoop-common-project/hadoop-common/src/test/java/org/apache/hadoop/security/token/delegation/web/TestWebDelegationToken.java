@@ -40,6 +40,10 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.event.Level;
@@ -75,14 +79,42 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.Callable;
 
+@RunWith(Parameterized.class)
 public class TestWebDelegationToken {
   private static final String OK_USER = "ok-user";
   private static final String FAIL_USER = "fail-user";
   private static final String FOO_USER = "foo";
   
   private Server jetty;
+ 
+  @Parameter(0)
+  public boolean autorenewalEnabled;
+  @Parameter(1)
+  public boolean staticMappingOverrides;
+  @Parameter(2)
+  public String authToLocalMechanism;
+
+  @Parameters(name = "autorenewalEnabled={0}, staticMappingOverrides={1}, authToLocalMechanism={2}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {true, true, "hadoop"},
+        {true, false, "hadoop"},
+        {false, true, "hadoop"},
+        {false, false, "hadoop"},
+        {true, true, "MIT"},
+        {true, false, "MIT"},
+        {false, true, "MIT"},
+        {false, false, "MIT"},
+        {true, true, "none"},
+        {true, false, "none"},
+        {false, true, "none"},
+        {false, false, "none"}
+    });
+  }
 
   public static class DummyAuthenticationHandler
       implements AuthenticationHandler {
@@ -194,6 +226,13 @@ public class TestWebDelegationToken {
 
   @Before
   public void setUp() throws Exception {
+    org.apache.hadoop.conf.Configuration.MYHACK.clear();
+    org.apache.hadoop.conf.Configuration.MYHACK.put("security.auth_to_local",
+        authToLocalMechanism);
+    org.apache.hadoop.conf.Configuration.MYHACK.put("hadoop.kerberos.keytab.login.autorenewal.enabled",
+        Boolean.toString(autorenewalEnabled));
+    org.apache.hadoop.conf.Configuration.MYHACK.put("hadoop.security.static.mapping.overrides",
+        Boolean.toString(staticMappingOverrides));
     // resetting hadoop security to simple
     org.apache.hadoop.conf.Configuration conf =
         new org.apache.hadoop.conf.Configuration();
