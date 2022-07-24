@@ -21,13 +21,38 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.apache.hadoop.conf.Configuration;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
+@RunWith(Parameterized.class)
 public class TestClusterTopology extends Assert {
+
+  @Parameter(0)
+  public String topologyClass;
+
+  @Parameters(name = "topologyClass = {0}")
+  public static Collection params() {
+    Object[][] params = new Object[][] {
+        { "org.apache.hadoop.net.NetworkTopology" },
+        { "org.apache.hadoop.net.NetworkTopologyWithNodeGroup" }
+    };
+    return Arrays.asList(params);
+  }
+  
+  @Before
+  public void setUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("net.topology.impl", topologyClass);
+  }
 
   public static class NodeElement implements Node {
     private String location;
