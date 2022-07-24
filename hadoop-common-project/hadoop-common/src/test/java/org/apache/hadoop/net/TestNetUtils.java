@@ -55,6 +55,7 @@ import org.junit.runners.Parameterized.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RunWith(Parameterized.class)
 public class TestNetUtils {
   @Parameter(0)
   public int threshold;
