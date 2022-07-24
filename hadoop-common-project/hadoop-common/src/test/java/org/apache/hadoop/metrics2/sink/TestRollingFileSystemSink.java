@@ -19,12 +19,20 @@
 package org.apache.hadoop.metrics2.sink;
 
 import java.util.Calendar;
+import java.util.Arrays;
+import java.util.Collection;
 import org.apache.commons.configuration2.SubsetConfiguration;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.metrics2.MetricsException;
 import org.apache.hadoop.metrics2.impl.ConfigBuilder;
 
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -34,7 +42,37 @@ import static org.junit.Assert.fail;
  * Test that the init() method picks up all the configuration settings
  * correctly.
  */
+@RunWith(Parameterized.class)
 public class TestRollingFileSystemSink {
+  @Parameter(0)
+  public int minSecBeforeRelogin;
+  @Parameter(1)
+  public int warnAfterMs;
+  
+  @Parameters(name = "minSecBeforeRelogin={0}, warnAfterMs={1}")
+  public static Collection<Object[]> data() {
+    return Arrays.asList(new Object[][] {
+        {0, 50},
+        {1, 50},
+        {5, 50},
+        {0, 100},
+        {1, 100},
+        {5, 100},
+        {0, 1000},
+        {1, 1000},
+        {5, 1000},
+    });
+  }
+
+  @Before
+  public void setUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.security.groups.cache.warn.after.ms",
+        Integer.toString(warnAfterMs));
+    Configuration.MYHACK.put("hadoop.kerberos.min.seconds.before.relogin",
+        Integer.toString(minSecBeforeRelogin));
+  }
+
   @Test
   public void testInit() {
     ConfigBuilder builder = new ConfigBuilder();
