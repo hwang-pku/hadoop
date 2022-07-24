@@ -34,6 +34,7 @@ import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.charset.CharacterCodingException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -47,16 +48,36 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TestNetUtils {
+  @Parameter(0)
+  public int threshold;
+  @Parameter(1)
+  public boolean enabled;
 
   private static final Logger LOG = LoggerFactory.getLogger(TestNetUtils.class);
   private static final int DEST_PORT = 4040;
   private static final String DEST_PORT_NAME = Integer.toString(DEST_PORT);
   private static final int LOCAL_PORT = 8080;
   private static final String LOCAL_PORT_NAME = Integer.toString(LOCAL_PORT);
+
+  @Parameters(name = "threshold={0}, enabled={1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {100, true},
+        {100, false},
+        {500, true},
+        {500, false},
+        {1000, true},
+        {1000, false},
+    });
+  }
 
   /**
    * Some slop around expected times when making sure timeouts behave
@@ -475,6 +496,11 @@ public class TestNetUtils {
   
   @Before
   public void resetResolver() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.security.dns.log-slow-lookups.threshold.ms",
+        Integer.toString(threshold));
+    Configuration.MYHACK.put("hadoop.security.dns.log-slow-lookups.threshold.enabled",
+        Boolean.toString(enabled));
     resolver.reset();
     config = new Configuration();
   }
