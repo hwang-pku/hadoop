@@ -24,6 +24,11 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.junit.rules.Timeout;
 
 import static org.mockito.Mockito.*;
@@ -40,11 +45,29 @@ import org.apache.hadoop.util.JvmPauseMonitor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 
 import static org.apache.hadoop.metrics2.source.JvmMetricsInfo.*;
 import static org.apache.hadoop.metrics2.impl.MsInfo.*;
 
+@RunWith(Parameterized.class)
 public class TestJvmMetrics {
+  @Parameter(0)
+  public boolean useThreadMxbean;
+  @Parameters(name = "useThreadMxbean={0}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {true}, {false}
+    });
+  }
+
+  @Before
+  public void setUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.metrics.jvm.use-thread-mxbean",
+        Boolean.toString(useThreadMxbean));
+  }
 
   @Rule
   public Timeout timeout = new Timeout(30000);
