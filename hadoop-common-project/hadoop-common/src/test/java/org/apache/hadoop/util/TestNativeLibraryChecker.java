@@ -17,15 +17,39 @@
  */
 package org.apache.hadoop.util;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import static org.junit.Assert.*;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.util.ExitUtil.ExitException;
 
-
+@RunWith(Parameterized.class)
 public class TestNativeLibraryChecker {
+  @Parameter(0)
+  public String bzip2Library;
+
+  @Parameters(name = "bzip2Library = {0}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][]{
+      {"system-native"},{"java-builtin"}
+    });
+  }
+
+  @Before
+  public void setUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("io.compression.codec.bzip2.library", bzip2Library);
+  }
+
   private void expectExit(String [] args) {
     try {
       // should throw exit exception
