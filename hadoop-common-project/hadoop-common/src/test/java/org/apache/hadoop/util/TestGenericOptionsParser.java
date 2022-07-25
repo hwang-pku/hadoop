@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
@@ -49,13 +50,30 @@ import org.apache.hadoop.test.GenericTestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 import org.apache.hadoop.thirdparty.com.google.common.collect.Maps;
 
+@RunWith(Parameterized.class)
 public class TestGenericOptionsParser {
   File testDir;
   Configuration conf;
   FileSystem localFs;
+  @Parameter(0) public boolean automaticClose;
+  @Parameter(1) public boolean mappingOverrides;
+
+  @Parameters(name = "automaticClose={0}, mappingOverrides={1}")
+  public static Collection params() {
+      return Arrays.asList(new Object[][] {
+          {true, true},
+          {true, false},
+          {false, true},
+          {false, false}
+      });
+  }
 
   @Test
   public void testFilesOption() throws Exception {
@@ -231,6 +249,9 @@ public class TestGenericOptionsParser {
 
   @Before
   public void setUp() throws Exception {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("fs.automatic.close", Boolean.toString(automaticClose));
+    Configuration.MYHACK.put("hadoop.user.group.static.mapping.overrides", Boolean.toString(mappingOverrides));
     conf = new Configuration();
     localFs = FileSystem.getLocal(conf);
     testDir = GenericTestUtils.getTestDir("generic");
