@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 import java.util.LinkedList;
+import java.util.Arrays;
+import java.util.Collection;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocalFileSystem;
@@ -28,9 +30,31 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.tracing.SpanReceiverInfo.ConfigurationPair;
 import org.apache.htrace.core.HTraceConfiguration;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
+@RunWith(Parameterized.class)
 public class TestTraceUtils {
   private static String TEST_PREFIX = "test.prefix.htrace.";
+  @Parameter(0)
+  public boolean resolveRemoteSymlinks;
+
+  @Parameters(name = "resolveRemoteSymlinks={0}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        {true}, {false}
+    });
+  }
+
+  @Before
+  public void setUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("fs.client.resolve.remote.symlinks",
+        Boolean.toString(resolveRemoteSymlinks));
+  }
 
   @Test
   public void testWrappedHadoopConf() {
