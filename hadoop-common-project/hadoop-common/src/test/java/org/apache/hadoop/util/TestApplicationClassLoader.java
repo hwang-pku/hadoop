@@ -32,24 +32,64 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.test.GenericTestUtils;
+import org.apache.hadoop.conf.Configuration;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 import org.apache.hadoop.thirdparty.com.google.common.base.Splitter;
 import org.apache.hadoop.thirdparty.com.google.common.collect.Lists;
 
+@RunWith(Parameterized.class)
 public class TestApplicationClassLoader {
   
   private static File testDir = GenericTestUtils.getTestDir("appclassloader");
+  @Parameter(0)
+  public String authToLocalMechanism;
+  @Parameter(1)
+  public boolean remoteSymlink;
+  @Parameter(2)
+  public int cacheSecs;
+
+  @Parameters(name = "authToLocalMechanism={0}, remoteSymlink={1}, cacheSecs={2}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+        { "simple", true, 1 },
+        { "simple", true, 10 },
+        { "simple", true, 100 },
+        { "simple", true, 1000 },
+        { "simple", false, 1 },
+        { "simple", false, 10 },
+        { "simple", false, 100 },
+        { "simple", false, 1000 },
+        { "kerberos", true, 1 },
+        { "kerberos", true, 10 },
+        { "kerberos", true, 100 },
+        { "kerberos", true, 1000 },
+        { "kerberos", false, 1 },
+        { "kerberos", false, 10 },
+        { "kerberos", false, 100 },
+        { "kerberos", false, 1000 },
+    });
+  }
   
   @Before
   public void setUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.security.auth_to_local", authToLocalMechanism);
+    Configuration.MYHACK.put("fs.client.resolve.remote.symlinks", Boolean.toString(remoteSymlink));
+    Configuration.MYHACK.put("hadoop.security.groups.cache.secs", Integer.toString(cacheSecs));
     FileUtil.fullyDelete(testDir);
     testDir.mkdirs();
   }
