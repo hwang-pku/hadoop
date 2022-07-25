@@ -23,9 +23,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Arrays;
+import java.util.Collection;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -37,7 +44,25 @@ import org.apache.hadoop.test.LambdaTestUtils;
 /**
  * Test the JSON serialization helper.
  */
+@RunWith(Parameterized.class)
 public class TestJsonSerialization extends HadoopTestBase {
+  @Parameter(0)
+  public String shutdownTimeout;
+  @Parameter(1)
+  public boolean resolveRemoteSymlinks;
+  @Parameters(name = "shutdownTimeout = {0}, resolveRemoteSymlinks = {1}")
+  public static Collection params() {
+    return Arrays.asList(new Object[][] {
+      { "10s", true },
+      { "30s", false },
+      { "1m", true },
+      { "10m", false },
+      { "10s", false },
+      { "30s", true },
+      { "1m", false },
+      { "10m", true },
+    });
+  }
 
   private final JsonSerialization<KeyVal> serDeser =
       new JsonSerialization<>(KeyVal.class, true, true);
@@ -98,6 +123,14 @@ public class TestJsonSerialization extends HadoopTestBase {
     public void setValue(String value) {
       this.value = value;
     }
+  }
+
+  @Before
+  public void setUp() {
+    Configuration.MYHACK.clear();
+    Configuration.MYHACK.put("hadoop.service.shutdown.timeout", shutdownTimeout);
+    Configuration.MYHACK.put("fs.client.resolve.remote.symlinks",
+        Boolean.toString(resolveRemoteSymlinks));
   }
 
   @Test
