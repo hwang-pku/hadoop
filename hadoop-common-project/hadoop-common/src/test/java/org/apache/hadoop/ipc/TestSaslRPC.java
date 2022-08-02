@@ -246,7 +246,7 @@ public class TestSaslRPC extends TestRpcBase {
     doDigestRpc(server, sm);
   }
 
-  @Test
+  //@Test
   public void testDigestRpcWithoutAnnotation() throws Exception {
     TestTokenSecretManager sm = new TestTokenSecretManager();
     try {
@@ -258,7 +258,7 @@ public class TestSaslRPC extends TestRpcBase {
     }
   }
 
-  @Test
+  //@Test
   public void testErrorMessage() throws Exception {
     BadTokenSecretManager sm = new BadTokenSecretManager();
     final Server server = setupTestServer(conf, 5, sm);
@@ -311,7 +311,7 @@ public class TestSaslRPC extends TestRpcBase {
     }
   }
 
-  @Test
+  //@Test
   public void testPingInterval() throws Exception {
     Configuration newConf = new Configuration(conf);
     newConf.set(SERVER_PRINCIPAL_KEY, SERVER_PRINCIPAL_1);
@@ -331,7 +331,7 @@ public class TestSaslRPC extends TestRpcBase {
     assertEquals(0, remoteId.getPingInterval());
   }
   
-  @Test
+  //@Test
   public void testPerConnectionConf() throws Exception {
     TestTokenSecretManager sm = new TestTokenSecretManager();
     final Server server = setupTestServer(conf, 5, sm);
@@ -411,14 +411,14 @@ public class TestSaslRPC extends TestRpcBase {
     System.out.println("Test is successful.");
   }
 
-  @Test
+  //@Test
   public void testSaslPlainServer() throws IOException {
     runNegotiation(
         new TestPlainCallbacks.Client("user", "pass"),
         new TestPlainCallbacks.Server("user", "pass"));
   }
 
-  @Test
+  //@Test
   public void testSaslPlainServerBadPassword() {
     SaslException e = null;
     try {
@@ -560,7 +560,7 @@ public class TestSaslRPC extends TestRpcBase {
   /*
    *  simple server
    */
-  @Test
+  //@Test
   public void testSimpleServer() throws Exception {
     assertAuthEquals(SIMPLE,    getAuthMethod(SIMPLE,   SIMPLE));
     assertAuthEquals(SIMPLE,    getAuthMethod(SIMPLE,   SIMPLE, UseToken.OTHER));
@@ -569,7 +569,7 @@ public class TestSaslRPC extends TestRpcBase {
     assertAuthEquals(SIMPLE,    getAuthMethod(KERBEROS, SIMPLE, UseToken.OTHER));
   }
 
-  @Test
+  //@Test
   public void testNoClientFallbackToSimple()
       throws Exception {
     clientFallBackToSimpleAllowed = false;
@@ -612,7 +612,7 @@ public class TestSaslRPC extends TestRpcBase {
     assertAuthEquals(BadToken,       getAuthMethod(KERBEROS, TOKEN, UseToken.INVALID));
   }
 
-  @Test
+  //@Test
   public void testSimpleServerWithTokens() throws Exception {
     // Client not using tokens
     assertAuthEquals(SIMPLE, getAuthMethod(SIMPLE,   SIMPLE));
@@ -641,7 +641,7 @@ public class TestSaslRPC extends TestRpcBase {
     assertAuthEquals(SIMPLE, getAuthMethod(KERBEROS, SIMPLE, UseToken.OTHER));
   }
 
-  @Test
+  //@Test
   public void testSimpleServerWithInvalidTokens() throws Exception {
     // Tokens are ignored because client is reverted to simple
     assertAuthEquals(SIMPLE, getAuthMethod(SIMPLE,   SIMPLE, UseToken.INVALID));
@@ -657,7 +657,7 @@ public class TestSaslRPC extends TestRpcBase {
   /*
    *  token server
    */
-  @Test
+  //@Test
   public void testTokenOnlyServer() throws Exception {
     // simple client w/o tokens won't try SASL, so server denies
     assertAuthEquals(Denied(SIMPLE), getAuthMethod(SIMPLE,   TOKEN));
@@ -666,7 +666,7 @@ public class TestSaslRPC extends TestRpcBase {
     assertAuthEquals(No(TOKEN),      getAuthMethod(KERBEROS, TOKEN, UseToken.OTHER));
   }
 
-  @Test
+  //@Test
   public void testTokenOnlyServerWithTokens() throws Exception {
     assertAuthEquals(TOKEN,       getAuthMethod(SIMPLE,   TOKEN, UseToken.VALID));
     assertAuthEquals(TOKEN,       getAuthMethod(KERBEROS, TOKEN, UseToken.VALID));
@@ -675,7 +675,7 @@ public class TestSaslRPC extends TestRpcBase {
     assertAuthEquals(NoTokenAuth, getAuthMethod(KERBEROS, TOKEN, UseToken.VALID));
   }
 
-  @Test
+  //@Test
   public void testTokenOnlyServerWithInvalidTokens() throws Exception {
     assertAuthEquals(BadToken,    getAuthMethod(SIMPLE,   TOKEN, UseToken.INVALID));
     assertAuthEquals(BadToken,    getAuthMethod(KERBEROS, TOKEN, UseToken.INVALID));
@@ -687,7 +687,7 @@ public class TestSaslRPC extends TestRpcBase {
   /*
    * kerberos server
    */
-  @Test
+  //@Test
   public void testKerberosServer() throws Exception {
     // doesn't try SASL
     assertAuthEquals(Denied(SIMPLE),     getAuthMethod(SIMPLE,   KERBEROS));
@@ -698,7 +698,7 @@ public class TestSaslRPC extends TestRpcBase {
     assertAuthEquals(KrbFailed,          getAuthMethod(KERBEROS, KERBEROS, UseToken.OTHER));
   }
 
-  @Test
+  //@Test
   public void testKerberosServerWithTokens() throws Exception {
     // can use tokens regardless of auth
     assertAuthEquals(TOKEN,        getAuthMethod(SIMPLE,   KERBEROS, UseToken.VALID));
@@ -709,7 +709,7 @@ public class TestSaslRPC extends TestRpcBase {
     assertAuthEquals(KrbFailed,    getAuthMethod(KERBEROS, KERBEROS, UseToken.VALID));
   }
 
-  @Test
+  //@Test
   public void testKerberosServerWithInvalidTokens() throws Exception {
     assertAuthEquals(BadToken,     getAuthMethod(SIMPLE,   KERBEROS, UseToken.INVALID));
     assertAuthEquals(BadToken,     getAuthMethod(KERBEROS, KERBEROS, UseToken.INVALID));
@@ -721,7 +721,7 @@ public class TestSaslRPC extends TestRpcBase {
   // ensure that for all qop settings, client can handle postponed rpc
   // responses.  basically ensures that the rpc server isn't encrypting
   // and queueing the responses out of order.
-  @Test(timeout=10000)
+  //@Test(timeout=10000)
   public void testSaslResponseOrdering() throws Exception {
     SecurityUtil.setAuthenticationMethod(
         AuthenticationMethod.TOKEN, conf);
