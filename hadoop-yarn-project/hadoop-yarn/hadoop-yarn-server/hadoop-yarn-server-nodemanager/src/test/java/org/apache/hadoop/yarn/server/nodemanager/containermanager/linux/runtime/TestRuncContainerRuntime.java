@@ -152,7 +152,7 @@ public class TestRuncContainerRuntime {
   private RuncManifestToResourcesPlugin mockRuncManifestToResourcesPlugin =
       mock(HdfsManifestToResourcesPlugin.class);
 
-  @Parameterized.Parameters(name = "https={0}")
+  @Parameterized.Parameters//(name = "https={0}")
   public static Collection<Object[]> data() {
     return Arrays.asList(new Object[][] {
         {true}, {false}

@@ -48,7 +48,7 @@ public class TestLowRedundancyBlockQueues {
     ecPolicy = policy;
   }
 
-  @Parameterized.Parameters(name = "{index}: {0}")
+  @Parameterized.Parameters//(name = "{index}: {0}")
   public static Collection<Object[]> policies() {
     return StripedFileTestUtil.getECPolicies();
   }

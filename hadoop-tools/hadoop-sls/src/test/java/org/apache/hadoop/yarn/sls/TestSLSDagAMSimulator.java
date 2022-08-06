@@ -38,7 +38,7 @@ import java.util.Collection;
 @NotThreadSafe
 public class TestSLSDagAMSimulator extends BaseSLSRunnerTest {
 
-  @Parameters(name = "Testing with: {1}, {0}, (nodeFile {3})")
+  @Parameters//(name = "Testing with: {1}, {0}, (nodeFile {3})")
   public static Collection<Object[]> data() {
 
     String capScheduler = CapacityScheduler.class.getCanonicalName();

@@ -76,7 +76,7 @@ public class TestRouterPolicyProvider {
     this.rpcServerClass = rpcServerClass;
   }
 
-  @Parameters(name = "protocolsForServer-{0}")
+  @Parameters//(name = "protocolsForServer-{0}")
   public static List<Class<?>[]> data() {
     return Arrays.asList(new Class<?>[][] {{RouterRpcServer.class},
         {NameNodeRpcServer.class}, {DataNode.class},

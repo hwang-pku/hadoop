@@ -186,7 +186,7 @@ public class TestDockerContainerRuntime {
   @Rule
   public TemporaryFolder tempDir = new TemporaryFolder();
 
-  @Parameterized.Parameters(name = "https={0}")
+  @Parameterized.Parameters//(name = "https={0}")
   public static Collection<Object[]> data() {
     return Arrays.asList(new Object[][] {
         {true}, {false}

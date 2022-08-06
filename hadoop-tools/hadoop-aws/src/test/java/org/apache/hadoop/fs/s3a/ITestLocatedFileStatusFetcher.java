@@ -71,7 +71,7 @@ public class ITestLocatedFileStatusFetcher extends AbstractS3ATestBase {
   /**
    * Parameterization.
    */
-  @Parameterized.Parameters(name = "{0}")
+  @Parameterized.Parameters//(name = "{0}")
   public static Collection<Object[]> params() {
     return Arrays.asList(new Object[][]{
         {"raw", false},

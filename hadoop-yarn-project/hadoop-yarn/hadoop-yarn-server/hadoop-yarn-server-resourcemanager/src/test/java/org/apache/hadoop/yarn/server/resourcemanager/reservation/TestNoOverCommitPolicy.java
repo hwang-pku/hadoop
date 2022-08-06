@@ -40,8 +40,8 @@ public class TestNoOverCommitPolicy extends BaseSharingPolicyTest {
   final static long ONEHOUR = 3600 * 1000;
   final static String TWOHOURPERIOD = "7200000";
 
-  @Parameterized.Parameters(name = "Duration {0}, height {1}," +
-          " submissions {2}, periodic {3})")
+  @Parameterized.Parameters//(name = "Duration {0}, height {1}," +
+          //" submissions {2}, periodic {3})")
   public static Collection<Object[]> data() {
     return Arrays.asList(new Object[][] {
 

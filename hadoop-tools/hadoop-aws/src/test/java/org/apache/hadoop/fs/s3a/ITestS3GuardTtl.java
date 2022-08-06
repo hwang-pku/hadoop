@@ -59,7 +59,7 @@ public class ITestS3GuardTtl extends AbstractS3ATestBase {
    * Test array for parameterized test runs.
    * @return a list of parameter tuples.
    */
-  @Parameterized.Parameters(name = "auth={0}")
+  @Parameterized.Parameters//(name = "auth={0}")
   public static Collection<Object[]> params() {
     return Arrays.asList(new Object[][]{
         {true}, {false}

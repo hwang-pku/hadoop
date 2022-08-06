@@ -160,7 +160,7 @@ public class ITestS3ARemoteFileChanged extends AbstractS3ATestBase {
    * </ol>
    * @return the test configuration.
    */
-  @Parameterized.Parameters(name = "{0}-{1}-auth-{2}")
+  @Parameterized.Parameters//(name = "{0}-{1}-auth-{2}")
   public static Collection<Object[]> params() {
     return Arrays.asList(new Object[][]{
         // make sure it works with invalid config

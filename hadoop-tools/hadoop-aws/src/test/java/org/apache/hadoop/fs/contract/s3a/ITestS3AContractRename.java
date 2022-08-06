@@ -62,7 +62,7 @@ public class ITestS3AContractRename extends AbstractContractRenameTest {
   /**
    * Parameterization.
    */
-  @Parameterized.Parameters(name = "auth={0}")
+  @Parameterized.Parameters//(name = "auth={0}")
   public static Collection<Object[]> params() {
     return Arrays.asList(new Object[][]{
         {false},

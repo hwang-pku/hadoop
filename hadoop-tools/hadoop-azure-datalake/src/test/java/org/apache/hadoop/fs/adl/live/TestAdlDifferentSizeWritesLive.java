@@ -60,8 +60,8 @@ public class TestAdlDifferentSizeWritesLive {
     return b;
   }
 
-  @Parameterized.Parameters(name = "{index}: Data Size [{0}] ; Chunk Size "
-      + "[{1}]")
+  @Parameterized.Parameters//(name = "{index}: Data Size [{0}] ; Chunk Size "
+  //    + "[{1}]")
   public static Collection testDataForIntegrityTest() {
     return Arrays.asList(
         new Object[][] {{4 * 1024, 1 * 1024}, {4 * 1024, 7 * 1024},

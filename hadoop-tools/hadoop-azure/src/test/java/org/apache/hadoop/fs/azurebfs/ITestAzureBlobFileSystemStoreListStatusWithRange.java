@@ -57,7 +57,7 @@ public class ITestAzureBlobFileSystemStoreListStatusWithRange extends
   @Parameterized.Parameter(3)
   public boolean expectedResult;
 
-  @Parameterized.Parameters(name = "Testing path \"{0}\", startFrom: \"{1}\",  Expecting result : {3}") // Test path
+  @Parameterized.Parameters//(name = "Testing path \"{0}\", startFrom: \"{1}\",  Expecting result : {3}") // Test path
   public static Iterable<Object[]> params() {
     return Arrays.asList(
             new Object[][]{

@@ -80,7 +80,7 @@ public class TestObjectChangeDetectionAttributes extends AbstractS3AMockTest {
     this.changeDetectionSource = changeDetectionSource;
   }
 
-  @Parameterized.Parameters(name = "change={0}")
+  @Parameterized.Parameters//(name = "change={0}")
   public static Collection<Object[]> params() {
     return Arrays.asList(new Object[][]{
         {CHANGE_DETECT_SOURCE_ETAG},

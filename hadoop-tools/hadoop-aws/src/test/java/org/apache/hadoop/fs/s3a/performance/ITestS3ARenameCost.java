@@ -51,7 +51,7 @@ public class ITestS3ARenameCost extends AbstractS3ACostTest {
   /**
    * Parameterization.
    */
-  @Parameterized.Parameters(name = "{0}")
+  @Parameterized.Parameters//(name = "{0}")
   public static Collection<Object[]> params() {
     return Arrays.asList(new Object[][]{
         {"raw-keep-markers", false, true, false},

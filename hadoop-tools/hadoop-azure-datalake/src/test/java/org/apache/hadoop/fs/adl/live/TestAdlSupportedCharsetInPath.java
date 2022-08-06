@@ -53,7 +53,7 @@ public class TestAdlSupportedCharsetInPath {
     path = filePath;
   }
 
-  @Parameterized.Parameters(name = "{0}")
+  @Parameterized.Parameters//(name = "{0}")
   public static Collection<Object[]> adlCharTestData()
       throws UnsupportedEncodingException {
 

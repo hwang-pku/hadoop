@@ -68,7 +68,7 @@ public class TestBlockInfoStriped {
     info = new BlockInfoStriped(baseBlock, testECPolicy);
   }
 
-  @Parameterized.Parameters(name = "{index}: {0}")
+  @Parameterized.Parameters//(name = "{index}: {0}")
   public static Collection<Object[]> policies() {
     return StripedFileTestUtil.getECPolicies();
   }

@@ -43,8 +43,8 @@ public class TestCapacityOverTimePolicy extends BaseSharingPolicyTest {
   final static String TWOHOURPERIOD = "7200000";
   final static String ONEDAYPERIOD = "86400000";
 
-  @Parameterized.Parameters(name = "Duration {0}, height {1}," +
-          " numSubmission {2}, periodic {3})")
+  @Parameterized.Parameters//(name = "Duration {0}, height {1}," +
+          //" numSubmission {2}, periodic {3})")
   public static Collection<Object[]> data() {
     return Arrays.asList(new Object[][] {
 

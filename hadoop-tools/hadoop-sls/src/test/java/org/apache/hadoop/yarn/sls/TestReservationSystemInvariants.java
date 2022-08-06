@@ -42,7 +42,7 @@ import net.jcip.annotations.NotThreadSafe;
 @NotThreadSafe
 public class TestReservationSystemInvariants extends BaseSLSRunnerTest {
 
-  @Parameters(name = "Testing with: {1}, {0}, (nodeFile {3})")
+  @Parameters//(name = "Testing with: {1}, {0}, (nodeFile {3})")
   public static Collection<Object[]> data() {
     // Test with both schedulers, and all three trace types
     return Arrays.asList(new Object[][] {

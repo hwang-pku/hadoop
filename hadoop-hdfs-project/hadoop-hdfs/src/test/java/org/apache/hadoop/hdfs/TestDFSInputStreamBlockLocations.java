@@ -72,7 +72,7 @@ public class TestDFSInputStreamBlockLocations {
   private Path filePath;
   private boolean enableBlkExpiration;
 
-  @Parameterized.Parameters(name = "{index}: CacheExpirationConfig(Enable {0})")
+  @Parameterized.Parameters//(name = "{index}: CacheExpirationConfig(Enable {0})")
   public static Collection<Object[]> getTestParameters() {
     return Arrays.asList(new Object[][] {
         {Boolean.TRUE},

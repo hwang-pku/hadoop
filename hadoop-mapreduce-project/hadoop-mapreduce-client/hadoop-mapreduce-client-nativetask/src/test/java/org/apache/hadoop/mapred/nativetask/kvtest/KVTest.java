@@ -73,7 +73,7 @@ public class KVTest {
   /**
    * Parameterize the test with the specified key and value types.
    */
-  @Parameters(name = "key:{0}\nvalue:{1}")
+  @Parameters//(name = "key:{0}\nvalue:{1}")
   public static Iterable<Class<?>[]> data() throws Exception {
     // Parse the config.
     final String valueClassesStr = nativekvtestconf
