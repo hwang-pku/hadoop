@@ -83,7 +83,7 @@ public abstract class AbstractContractPathHandleTest
    * after converting the PathHandle to bytes and back.
    * @return
    */
-  @Parameterized.Parameters(name="Test{0}")
+  @Parameterized.Parameters//(name="Test{0}")
   public static Collection<Object[]> params() {
     return Arrays.asList(
         Arrays.asList("Exact", HandleOpt.exact()),
