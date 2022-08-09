@@ -63,7 +63,7 @@ public class ITestAbfsHugeFiles extends AbstractAbfsScaleTest {
   private String blockFactoryName;
 
   @Parameterized.Parameters//(name = "size [{0}] ; blockFactoryName "
-      + "[{1}]")
+ //     + "[{1}]")
   public static Collection<Object[]> sizes() {
     return Arrays.asList(new Object[][] {
         { DEFAULT_WRITE_BUFFER_SIZE, DataBlocks.DATA_BLOCKS_BUFFER_DISK },
