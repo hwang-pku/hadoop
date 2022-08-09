@@ -129,7 +129,7 @@ public class TestStagingCommitter extends StagingTestBase.MiniDFSTest {
    * whether or not filenames are unique.
    * @return a list of parameter tuples.
    */
-  @Parameterized.Parameters(name="threads-{0}-unique-{1}")
+  @Parameterized.Parameters//(name="threads-{0}-unique-{1}")
   public static Collection<Object[]> params() {
     return Arrays.asList(new Object[][] {
         {0, false},

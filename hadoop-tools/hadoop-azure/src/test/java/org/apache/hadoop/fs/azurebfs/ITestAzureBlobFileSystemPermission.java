@@ -54,7 +54,7 @@ public class ITestAzureBlobFileSystemPermission extends AbstractAbfsIntegrationT
     permission = testPermission;
   }
 
-  @Parameterized.Parameters(name = "{0}")
+  @Parameterized.Parameters//(name = "{0}")
   public static Collection abfsCreateNonRecursiveTestData()
       throws Exception {
     /*

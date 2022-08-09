@@ -42,7 +42,7 @@ import static org.junit.Assert.assertEquals;
 @NotThreadSafe
 public class TestSLSRunner extends BaseSLSRunnerTest {
 
-  @Parameters(name = "Testing with: {1}, {0}, (nodeFile {3})")
+  @Parameters//(name = "Testing with: {1}, {0}, (nodeFile {3})")
   public static Collection<Object[]> data() {
 
     String capScheduler = CapacityScheduler.class.getCanonicalName();

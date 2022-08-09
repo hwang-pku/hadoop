@@ -39,7 +39,7 @@ import static org.apache.hadoop.fs.s3a.Constants.STORE_CAPABILITY_DIRECTORY_MARK
 @RunWith(Parameterized.class)
 public class TestDirectoryMarkerPolicy extends AbstractHadoopTestBase {
 
-  @Parameterized.Parameters(name = "{0}")
+  @Parameterized.Parameters//(name = "{0}")
   public static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
         {

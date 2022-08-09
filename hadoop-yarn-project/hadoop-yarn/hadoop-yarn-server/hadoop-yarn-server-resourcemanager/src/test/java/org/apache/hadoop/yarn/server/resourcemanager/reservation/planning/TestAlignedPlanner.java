@@ -93,7 +93,7 @@ public class TestAlignedPlanner {
   private long step;
 
 
-  @Parameterized.Parameters(name = "Testing: periodicity {0})")
+  @Parameterized.Parameters//(name = "Testing: periodicity {0})")
   public static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
             {NONPERIODIC},

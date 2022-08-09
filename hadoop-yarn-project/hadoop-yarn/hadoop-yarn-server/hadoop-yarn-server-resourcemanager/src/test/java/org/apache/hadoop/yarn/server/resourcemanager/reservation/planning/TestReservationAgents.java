@@ -87,8 +87,8 @@ public class TestReservationAgents {
   private static final Logger LOG =
       LoggerFactory.getLogger(TestReservationAgents.class);
 
-  @Parameterized.Parameters(name = "Testing: agent {0}, allocateLeft: {1}," +
-          " recurrenceExpression: {2}, numNodes: {3})")
+  @Parameterized.Parameters//(name = "Testing: agent {0}, allocateLeft: {1}," +
+          //" recurrenceExpression: {2}, numNodes: {3})")
   public static Collection<Object[]> data() {
     return Arrays.asList(
         new Object[][] {{GreedyReservationAgent.class, true, "0", 100 },

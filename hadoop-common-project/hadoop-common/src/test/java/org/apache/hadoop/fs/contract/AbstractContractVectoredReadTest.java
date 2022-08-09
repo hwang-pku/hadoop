@@ -67,7 +67,7 @@ public abstract class AbstractContractVectoredReadTest extends AbstractFSContrac
 
   private final String bufferType;
 
-  @Parameterized.Parameters(name = "Buffer type : {0}")
+  @Parameterized.Parameters//(name = "Buffer type : {0}")
   public static List<String> params() {
     return Arrays.asList("direct", "array");
   }

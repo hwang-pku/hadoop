@@ -149,7 +149,7 @@ public class TestSpeculativeExecOnCluster {
   private List<String> ignoredTests;
 
 
-  @Parameterized.Parameters(name = "{index}: TaskEstimator(EstimatorClass {0})")
+  @Parameterized.Parameters//(name = "{index}: TaskEstimator(EstimatorClass {0})")
   public static Collection<Object[]> getTestParameters() {
     List<String> ignoredTests = Arrays.asList(new String[] {
         "stalled_run",

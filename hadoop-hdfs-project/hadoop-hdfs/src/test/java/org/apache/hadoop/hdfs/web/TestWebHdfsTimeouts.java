@@ -96,7 +96,7 @@ public class TestWebHdfsTimeouts {
    * connection factory, and again with the timeouts set by
    * configuration options.
    */
-  @Parameters(name = "timeoutSource={0}")
+  @Parameters//(name = "timeoutSource={0}")
   public static Collection<Object[]> data() {
     return Arrays.asList(new Object[][] {
       { TimeoutSource.ConnectionFactory },

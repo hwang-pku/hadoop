@@ -85,7 +85,7 @@ public class TestYarnClientWithReservation {
 
   private SchedulerType schedulerType;
 
-  @Parameterized.Parameters(name = "{0}")
+  @Parameterized.Parameters//(name = "{0}")
   public static Collection<Object[]> getParameters() {
     return Arrays.stream(SchedulerType.values()).map(
         type -> new Object[]{type}).collect(Collectors.toList());

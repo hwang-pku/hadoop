@@ -110,7 +110,7 @@ public class ITestSmallWriteOptimization extends AbstractAbfsScaleTest {
   @Parameterized.Parameter(6)
   public boolean flushExpectedToBeMergedWithAppend;
 
-  @Parameterized.Parameters(name = "{0}")
+  @Parameterized.Parameters//(name = "{0}")
   public static Iterable<Object[]> params() {
     return Arrays.asList(
         // Parameter Order :

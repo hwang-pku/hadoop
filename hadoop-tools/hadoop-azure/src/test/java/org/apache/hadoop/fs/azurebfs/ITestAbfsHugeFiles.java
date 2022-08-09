@@ -62,7 +62,7 @@ public class ITestAbfsHugeFiles extends AbstractAbfsScaleTest {
   // Block Factory to be used in this test.
   private String blockFactoryName;
 
-  @Parameterized.Parameters(name = "size [{0}] ; blockFactoryName "
+  @Parameterized.Parameters//(name = "size [{0}] ; blockFactoryName "
       + "[{1}]")
   public static Collection<Object[]> sizes() {
     return Arrays.asList(new Object[][] {

@@ -185,7 +185,7 @@ public class ITestPartialRenamesDeletes extends AbstractS3ATestBase {
    *
    * @return a list of parameter tuples.
    */
-  @Parameterized.Parameters(name = "bulk-delete={0}")
+  @Parameterized.Parameters//(name = "bulk-delete={0}")
   public static Collection<Object[]> params() {
     return Arrays.asList(new Object[][]{
         {false},

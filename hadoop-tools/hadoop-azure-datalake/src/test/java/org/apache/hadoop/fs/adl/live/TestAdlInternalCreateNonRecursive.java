@@ -66,7 +66,7 @@ public class TestAdlInternalCreateNonRecursive {
     expectedExceptionType = exceptionType;
   }
 
-  @Parameterized.Parameters(name = "{0}")
+  @Parameterized.Parameters//(name = "{0}")
   public static Collection adlCreateNonRecursiveTestData()
       throws UnsupportedEncodingException {
     /*

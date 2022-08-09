@@ -51,7 +51,7 @@ public class ITestS3AMkdirCost extends AbstractS3ACostTest {
   /**
    * Parameterization.
    */
-  @Parameterized.Parameters(name = "{0}")
+  @Parameterized.Parameters//(name = "{0}")
   public static Collection<Object[]> params() {
     return Arrays.asList(new Object[][]{
         {"keep-markers", true},

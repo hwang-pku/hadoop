@@ -76,7 +76,7 @@ public class TestFairSchedulerPreemption extends FairSchedulerTestBase {
   @Rule
   public TestName testName = new TestName();
 
-  @Parameterized.Parameters(name = "{0}")
+  @Parameterized.Parameters//(name = "{0}")
   public static Collection<Object[]> getParameters() {
     return Arrays.asList(new Object[][] {
         {"MinSharePreemption", 0},

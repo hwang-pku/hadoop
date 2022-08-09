@@ -40,7 +40,7 @@ public class TestResourceCalculator {
 
   private final ResourceCalculator resourceCalculator;
 
-  @Parameterized.Parameters(name = "{0}")
+  @Parameterized.Parameters//(name = "{0}")
   public static Collection<Object[]> getParameters() {
     return Arrays.asList(new Object[][] {
         { "DefaultResourceCalculator", new DefaultResourceCalculator() },

@@ -69,7 +69,7 @@ public class TestSpeculativeExecutionWithMRApp {
    *
    * @return the test parameters
    */
-  @Parameterized.Parameters(name = "{index}: TaskEstimator(EstimatorClass {0})")
+  @Parameterized.Parameters//(name = "{index}: TaskEstimator(EstimatorClass {0})")
   public static Collection<Object[]> getTestParameters() {
     return Arrays.asList(new Object[][] {
         {SimpleExponentialTaskRuntimeEstimator.class},

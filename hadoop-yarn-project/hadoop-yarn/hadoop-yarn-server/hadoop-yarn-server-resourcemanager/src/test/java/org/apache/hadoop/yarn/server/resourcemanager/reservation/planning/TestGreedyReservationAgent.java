@@ -84,8 +84,8 @@ public class TestGreedyReservationAgent {
   Random rand = new Random();
   long step;
 
-  @Parameterized.Parameters(name = "Testing: allocateLeft {0}," +
-          " recurrenceExpression {1})")
+  @Parameterized.Parameters//(name = "Testing: allocateLeft {0}," +
+          //" recurrenceExpression {1})")
   public static Collection<Object[]> data() {
       return Arrays.asList(new Object[][] {
               {true, "0"},

@@ -41,7 +41,7 @@ public class TestWeakReferencedElasticByteBufferPool
 
   private final String type;
 
-  @Parameterized.Parameters(name = "Buffer type : {0}")
+  @Parameterized.Parameters//(name = "Buffer type : {0}")
   public static List<String> params() {
     return Arrays.asList("direct", "array");
   }

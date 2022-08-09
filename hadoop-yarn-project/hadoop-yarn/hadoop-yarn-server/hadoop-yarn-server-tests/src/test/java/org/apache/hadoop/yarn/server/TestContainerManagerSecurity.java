@@ -130,7 +130,7 @@ public class TestContainerManagerSecurity extends KerberosSecurityTestcase {
    * and to give details in say an IDE.  The second is the configuraiton
    * object to use.
    */
-  @Parameters(name = "{0}")
+  @Parameters//(name = "{0}")
   public static Collection<Object[]> configs() {
     Configuration configurationWithoutSecurity = new Configuration();
     configurationWithoutSecurity.set(

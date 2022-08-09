@@ -98,7 +98,7 @@ public class ITestDirectoryMarkerListing extends AbstractS3ATestBase {
   /**
    * Parameterization.
    */
-  @Parameterized.Parameters(name = "{0}")
+  @Parameterized.Parameters//(name = "{0}")
   public static Collection<Object[]> params() {
     return Arrays.asList(new Object[][]{
         {"keep-markers",  true},
