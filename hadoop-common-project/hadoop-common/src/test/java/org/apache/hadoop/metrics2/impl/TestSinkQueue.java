@@ -227,6 +227,7 @@ public class TestSinkQueue {
    * Test consumers that take their time.
    * @throws Exception
    */
+  // Class #1 PUT #7
   @Test public void testHangingConsumer() throws Exception {
     SinkQueue<Integer> q = newSleepingConsumerQueue(2, 1, 2);
     assertEquals("queue back", 2, (int) q.back());
