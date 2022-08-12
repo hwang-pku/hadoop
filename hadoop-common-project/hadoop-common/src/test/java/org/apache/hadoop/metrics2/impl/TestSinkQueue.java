@@ -62,7 +62,7 @@ public class TestSinkQueue {
   public static Collection<Object> testData() {
     Object[][] data = new Object[][] { {1, 2, 3, 0, 100, 64},
                                        {5, 13, 19, 1, 7, 15},
-                                       {2147483647, 0, -2147483648, 1100, -2147483648, 2147483645},
+                                       {2147483647, 0, -2147483648, 1100, -2147483648, 1000},
                                        {-1, -1, -1, -1, -1, -1},
                                        {0, 0, 0, 0, 0, 0}
         };
@@ -162,7 +162,8 @@ public class TestSinkQueue {
    * @throws Exception
    */
   // Class #1 PUT #4
-  @Test public void testConsumeAll() throws Exception {
+  @Test(timeout = 2000)
+  public void testConsumeAll() throws Exception {
     final SinkQueue<Integer> q = new SinkQueue<Integer>(capacity);
 
     for (int i = 0; i < capacity; ++i) {
