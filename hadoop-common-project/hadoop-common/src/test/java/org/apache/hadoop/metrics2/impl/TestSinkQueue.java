@@ -158,6 +158,7 @@ public class TestSinkQueue {
    * Test the consumeAll method
    * @throws Exception
    */
+  // Class #1 PUT #4
   @Test public void testConsumeAll() throws Exception {
     final int capacity = 64;  // arbitrary
     final SinkQueue<Integer> q = new SinkQueue<Integer>(capacity);
