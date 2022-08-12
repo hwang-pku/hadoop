@@ -140,15 +140,15 @@ public class TestSinkQueue {
   // Class #1 PUT #3
   @Test public void testFull() throws Exception {
     final SinkQueue<Integer> q = new SinkQueue<Integer>(1);
-    q.enqueue(1);
+    q.enqueue(enqueueValue1);
 
-    assertTrue("should drop", !q.enqueue(2));
-    assertEquals("element", 1, (int) q.dequeue());
+    assertTrue("should drop", !q.enqueue(enqueueValue2));
+    assertEquals("element", enqueueValue1, (int) q.dequeue());
 
-    q.enqueue(3);
+    q.enqueue(enqueueValue3);
     q.consume(new Consumer<Integer>() {
       @Override public void consume(Integer e) {
-        assertEquals("element", 3, (int) e);
+        assertEquals("element", enqueueValue3, (int) e);
       }
     });
     assertEquals("queue size", 0, q.size());
