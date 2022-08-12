@@ -40,7 +40,8 @@ public class TestSinkQueue {
   private static final Logger LOG =
       LoggerFactory.getLogger(TestSinkQueue.class);
 
-      public final int enqueueValue1 = 1;
+  @Parameterized.Parameter(value = 0)
+  public int enqueueValue1;
 
   /**
    * Test common use case
@@ -50,9 +51,9 @@ public class TestSinkQueue {
   @Test public void testCommon() throws Exception {
     final SinkQueue<Integer> q = new SinkQueue<Integer>(2);
     q.enqueue(enqueueValue1);
-    assertEquals("queue front", 1, (int) q.front());
-    assertEquals("queue back", 1, (int) q.back());
-    assertEquals("element", 1, (int) q.dequeue());
+    assertEquals("queue front", enqueueValue1, (int) q.front());
+    assertEquals("queue back", enqueueValue1, (int) q.back());
+    assertEquals("element", enqueueValue1, (int) q.dequeue());
 
     assertTrue("should enqueue", q.enqueue(2));
     q.consume(new Consumer<Integer>() {
