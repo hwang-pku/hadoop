@@ -211,6 +211,7 @@ public class TestSinkQueue {
   /**
    * Test the clear method
    */
+  // Class #1 PUT #6
   @Test public void testClear() {
     final SinkQueue<Integer> q = new SinkQueue<Integer>(128);
     for (int i = 0; i < q.capacity() + 97; ++i) {
