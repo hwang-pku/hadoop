@@ -191,7 +191,7 @@ public class TestSinkQueue {
   @Test public void testConsumerException() throws Exception {
     final SinkQueue<Integer> q = new SinkQueue<Integer>(1);
     final RuntimeException ex = new RuntimeException("expected");
-    q.enqueue(1);
+    q.enqueue(enqueueValue1);
 
     try {
       q.consume(new Consumer<Integer>() {
@@ -205,7 +205,7 @@ public class TestSinkQueue {
     }
     // The queue should be in consistent state after exception
     assertEquals("queue size", 1, q.size());
-    assertEquals("element", 1, (int) q.dequeue());
+    assertEquals("element", enqueueValue1, (int) q.dequeue());
   }
 
   /**
