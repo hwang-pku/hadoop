@@ -187,6 +187,7 @@ public class TestSinkQueue {
    * Test the consumer throwing exceptions
    * @throws Exception
    */
+  // Class #1 PUT #5
   @Test public void testConsumerException() throws Exception {
     final SinkQueue<Integer> q = new SinkQueue<Integer>(1);
     final RuntimeException ex = new RuntimeException("expected");
