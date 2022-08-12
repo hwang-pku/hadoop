@@ -18,7 +18,7 @@
 
 package org.apache.hadoop.metrics2.impl;
 
-import java.util.ConcurrentModificationException;
+import java.util.Arrays;import java.util.Collection;import java.util.ConcurrentModificationException;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
@@ -48,6 +48,13 @@ public class TestSinkQueue {
 
   @Parameterized.Parameter(value = 2)
   public int enqueueValue3;
+
+  @Parameterized.Parameters
+  public static Collection<Object> testData() {
+    Object[][] data = new Object[][] { {1, 2, 3},
+        };
+        return Arrays.asList(data);
+    }
 
   /**
    * Test common use case
