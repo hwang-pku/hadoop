@@ -40,6 +40,8 @@ public class TestSinkQueue {
   private static final Logger LOG =
       LoggerFactory.getLogger(TestSinkQueue.class);
 
+      public final int enqueueValue1 = 1;
+
   /**
    * Test common use case
    * @throws Exception
@@ -47,7 +49,7 @@ public class TestSinkQueue {
    // Class #1 PUT #1
   @Test public void testCommon() throws Exception {
     final SinkQueue<Integer> q = new SinkQueue<Integer>(2);
-    q.enqueue(1);
+    q.enqueue(enqueueValue1);
     assertEquals("queue front", 1, (int) q.front());
     assertEquals("queue back", 1, (int) q.back());
     assertEquals("element", 1, (int) q.dequeue());
