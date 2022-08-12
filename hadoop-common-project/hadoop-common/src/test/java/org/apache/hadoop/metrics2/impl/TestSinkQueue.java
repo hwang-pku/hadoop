@@ -55,8 +55,7 @@ public class TestSinkQueue {
                                        {5, 13, 19},
                                        {2147483647, 0, -2147483648},
                                        {-1, -1, -1},
-                                       {0, 0, 0},
-                                       {2147483648, 0 , 0},
+                                       {0, 0, 0}
         };
         return Arrays.asList(data);
     }
@@ -90,6 +89,7 @@ public class TestSinkQueue {
    * Test blocking when queue is empty
    * @throws Exception
    */
+   // Class #1 PUT #2
   @Test public void testEmptyBlocking() throws Exception {
     testEmptyBlocking(0);
     testEmptyBlocking(100);
