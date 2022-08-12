@@ -165,8 +165,8 @@ public class TestSinkQueue {
   @Test(timeout = 2000)
   public void testConsumeAll() throws Exception {
     final SinkQueue<Integer> q = new SinkQueue<Integer>(capacity);
-
-    for (int i = 0; i < capacity; ++i) {
+    assertTrue("should enqueue", q.enqueue(0));
+    for (int i = 1; i < capacity; ++i) {
       assertTrue("should enqueue", q.enqueue(i));
     }
     assertTrue("should not enqueue", !q.enqueue(capacity));
@@ -180,7 +180,7 @@ public class TestSinkQueue {
       }
     });
 
-    verify(trigger, times(capacity)).run();
+    verify(trigger, times(Math.max(capacity, 1))).run();
   }
 
   /**
