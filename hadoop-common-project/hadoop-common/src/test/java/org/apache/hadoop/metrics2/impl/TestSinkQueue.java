@@ -22,6 +22,8 @@ import java.util.ConcurrentModificationException;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +35,7 @@ import static org.apache.hadoop.metrics2.impl.SinkQueue.*;
 /**
  * Test the half-blocking metrics sink queue
  */
+@RunWith(Parameterized.class)
 public class TestSinkQueue {
   private static final Logger LOG =
       LoggerFactory.getLogger(TestSinkQueue.class);
