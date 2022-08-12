@@ -55,7 +55,8 @@ public class TestSinkQueue {
                                        {5, 13, 19},
                                        {2147483647, 0, -2147483648},
                                        {-1, -1, -1},
-                                       {0, 0, 0}
+                                       {0, 0, 0},
+                                       {2147483648, 0 , 0},
         };
         return Arrays.asList(data);
     }
