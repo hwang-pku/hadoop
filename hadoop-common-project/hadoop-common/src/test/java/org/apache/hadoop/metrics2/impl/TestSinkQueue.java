@@ -49,6 +49,12 @@ public class TestSinkQueue {
   @Parameterized.Parameter(value = 2)
   public int enqueueValue3;
 
+  @Parameterized.Parameter(value = 3)
+    public int awhile1;
+
+  @Parameterized.Parameter(value = 4)
+    public int awhile2;
+
   @Parameterized.Parameters
   public static Collection<Object> testData() {
     Object[][] data = new Object[][] { {1, 2, 3},
@@ -91,8 +97,8 @@ public class TestSinkQueue {
    */
    // Class #1 PUT #2
   @Test public void testEmptyBlocking() throws Exception {
-    testEmptyBlocking(0);
-    testEmptyBlocking(100);
+    testEmptyBlocking(awhile1);
+    testEmptyBlocking(awhile2);
   }
 
   private void testEmptyBlocking(int awhile) throws Exception {
