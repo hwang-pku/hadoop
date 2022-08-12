@@ -44,6 +44,7 @@ public class TestSinkQueue {
    * Test common use case
    * @throws Exception
    */
+   // Class #1 PUT #1
   @Test public void testCommon() throws Exception {
     final SinkQueue<Integer> q = new SinkQueue<Integer>(2);
     q.enqueue(1);
