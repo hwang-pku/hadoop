@@ -137,6 +137,7 @@ public class TestSinkQueue {
    * Test nonblocking enqueue when queue is full
    * @throws Exception
    */
+  // Class #1 PUT #3
   @Test public void testFull() throws Exception {
     final SinkQueue<Integer> q = new SinkQueue<Integer>(1);
     q.enqueue(1);
