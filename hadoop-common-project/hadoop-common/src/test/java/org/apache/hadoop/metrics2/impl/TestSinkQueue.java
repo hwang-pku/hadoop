@@ -229,12 +229,12 @@ public class TestSinkQueue {
    */
   // Class #1 PUT #7
   @Test public void testHangingConsumer() throws Exception {
-    SinkQueue<Integer> q = newSleepingConsumerQueue(2, 1, 2);
-    assertEquals("queue back", 2, (int) q.back());
-    assertTrue("should drop", !q.enqueue(3)); // should not block
+    SinkQueue<Integer> q = newSleepingConsumerQueue(2, enqueueValue1, enqueueValue2);
+    assertEquals("queue back", enqueueValue2, (int) q.back());
+    assertTrue("should drop", !q.enqueue(enqueueValue3)); // should not block
     assertEquals("queue size", 2, q.size());
-    assertEquals("queue head", 1, (int) q.front());
-    assertEquals("queue back", 2, (int) q.back());
+    assertEquals("queue head", enqueueValue1, (int) q.front());
+    assertEquals("queue back", enqueueValue2, (int) q.back());
   }
 
   /**
