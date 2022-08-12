@@ -109,10 +109,10 @@ public class TestSinkQueue {
     Thread t = new Thread() {
       @Override public void run() {
         try {
-          assertEquals("element", 1, (int) q.dequeue());
+          assertEquals("element", enqueueValue1, (int) q.dequeue());
           q.consume(new Consumer<Integer>() {
             @Override public void consume(Integer e) {
-              assertEquals("element", 2, (int) e);
+              assertEquals("element", enqueueValue2, (int) e);
               trigger.run();
             }
           });
@@ -127,8 +127,8 @@ public class TestSinkQueue {
     if (awhile > 0) {
       Thread.sleep(awhile);
     }
-    q.enqueue(1);
-    q.enqueue(2);
+    q.enqueue(enqueueValue1);
+    q.enqueue(enqueueValue2);
     t.join();
     verify(trigger).run();
   }
