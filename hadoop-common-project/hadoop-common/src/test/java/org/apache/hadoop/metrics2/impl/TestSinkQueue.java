@@ -61,10 +61,10 @@ public class TestSinkQueue {
   @Parameterized.Parameters
   public static Collection<Object> testData() {
     Object[][] data = new Object[][] { {1, 2, 3, 0, 100, 64},
-//                                       {5, 13, 19, 1, 7},
-//                                       {2147483647, 0, -2147483648, 1100, -2147483648},
-//                                       {-1, -1, -1, -1, -1},
-//                                       {0, 0, 0, 0, 0}
+                                       {5, 13, 19, 1, 7, 15},
+                                       {2147483647, 0, -2147483648, 1100, -2147483648, 2147483647},
+                                       {-1, -1, -1, -1, -1, -1},
+                                       {0, 0, 0, 0, 0, 0}
         };
         return Arrays.asList(data);
     }
