@@ -43,6 +43,12 @@ public class TestSinkQueue {
   @Parameterized.Parameter(value = 0)
   public int enqueueValue1;
 
+  @Parameterized.Parameter(value = 1)
+  public int enqueueValue2;
+
+  @Parameterized.Parameter(value = 2)
+  public int enqueueValue3;
+
   /**
    * Test common use case
    * @throws Exception
@@ -55,14 +61,14 @@ public class TestSinkQueue {
     assertEquals("queue back", enqueueValue1, (int) q.back());
     assertEquals("element", enqueueValue1, (int) q.dequeue());
 
-    assertTrue("should enqueue", q.enqueue(2));
+    assertTrue("should enqueue", q.enqueue(enqueueValue2));
     q.consume(new Consumer<Integer>() {
       @Override public void consume(Integer e) {
-        assertEquals("element", 2, (int) e);
+        assertEquals("element", enqueueValue2, (int) e);
       }
     });
-    assertTrue("should enqueue", q.enqueue(3));
-    assertEquals("element", 3, (int) q.dequeue());
+    assertTrue("should enqueue", q.enqueue(enqueueValue3));
+    assertEquals("element", enqueueValue3, (int) q.dequeue());
     assertEquals("queue size", 0, q.size());
     assertEquals("queue front", null, q.front());
     assertEquals("queue back", null, q.back());
