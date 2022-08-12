@@ -241,6 +241,7 @@ public class TestSinkQueue {
    * Test concurrent consumer access, which is illegal
    * @throws Exception
    */
+  // Class #1 PUT #8
   @Test public void testConcurrentConsumers() throws Exception {
     final SinkQueue<Integer> q = newSleepingConsumerQueue(2, 1);
     assertTrue("should enqueue", q.enqueue(2));
