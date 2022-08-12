@@ -243,10 +243,10 @@ public class TestSinkQueue {
    */
   // Class #1 PUT #8
   @Test public void testConcurrentConsumers() throws Exception {
-    final SinkQueue<Integer> q = newSleepingConsumerQueue(2, 1);
-    assertTrue("should enqueue", q.enqueue(2));
-    assertEquals("queue back", 2, (int) q.back());
-    assertTrue("should drop", !q.enqueue(3)); // should not block
+    final SinkQueue<Integer> q = newSleepingConsumerQueue(2, enqueueValue1);
+    assertTrue("should enqueue", q.enqueue(enqueueValue2));
+    assertEquals("queue back", enqueueValue2, (int) q.back());
+    assertTrue("should drop", !q.enqueue(enqueueValue3)); // should not block
     shouldThrowCME(new Fun() {
       @Override public void run() {
         q.clear();
@@ -269,8 +269,8 @@ public class TestSinkQueue {
     });
     // The queue should still be in consistent state after all the exceptions
     assertEquals("queue size", 2, q.size());
-    assertEquals("queue front", 1, (int) q.front());
-    assertEquals("queue back", 2, (int) q.back());
+    assertEquals("queue front", enqueueValue1, (int) q.front());
+    assertEquals("queue back", enqueueValue2, (int) q.back());
   }
 
   private void shouldThrowCME(Fun callback) throws Exception {
