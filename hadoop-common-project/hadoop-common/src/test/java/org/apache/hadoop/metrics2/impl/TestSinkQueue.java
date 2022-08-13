@@ -18,7 +18,9 @@
 
 package org.apache.hadoop.metrics2.impl;
 
-import java.util.Arrays;import java.util.Collection;import java.util.ConcurrentModificationException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
@@ -40,22 +42,22 @@ public class TestSinkQueue {
   private static final Logger LOG =
       LoggerFactory.getLogger(TestSinkQueue.class);
 
-  @Parameterized.Parameter(value = 0)
+  @Parameterized.Parameter(0)
   public int enqueueValue1;
 
-  @Parameterized.Parameter(value = 1)
+  @Parameterized.Parameter(1)
   public int enqueueValue2;
 
-  @Parameterized.Parameter(value = 2)
+  @Parameterized.Parameter(2)
   public int enqueueValue3;
 
-  @Parameterized.Parameter(value = 3)
+  @Parameterized.Parameter(3)
     public int awhile1;
 
-  @Parameterized.Parameter(value = 4)
+  @Parameterized.Parameter(4)
     public int awhile2;
 
-  @Parameterized.Parameter(value = 5)
+  @Parameterized.Parameter(5)
     public int capacity;
 
   @Parameterized.Parameters
@@ -64,7 +66,7 @@ public class TestSinkQueue {
                                        {5, 13, 19, 1, 7, 15},
                                        {2147483647, 0, -2147483648, 1100, -2147483648, 1000},
                                        {-1, -1, -1, -1, -1, -1},
-                                       {0, 0, 0, 0, 0, 0}
+                                       {0, 0, 0, 0, 0, 0},
         };
         return Arrays.asList(data);
     }
@@ -87,8 +89,8 @@ public class TestSinkQueue {
         assertEquals("element", enqueueValue2, (int) e);
       }
     });
-    assertTrue("should enqueue", q.enqueue(enqueueValue3));
-    assertEquals("element", enqueueValue3, (int) q.dequeue());
+    assertTrue("should enqueue", q.enqueue(enqueueValue3));     //can be removed
+    assertEquals("element", enqueueValue3, (int) q.dequeue());    //can be removed
     assertEquals("queue size", 0, q.size());
     assertEquals("queue front", null, q.front());
     assertEquals("queue back", null, q.back());
@@ -102,7 +104,7 @@ public class TestSinkQueue {
   @Test(timeout = 2000)
   public void testEmptyBlocking() throws Exception {
     testEmptyBlocking(awhile1);
-    testEmptyBlocking(awhile2);
+    testEmptyBlocking(awhile2); // remove it already parameterized
   }
 
   private void testEmptyBlocking(int awhile) throws Exception {
