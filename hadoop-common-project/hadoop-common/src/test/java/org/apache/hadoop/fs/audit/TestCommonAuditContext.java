@@ -24,8 +24,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import junitparams.JUnitParamsRunner;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests of the common audit context.
  */
+@RunWith(JUnitParamsRunner.class)
 public class TestCommonAuditContext extends AbstractHadoopTestBase {
 
   private static final Logger LOG =
