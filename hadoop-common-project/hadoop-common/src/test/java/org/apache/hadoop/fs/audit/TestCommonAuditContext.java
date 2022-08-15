@@ -111,23 +111,23 @@ public class TestCommonAuditContext extends AbstractHadoopTestBase {
    */
   @Test
   @Parameters({
-    "key, false",
-    "Key 123, true",
-    ", false",
-    "      , true",
-    "key !@#$%^&*(), false" })
-  public void testDynamicEval(String key, Boolean bool) throws Throwable {
+    "key, false, false",
+    "Key 123, true, true",
+    ", false, true",
+    "      , true, false",
+    "key !@#$%^&*(), false, true" })
+  public void testDynamicEval(String key, Boolean boolToSet, Boolean boolInit) throws Throwable {
     context.reset();
-    final AtomicBoolean ab = new AtomicBoolean(false);
+    final AtomicBoolean ab = new AtomicBoolean(boolInit);
     context.put(key, () ->
         Boolean.toString(ab.get()));
     assertContextValue(key)
-        .isEqualTo("false");
+        .isEqualTo(boolInit.toString());
     // update the reference and the next get call will
     // pick up the new value.
-    ab.set(bool);
+    ab.set(boolToSet);
     assertContextValue(key)
-        .isEqualTo(bool.toString());
+        .isEqualTo(boolToSet.toString());
   }
 
   private String getContextValue(final String key) {
