@@ -186,9 +186,7 @@ public class TestCommonAuditContext extends AbstractHadoopTestBase {
   @Parameters({
     "command",
     "truth 123",
-    "space !@#$%^&*() space ",
-    "",
-    "    " })
+    "space !@#$%^&*() space " })
   public void testAddRemove(String key) throws Throwable {
     assertContextValueIsNull(key);
     context.put(key, key);
