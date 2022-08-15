@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,9 +60,14 @@ public class TestCommonAuditContext extends AbstractHadoopTestBase {
    * We can set, get and enumerate global context values.
    */
   @Test
-  public void testGlobalSetGetEnum() throws Throwable {
+  @Parameters({
+    "command",
+    "truth 123",
+    "space !@#$%^&*() space ",
+    "",
+    "  " })
+  public void testGlobalSetGetEnum(String s) throws Throwable {
 
-    String s = "command";
     setGlobalContextEntry(PARAM_COMMAND, s);
     assertGlobalEntry(PARAM_COMMAND)
         .isEqualTo(s);
