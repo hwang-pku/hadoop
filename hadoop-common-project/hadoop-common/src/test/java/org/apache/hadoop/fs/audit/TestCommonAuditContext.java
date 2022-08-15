@@ -110,18 +110,24 @@ public class TestCommonAuditContext extends AbstractHadoopTestBase {
    * Verify functions are dynamically evaluated.
    */
   @Test
-  public void testDynamicEval() throws Throwable {
+  @Parameters({
+    "key, false",
+    "Key 123, true",
+    ", false",
+    "      , true",
+    "key !@#$%^&*(), false" })
+  public void testDynamicEval(String key, Boolean bool) throws Throwable {
     context.reset();
     final AtomicBoolean ab = new AtomicBoolean(false);
-    context.put("key", () ->
+    context.put(key, () ->
         Boolean.toString(ab.get()));
-    assertContextValue("key")
+    assertContextValue(key)
         .isEqualTo("false");
     // update the reference and the next get call will
     // pick up the new value.
-    ab.set(true);
-    assertContextValue("key")
-        .isEqualTo("true");
+    ab.set(bool);
+    assertContextValue(key)
+        .isEqualTo(bool.toString());
   }
 
   private String getContextValue(final String key) {
