@@ -159,11 +159,15 @@ public class TestCodecPool {
   }
 
   @Test(timeout = 10000)
-  public void testMultiThreadedDecompressorPool() throws InterruptedException {
-    final int iterations = 4;
-    ExecutorService threadpool = Executors.newFixedThreadPool(3);
+  @Parameters({
+    "4, 3",
+    "10, 2",
+    "1, 10",
+    "1, 2" })
+  public void testMultiThreadedDecompressorPool(int iterations, int nThreads) throws InterruptedException {
+    ExecutorService threadpool = Executors.newFixedThreadPool(nThreads);
     final LinkedBlockingDeque<Decompressor> queue = new LinkedBlockingDeque<Decompressor>(
-        2 * iterations);
+        iterations);
 
     Callable<Boolean> consumer = new Callable<Boolean>() {
       @Override
