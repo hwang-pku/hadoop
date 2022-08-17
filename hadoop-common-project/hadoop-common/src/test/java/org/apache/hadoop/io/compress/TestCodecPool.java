@@ -47,7 +47,7 @@ public class TestCodecPool {
     this.codec.setConf(new Configuration());
   }
 
-  @Test
+  @Test(timeout = 10000)
   @Parameters({
     "2, 2",
     "3, -5",
