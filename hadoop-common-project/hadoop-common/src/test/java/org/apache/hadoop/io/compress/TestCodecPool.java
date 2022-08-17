@@ -118,9 +118,17 @@ public class TestCodecPool {
   }
 
   @Test(timeout = 10000)
-  public void testMultiThreadedCompressorPool() throws InterruptedException {
-    final int iterations = 4;
-    ExecutorService threadpool = Executors.newFixedThreadPool(3);
+  @Parameters({
+    "4, 3",
+    "10, 1",
+    "1, 10",
+    "1, 1",
+    "-3, -6",
+    "0, 0",
+    "1, 0",
+    "5, -2" })
+  public void testMultiThreadedCompressorPool(int iterations, int nThreads) throws InterruptedException {
+    ExecutorService threadpool = Executors.newFixedThreadPool(nThreads);
     final LinkedBlockingDeque<Compressor> queue = new LinkedBlockingDeque<Compressor>(
         2 * iterations);
 
