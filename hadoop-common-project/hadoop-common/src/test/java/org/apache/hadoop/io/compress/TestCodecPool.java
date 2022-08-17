@@ -120,17 +120,13 @@ public class TestCodecPool {
   @Test(timeout = 10000)
   @Parameters({
     "4, 3",
-    "10, 1",
+    "10, 2",
     "1, 10",
-    "1, 1",
-    "-3, -6",
-    "0, 0",
-    "1, 0",
-    "5, -2" })
+    "1, 2" })
   public void testMultiThreadedCompressorPool(int iterations, int nThreads) throws InterruptedException {
     ExecutorService threadpool = Executors.newFixedThreadPool(nThreads);
     final LinkedBlockingDeque<Compressor> queue = new LinkedBlockingDeque<Compressor>(
-        2 * iterations);
+        iterations);
 
     Callable<Boolean> consumer = new Callable<Boolean>() {
       @Override
