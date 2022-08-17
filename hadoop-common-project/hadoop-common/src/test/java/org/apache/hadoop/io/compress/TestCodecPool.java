@@ -83,24 +83,38 @@ public class TestCodecPool {
   }
 
   @Test(timeout = 10000)
-  public void testDecompressorPoolCounts() {
-    // Get two decompressors and return them
-    Decompressor decomp1 = CodecPool.getDecompressor(codec);
-    Decompressor decomp2 = CodecPool.getDecompressor(codec);
-    assertEquals(LEASE_COUNT_ERR, 2,
-        CodecPool.getLeasedDecompressorsCount(codec));
+  @Parameters({
+    "2, 2",
+    "3, -5",
+    "0, 0",
+    "-1, -1",
+    "150, -2"})
+  public void testDecompressorPoolCountsAndNotReturnSameInstance(int decompressorCount,
+                                                                    int checkGetDecompressorWhenEmptyCount) {
+    // Get #decompressorCount decompressors and return them
+    Set<Decompressor> decompressors = new HashSet<>();
+    for (int i = 0; i < decompressorCount; i++) {
+        decompressors.add(CodecPool.getDecompressor(codec));
+        assertEquals(LEASE_COUNT_ERR, i + 1,
+            CodecPool.getLeasedDecompressorsCount(codec));
+    }
+    assertEquals(Math.max(decompressorCount, 0), decompressors.size());
 
-    CodecPool.returnDecompressor(decomp2);
-    assertEquals(LEASE_COUNT_ERR, 1,
-        CodecPool.getLeasedDecompressorsCount(codec));
+    int i = 0;
+    for (Decompressor decompressor : decompressors) {
+        CodecPool.returnDecompressor(decompressor);
+        assertEquals(LEASE_COUNT_ERR, decompressorCount - i - 1,
+            CodecPool.getLeasedDecompressorsCount(codec));
+        i++;
+    }
 
-    CodecPool.returnDecompressor(decomp1);
-    assertEquals(LEASE_COUNT_ERR, 0,
-        CodecPool.getLeasedDecompressorsCount(codec));
-
-    CodecPool.returnDecompressor(decomp1);
-    assertEquals(LEASE_COUNT_ERR, 0,
-        CodecPool.getLeasedCompressorsCount(codec));
+    Decompressor decomp = CodecPool.getDecompressor(codec);
+    CodecPool.returnDecompressor(decomp);
+    for (i = 0; i < checkGetDecompressorWhenEmptyCount - 1; i++) {
+        CodecPool.returnDecompressor(decomp);
+        assertEquals(LEASE_COUNT_ERR, 0,
+            CodecPool.getLeasedDecompressorsCount(codec));
+    }
   }
 
   @Test(timeout = 10000)
@@ -176,20 +190,5 @@ public class TestCodecPool {
 
     assertEquals(LEASE_COUNT_ERR, 0,
         CodecPool.getLeasedDecompressorsCount(codec));
-  }
-
-  @Test(timeout = 10000)
-  public void testDecompressorNotReturnSameInstance() {
-    Decompressor decomp = CodecPool.getDecompressor(codec);
-    CodecPool.returnDecompressor(decomp);
-    CodecPool.returnDecompressor(decomp);
-    Set<Decompressor> decompressors = new HashSet<>();
-    for (int i = 0; i < 10; ++i) {
-      decompressors.add(CodecPool.getDecompressor(codec));
-    }
-    assertEquals(10, decompressors.size());
-    for (Decompressor decompressor : decompressors) {
-      CodecPool.returnDecompressor(decompressor);
-    }
   }
 }
