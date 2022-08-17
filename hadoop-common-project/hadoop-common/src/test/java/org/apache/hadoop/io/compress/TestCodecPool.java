@@ -52,43 +52,33 @@ public class TestCodecPool {
     "2, 2",
     "3, -5",
     "0, 0",
+    "-1, -1",
     "150, -2"})
-  public void testCompressorPoolCounts(int compressorCount, int checkGetCompressorWhenEmptyCount) {
+  public void testCompressorPoolCountsAndCompressorNotReturnSameInstance(int compressorCount,
+                                                                            int checkGetCompressorWhenEmptyCount) {
     // Get #compressorCount compressors and return them
-    Compressor[] compArray = new Compressor[compressorCount];
+    Set<Compressor> compressors = new HashSet<>();
     for (int i = 0; i < compressorCount; i++) {
-        compArray[i] = CodecPool.getCompressor(codec);
+        compressors.add(CodecPool.getCompressor(codec));
         assertEquals(LEASE_COUNT_ERR, i + 1,
             CodecPool.getLeasedCompressorsCount(codec));
     }
+    assertEquals(Math.max(compressorCount, 0), compressors.size());
 
-    for (int i = 0; i < compressorCount; i++) {
-        CodecPool.returnCompressor(compArray[i]);
+    int i = 0;
+    for (Compressor compressor : compressors) {
+        CodecPool.returnCompressor(compressor);
         assertEquals(LEASE_COUNT_ERR, compressorCount - i - 1,
             CodecPool.getLeasedCompressorsCount(codec));
+        i++;
     }
 
     Compressor comp = CodecPool.getCompressor(codec);
     CodecPool.returnCompressor(comp);
-    for (int i = 0; i < checkGetCompressorWhenEmptyCount - 1; i++) {
+    for (i = 0; i < checkGetCompressorWhenEmptyCount - 1; i++) {
         CodecPool.returnCompressor(comp);
         assertEquals(LEASE_COUNT_ERR, 0,
             CodecPool.getLeasedCompressorsCount(codec));
-    }
-  }
-
-  @Test(timeout = 10000)
-  public void testCompressorNotReturnSameInstance() {
-    Compressor comp = CodecPool.getCompressor(codec);
-    CodecPool.returnCompressor(comp);
-    CodecPool.returnCompressor(comp);
-    Set<Compressor> compressors = new HashSet<>();
-    for (int i = 0; i < 10; ++i) {
-      compressors.add(CodecPool.getCompressor(codec));
-    }
-    assertEquals(10, compressors.size());
-    for (Compressor compressor : compressors) {
-      CodecPool.returnCompressor(compressor);
     }
   }
 
