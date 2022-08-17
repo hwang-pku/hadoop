@@ -47,9 +47,13 @@ public class TestCodecPool {
     this.codec.setConf(new Configuration());
   }
 
-  @Test(timeout = 10000)
+  @Test
   @Parameters({
-    "2, 2" })
+    "2, 2",
+    "3, -5",
+    "0, 0",
+    "-1, -1",
+    "150, -2"})
   public void testCompressorPoolCounts(int compressorCount, int checkGetCompressorWhenEmptyCount) {
     // Get #compressorCount compressors and return them
     Compressor[] compArray = new Compressor[compressorCount];
