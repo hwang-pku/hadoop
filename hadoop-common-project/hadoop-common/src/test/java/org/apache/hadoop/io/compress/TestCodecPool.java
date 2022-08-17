@@ -52,7 +52,6 @@ public class TestCodecPool {
     "2, 2",
     "3, -5",
     "0, 0",
-    "-1, -1",
     "150, -2"})
   public void testCompressorPoolCounts(int compressorCount, int checkGetCompressorWhenEmptyCount) {
     // Get #compressorCount compressors and return them
@@ -70,7 +69,8 @@ public class TestCodecPool {
     }
 
     Compressor comp = CodecPool.getCompressor(codec);
-    for (int i = 0; i < checkGetCompressorWhenEmptyCount; i++) {
+    CodecPool.returnCompressor(comp);
+    for (int i = 0; i < checkGetCompressorWhenEmptyCount - 1; i++) {
         CodecPool.returnCompressor(comp);
         assertEquals(LEASE_COUNT_ERR, 0,
             CodecPool.getLeasedCompressorsCount(codec));
