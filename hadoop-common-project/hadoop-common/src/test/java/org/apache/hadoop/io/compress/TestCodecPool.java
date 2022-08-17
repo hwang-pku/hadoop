@@ -25,13 +25,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
+import junitparams.JUnitParamsRunner;
 import org.apache.hadoop.conf.Configuration;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@RunWith(JUnitParamsRunner.class)
 public class TestCodecPool {
   private final String LEASE_COUNT_ERR =
       "Incorrect number of leased (de)compressors";
