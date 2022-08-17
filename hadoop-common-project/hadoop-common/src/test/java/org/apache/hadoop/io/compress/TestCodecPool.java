@@ -26,6 +26,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.hadoop.conf.Configuration;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,24 +48,29 @@ public class TestCodecPool {
   }
 
   @Test(timeout = 10000)
-  public void testCompressorPoolCounts() {
-    // Get two compressors and return them
-    Compressor comp1 = CodecPool.getCompressor(codec);
-    Compressor comp2 = CodecPool.getCompressor(codec);
-    assertEquals(LEASE_COUNT_ERR, 2,
-        CodecPool.getLeasedCompressorsCount(codec));
+  @Parameters({
+    "2, 2" })
+  public void testCompressorPoolCounts(int compressorCount, int checkGetCompressorWhenEmptyCount) {
+    // Get #compressorCount compressors and return them
+    Compressor[] compArray = new Compressor[compressorCount];
+    for (int i = 0; i < compressorCount; i++) {
+        compArray[i] = CodecPool.getCompressor(codec);
+        assertEquals(LEASE_COUNT_ERR, i + 1,
+            CodecPool.getLeasedCompressorsCount(codec));
+    }
 
-    CodecPool.returnCompressor(comp2);
-    assertEquals(LEASE_COUNT_ERR, 1,
-        CodecPool.getLeasedCompressorsCount(codec));
+    for (int i = 0; i < compressorCount; i++) {
+        CodecPool.returnCompressor(compArray[i]);
+        assertEquals(LEASE_COUNT_ERR, compressorCount - i - 1,
+            CodecPool.getLeasedCompressorsCount(codec));
+    }
 
-    CodecPool.returnCompressor(comp1);
-    assertEquals(LEASE_COUNT_ERR, 0,
-        CodecPool.getLeasedCompressorsCount(codec));
-
-    CodecPool.returnCompressor(comp1);
-    assertEquals(LEASE_COUNT_ERR, 0,
-        CodecPool.getLeasedCompressorsCount(codec));
+    Compressor comp = CodecPool.getCompressor(codec);
+    for (int i = 0; i < checkGetCompressorWhenEmptyCount; i++) {
+        CodecPool.returnCompressor(comp);
+        assertEquals(LEASE_COUNT_ERR, 0,
+            CodecPool.getLeasedCompressorsCount(codec));
+    }
   }
 
   @Test(timeout = 10000)
