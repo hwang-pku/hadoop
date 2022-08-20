@@ -27,6 +27,7 @@ import java.util.stream.StreamSupport;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.assertj.core.api.AbstractStringAssert;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -186,8 +187,11 @@ public class TestCommonAuditContext extends AbstractHadoopTestBase {
   @Parameters({
     "command",
     "truth 123",
-    "space !@#$%^&*() space " })
+    "space !@#$%^&*() space ",
+    "",
+    "    " })
   public void testAddRemove(String key) throws Throwable {
+    Assume.assumeTrue(key.trim().length() > 0);
     assertContextValueIsNull(key);
     context.put(key, key);
     assertContextValue(key).isEqualTo(key);

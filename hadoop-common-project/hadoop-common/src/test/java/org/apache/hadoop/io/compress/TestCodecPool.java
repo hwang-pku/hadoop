@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.hadoop.conf.Configuration;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -120,10 +121,17 @@ public class TestCodecPool {
   @Test(timeout = 10000)
   @Parameters({
     "4, 3",
+    "10, 1",
     "10, 2",
     "1, 10",
+    "1, 1",
+    "-3, -6",
+    "0, 0",
+    "1, 0",
+    "5, -2",
     "1, 2" })
   public void testMultiThreadedCompressorPool(int iterations, int nThreads) throws InterruptedException {
+    Assume.assumeTrue(nThreads > 1 && iterations > 0);
     ExecutorService threadpool = Executors.newFixedThreadPool(nThreads);
     final LinkedBlockingDeque<Compressor> queue = new LinkedBlockingDeque<Compressor>(
         iterations);
@@ -161,10 +169,17 @@ public class TestCodecPool {
   @Test(timeout = 10000)
   @Parameters({
     "4, 3",
+    "10, 1",
     "10, 2",
     "1, 10",
+    "1, 1",
+    "-3, -6",
+    "0, 0",
+    "1, 0",
+    "5, -2",
     "1, 2" })
   public void testMultiThreadedDecompressorPool(int iterations, int nThreads) throws InterruptedException {
+    Assume.assumeTrue(nThreads > 1 && iterations > 0);
     ExecutorService threadpool = Executors.newFixedThreadPool(nThreads);
     final LinkedBlockingDeque<Decompressor> queue = new LinkedBlockingDeque<Decompressor>(
         iterations);
