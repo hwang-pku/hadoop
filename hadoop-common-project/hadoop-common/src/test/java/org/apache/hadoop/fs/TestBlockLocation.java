@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,8 +32,6 @@ public class TestBlockLocation {
   private static final String[] EMPTY_STR_ARRAY = new String[0];
   private static final StorageType[] EMPTY_STORAGE_TYPE_ARRAY =
       StorageType.EMPTY_ARRAY;
-  public final int offset = 1;
-  public final int length = 2;
 
   private static void checkBlockLocation(final BlockLocation loc)
       throws Exception {
@@ -76,7 +75,15 @@ public class TestBlockLocation {
    * Call all the constructors and verify the delegation is working properly
    */
   @Test(timeout = 5000)
-  public void testBlockLocationConstructors() throws Exception {
+  @Parameters({
+  "1, 2",
+  "2, 4",
+  "8, 4",
+  "0,0",
+  "-1 , -1",
+  "-99999, -9999"
+  })
+  public void testBlockLocationConstructors(long offset, long length) throws Exception {
     //
     BlockLocation loc;
     loc = new BlockLocation();
@@ -97,7 +104,15 @@ public class TestBlockLocation {
    * Call each of the setters and verify
    */
   @Test(timeout = 5000)
-  public void testBlockLocationSetters() throws Exception {
+  @Parameters({
+  "1, 2",
+  "2, 4",
+  "8, 4",
+  "0,0",
+  "-1 , -1",
+  "-99999, -9999"
+  })
+  public void testBlockLocationSetters(long offset, long length) throws Exception {
     BlockLocation loc;
     loc = new BlockLocation();
     // Test that null sets the empty array
