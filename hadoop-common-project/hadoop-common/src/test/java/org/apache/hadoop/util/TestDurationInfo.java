@@ -20,6 +20,7 @@ package org.apache.hadoop.util;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -32,17 +33,19 @@ import org.slf4j.LoggerFactory;
 public class TestDurationInfo {
   private final Logger log = LoggerFactory.getLogger(TestDurationInfo.class);
 
-  @Test
+  @Test( timeout = 10540)
   @Parameters({
   "1000",
+  "200",
   "99999999",
   "0",
   "-1",
   "-1000"
   })
   public void testDurationInfoCreation(long sleepTime) throws Exception {
+    Assume.assumeTrue(sleepTime > 0 && sleepTime < 10000);
     DurationInfo info = new DurationInfo(log, "test");
-    Assert.assertTrue(info.value() >= 0);
+    Assert.assertTrue(info.value() == 0);
     Thread.sleep(sleepTime);
     info.finished();
     Assert.assertTrue(info.value() > 0);
