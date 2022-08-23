@@ -100,18 +100,22 @@ public class TestBlockLocation {
     checkBlockLocation(loc, offset, length, true);
   }
 
+  private Object[] testParameters() {
+    return new Object[] {
+        new Object[] {1, 2},
+        new Object[] {2, 4},
+        new Object[] {8, 4},
+        new Object[] {0, 0},
+        new Object[] {-1, -1},
+        new Object[] {-99999, -9999},
+    };
+  }
+
   /**
    * Call each of the setters and verify
    */
   @Test(timeout = 5000)
-  @Parameters({
-  "1, 2",
-  "2, 4",
-  "8, 4",
-  "0,0",
-  "-1 , -1",
-  "-99999, -9999"
-  })
+  @Parameters(method = "testParameters")
   public void testBlockLocationSetters(long offset, long length) throws Exception {
     BlockLocation loc;
     loc = new BlockLocation();
