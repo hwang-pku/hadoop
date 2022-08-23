@@ -17,14 +17,17 @@
  */
 package org.apache.hadoop.util;
 
+import junitparams.JUnitParamsRunner;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * The class to test DurationInfo.
  */
+@RunWith(JUnitParamsRunner.class)
 public class TestDurationInfo {
   private final Logger log = LoggerFactory.getLogger(TestDurationInfo.class);
 
