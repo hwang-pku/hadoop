@@ -18,6 +18,7 @@
 package org.apache.hadoop.util;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,10 +33,17 @@ public class TestDurationInfo {
   private final Logger log = LoggerFactory.getLogger(TestDurationInfo.class);
 
   @Test
-  public void testDurationInfoCreation() throws Exception {
+  @Parameters({
+  "1000",
+  "99999999",
+  "0",
+  "-1",
+  "-1000"
+  })
+  public void testDurationInfoCreation(long sleepTime) throws Exception {
     DurationInfo info = new DurationInfo(log, "test");
     Assert.assertTrue(info.value() >= 0);
-    Thread.sleep(1000);
+    Thread.sleep(sleepTime);
     info.finished();
     Assert.assertTrue(info.value() > 0);
 
