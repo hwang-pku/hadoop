@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 public class TestDurationInfo {
   private final Logger log = LoggerFactory.getLogger(TestDurationInfo.class);
 
-  @Test( timeout = 10540)
+  @Test(timeout = 10540)
   @Parameters({
   "1000, true",
   "200, false",
@@ -55,12 +55,21 @@ public class TestDurationInfo {
         info.toString());
   }
 
-  @Test
-  public void testDurationInfoWithMultipleClose() throws Exception {
+  @Test(timeout = 10540)
+  @Parameters({
+  "2, 1000",
+  "10, 200",
+  "1, 0",
+  "-1, -1",
+  "2, 9999999"
+  })
+  public void testDurationInfoWithMultipleClose(int countClose, long sleepTime) throws Exception {
+    Assume.assumeTrue(sleepTime > 0 && sleepTime < 10000 && countClose >= 1);
     DurationInfo info = new DurationInfo(log, "test");
-    Thread.sleep(1000);
-    info.close();
-    info.close();
+    Thread.sleep(sleepTime);
+    for (int i = 0; i < countClose; i++) {
+        info.close();
+    }
     Assert.assertTrue(info.value() > 0);
   }
 
