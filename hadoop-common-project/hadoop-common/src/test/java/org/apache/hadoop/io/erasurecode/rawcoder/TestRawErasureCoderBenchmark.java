@@ -17,13 +17,16 @@
  */
 package org.apache.hadoop.io.erasurecode.rawcoder;
 
+import junitparams.JUnitParamsRunner;
 import org.apache.hadoop.io.erasurecode.ErasureCodeNative;
 import org.junit.Assume;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Tests for the raw erasure coder benchmark tool.
  */
+@RunWith(JUnitParamsRunner.class)
 public class TestRawErasureCoderBenchmark {
 
   @Test
