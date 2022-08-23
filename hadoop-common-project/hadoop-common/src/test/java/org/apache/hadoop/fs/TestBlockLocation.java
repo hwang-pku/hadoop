@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -128,6 +129,8 @@ public class TestBlockLocation {
   @Parameters(method = "testParameters")
   public void testBlockLocationSetters(long offset, long length, String[] names, String[] hosts, String[] cachedHosts,
         String[] topologyPaths, String[] storageIds, StorageType[] storageTypes) throws Exception {
+    Assume.assumeTrue(names != null && hosts != null && cachedHosts != null && topologyPaths != null &&
+        storageIds != null && storageTypes != null);
     BlockLocation loc;
     loc = new BlockLocation();
     // Test that null sets the empty array
