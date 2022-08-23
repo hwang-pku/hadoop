@@ -31,6 +31,8 @@ public class TestBlockLocation {
   private static final String[] EMPTY_STR_ARRAY = new String[0];
   private static final StorageType[] EMPTY_STORAGE_TYPE_ARRAY =
       StorageType.EMPTY_ARRAY;
+  public final int offset = 1;
+  public final int length = 2;
 
   private static void checkBlockLocation(final BlockLocation loc)
       throws Exception {
@@ -79,16 +81,16 @@ public class TestBlockLocation {
     BlockLocation loc;
     loc = new BlockLocation();
     checkBlockLocation(loc);
-    loc = new BlockLocation(null, null, 1, 2);
-    checkBlockLocation(loc, 1, 2, false);
-    loc = new BlockLocation(null, null, null, 1, 2);
-    checkBlockLocation(loc, 1, 2, false);
-    loc = new BlockLocation(null, null, null, 1, 2, true);
-    checkBlockLocation(loc, 1, 2, true);
-    loc = new BlockLocation(null, null, null, null, 1, 2, true);
-    checkBlockLocation(loc, 1, 2, true);
-    loc = new BlockLocation(null, null, null, null, null, null, 1, 2, true);
-    checkBlockLocation(loc, 1, 2, true);
+    loc = new BlockLocation(null, null, offset, length);
+    checkBlockLocation(loc, offset, length, false);
+    loc = new BlockLocation(null, null, null, offset, length);
+    checkBlockLocation(loc, offset, length, false);
+    loc = new BlockLocation(null, null, null, offset, length, true);
+    checkBlockLocation(loc, offset, length, true);
+    loc = new BlockLocation(null, null, null, null, offset, length, true);
+    checkBlockLocation(loc, offset, length, true);
+    loc = new BlockLocation(null, null, null, null, null, null, offset, length, true);
+    checkBlockLocation(loc, offset, length, true);
   }
 
   /**
@@ -117,10 +119,10 @@ public class TestBlockLocation {
     loc.setTopologyPaths(topologyPaths);
     loc.setStorageIds(storageIds);
     loc.setStorageTypes(storageTypes);
-    loc.setOffset(1);
-    loc.setLength(2);
+    loc.setOffset(offset);
+    loc.setLength(length);
     loc.setCorrupt(true);
     checkBlockLocation(loc, names, hosts, cachedHosts, topologyPaths,
-        storageIds, storageTypes, 1, 2, true);
+        storageIds, storageTypes, offset, length, true);
   }
 }
