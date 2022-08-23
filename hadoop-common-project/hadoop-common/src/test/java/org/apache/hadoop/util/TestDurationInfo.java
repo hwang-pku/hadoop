@@ -64,7 +64,7 @@ public class TestDurationInfo {
   "2, 9999999"
   })
   public void testDurationInfoWithMultipleClose(int countClose, long sleepTime) throws Exception {
-    Assume.assumeTrue(sleepTime > 0 && sleepTime < 10000 && countClose >= 1);
+    Assume.assumeTrue(countClose >= 1 && sleepTime > 0 && sleepTime < 10000);
     DurationInfo info = new DurationInfo(log, "test");
     Thread.sleep(sleepTime);
     for (int i = 0; i < countClose; i++) {
@@ -73,7 +73,7 @@ public class TestDurationInfo {
     Assert.assertTrue(info.value() > 0);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = NullPointerException.class) // couldn't parameterize
   public void testDurationInfoCreationWithNullMsg() {
     DurationInfo info = new DurationInfo(log, null);
     info.close();
