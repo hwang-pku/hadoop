@@ -40,7 +40,6 @@ public class TestRawErasureCoderBenchmark {
         new Object[] { "decode", RawErasureCoderBenchmark.CODER.RS_CODER, 4, 135, 20},
         new Object[] { "encode", RawErasureCoderBenchmark.CODER.ISAL_CODER, 5, 300, 64},
         new Object[] { "decode", RawErasureCoderBenchmark.CODER.ISAL_CODER, 6, 200, 128},
-
         new Object[] { "encode", RawErasureCoderBenchmark.CODER.DUMMY_CODER, 1, -99999, 100},
         new Object[] { "encode", RawErasureCoderBenchmark.CODER.DUMMY_CODER, 1, 10, 0},
         new Object[] { "encode", RawErasureCoderBenchmark.CODER.DUMMY_CODER, 0, 100, 10},
@@ -61,6 +60,7 @@ public class TestRawErasureCoderBenchmark {
   @Parameters(method = "testParameters")
   public void testAllCoders(String opType, RawErasureCoderBenchmark.CODER coder,
                                  int numThreads, int dataSizeMB, int chunkSizeKB) throws Exception {
+    Assume.assumeTrue(numThreads > 0 && chunkSizeKB > 0 && dataSizeMB > 0);
     if (coder == RawErasureCoderBenchmark.CODER.ISAL_CODER) {
         Assume.assumeTrue(ErasureCodeNative.isNativeCodeLoaded());
     }
