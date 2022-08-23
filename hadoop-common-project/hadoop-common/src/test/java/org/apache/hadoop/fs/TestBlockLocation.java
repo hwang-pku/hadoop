@@ -102,12 +102,22 @@ public class TestBlockLocation {
 
   private Object[] testParameters() {
     return new Object[] {
-        new Object[] {1, 2},
-        new Object[] {2, 4},
-        new Object[] {8, 4},
-        new Object[] {0, 0},
-        new Object[] {-1, -1},
-        new Object[] {-99999, -9999},
+        new Object[] {1, 2, new String[] { "name" }, new String[] { "host" }, new String[] { "cachedHost" },
+                new String[] { "path" }, new String[] { "storageId" }, new StorageType[] { StorageType.DISK }},
+        new Object[] {2, 4, new String[] { "n@3", "na me" }, new String[] { "h11.2.2", "ho st" },
+                new String[] { "c@#432", "cach ed" }, new String[] { "p123@", "spaced value" },
+                new String[] { "s@567", "val val " }, new StorageType[] { StorageType.RAM_DISK, StorageType.SSD }},
+        new Object[] {8, 4, new String[] { " ", "1 2", "!@#$%^&*()" }, new String[] { " ", "1 2", "!@#$%^&*()" },
+                new String[] { " ", "1 2", "!@#$%^&*()" }, new String[] { " ", "1 2", "!@#$%^&*()" },
+                new String[] { " ", "1 2", "!@#$%^&*()" },
+                new StorageType[] { StorageType.ARCHIVE, StorageType.DEFAULT, StorageType.NVDIMM }},
+        new Object[] {0, 0, new String[] { "" }, new String[] { "" }, new String[] { "" },
+                new String[] { "" }, new String[] { "" }, new StorageType[] { StorageType.PROVIDED }},
+        new Object[] {-1, -1, null, null, null, null, null, null},
+        new Object[] {-99999, -9999, new String[] { "name" }, new String[] { "h11.2.2", "ho st" },
+                new String[] { "!@#$%^&*()" , "    "}, new String[] { "" }, new String[] { "" },
+                new StorageType[] { StorageType.PROVIDED, StorageType.NVDIMM, StorageType.ARCHIVE, StorageType.SSD,
+                    StorageType.DEFAULT, StorageType.DISK, StorageType.RAM_DISK} },
     };
   }
 
@@ -116,7 +126,8 @@ public class TestBlockLocation {
    */
   @Test(timeout = 5000)
   @Parameters(method = "testParameters")
-  public void testBlockLocationSetters(long offset, long length) throws Exception {
+  public void testBlockLocationSetters(long offset, long length, String[] names, String[] hosts, String[] cachedHosts,
+        String[] topologyPaths, String[] storageIds, StorageType[] storageTypes) throws Exception {
     BlockLocation loc;
     loc = new BlockLocation();
     // Test that null sets the empty array
@@ -126,12 +137,6 @@ public class TestBlockLocation {
     loc.setTopologyPaths(null);
     checkBlockLocation(loc);
     // Test that not-null gets set properly
-    String[] names = new String[] { "name" };
-    String[] hosts = new String[] { "host" };
-    String[] cachedHosts = new String[] { "cachedHost" };
-    String[] topologyPaths = new String[] { "path" };
-    String[] storageIds = new String[] { "storageId" };
-    StorageType[] storageTypes = new StorageType[] { StorageType.DISK };
     loc.setNames(names);
     loc.setHosts(hosts);
     loc.setCachedHosts(cachedHosts);
