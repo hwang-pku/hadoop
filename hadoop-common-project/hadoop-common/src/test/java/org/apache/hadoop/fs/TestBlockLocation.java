@@ -119,6 +119,8 @@ public class TestBlockLocation {
                 new String[] { "!@#$%^&*()" , "    "}, new String[] { "" }, new String[] { "" },
                 new StorageType[] { StorageType.PROVIDED, StorageType.NVDIMM, StorageType.ARCHIVE, StorageType.SSD,
                     StorageType.DEFAULT, StorageType.DISK, StorageType.RAM_DISK} },
+        new Object[] {-79, 1231, EMPTY_STR_ARRAY, EMPTY_STR_ARRAY, EMPTY_STR_ARRAY, EMPTY_STR_ARRAY, EMPTY_STR_ARRAY,
+                EMPTY_STORAGE_TYPE_ARRAY},
     };
   }
 
