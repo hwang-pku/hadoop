@@ -35,14 +35,14 @@ public class TestDurationInfo {
 
   @Test( timeout = 10540)
   @Parameters({
-  "1000",
-  "200",
-  "99999999",
-  "0",
-  "-1",
-  "-1000"
+  "1000, true",
+  "200, false",
+  "99999999, false",
+  "0, true",
+  "-1, true",
+  "-1000, false"
   })
-  public void testDurationInfoCreation(long sleepTime) throws Exception {
+  public void testDurationInfoCreation(long sleepTime, boolean logAtInfo) throws Exception {
     Assume.assumeTrue(sleepTime > 0 && sleepTime < 10000);
     DurationInfo info = new DurationInfo(log, "test");
     Assert.assertTrue(info.value() == 0);
@@ -50,11 +50,7 @@ public class TestDurationInfo {
     info.finished();
     Assert.assertTrue(info.value() > 0);
 
-    info = new DurationInfo(log, true, "test format %s", "value");
-    Assert.assertEquals("test format value: duration 0:00.000s",
-        info.toString());
-
-    info = new DurationInfo(log, false, "test format %s", "value");
+    info = new DurationInfo(log, logAtInfo, "test format %s", "value");
     Assert.assertEquals("test format value: duration 0:00.000s",
         info.toString());
   }
