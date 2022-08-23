@@ -40,6 +40,20 @@ public class TestRawErasureCoderBenchmark {
         new Object[] { "decode", RawErasureCoderBenchmark.CODER.RS_CODER, 4, 135, 20},
         new Object[] { "encode", RawErasureCoderBenchmark.CODER.ISAL_CODER, 5, 300, 64},
         new Object[] { "decode", RawErasureCoderBenchmark.CODER.ISAL_CODER, 6, 200, 128},
+
+        new Object[] { "encode", RawErasureCoderBenchmark.CODER.DUMMY_CODER, 1, -99999, 100},
+        new Object[] { "encode", RawErasureCoderBenchmark.CODER.DUMMY_CODER, 1, 10, 0},
+        new Object[] { "encode", RawErasureCoderBenchmark.CODER.DUMMY_CODER, 0, 100, 10},
+        new Object[] { "encode", RawErasureCoderBenchmark.CODER.DUMMY_CODER, -1, 50, 300},
+        new Object[] { "decode", RawErasureCoderBenchmark.CODER.DUMMY_CODER, 5, -10000, 100},
+        new Object[] { "encode", RawErasureCoderBenchmark.CODER.LEGACY_RS_CODER, 2, -80, 200},
+        new Object[] { "decode", RawErasureCoderBenchmark.CODER.LEGACY_RS_CODER, 5, -300, 350},
+        new Object[] { "decode", RawErasureCoderBenchmark.CODER.LEGACY_RS_CODER, 0, 100, 350},
+        new Object[] { "encode", RawErasureCoderBenchmark.CODER.RS_CODER, 3, -200, 200},
+        new Object[] { "encode", RawErasureCoderBenchmark.CODER.RS_CODER, -1, 250, 100},
+        new Object[] { "decode", RawErasureCoderBenchmark.CODER.RS_CODER, 4, -135, 20},
+        new Object[] { "encode", RawErasureCoderBenchmark.CODER.ISAL_CODER, 5, -300, 64},
+        new Object[] { "decode", RawErasureCoderBenchmark.CODER.ISAL_CODER, 6, -200, 128},
     };
   }
 
