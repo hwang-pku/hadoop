@@ -29,59 +29,73 @@ import org.junit.runners.Parameterized;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import edu.berkeley.cs.jqf.fuzz.*;
 
 import static org.junit.Assert.assertTrue;
 
 /**
  * Test {@link DecodingValidator} under various decoders.
  */
-@RunWith(Parameterized.class)
+@RunWith(JQF.class)
 public class TestDecodingValidator extends TestRawCoderBase {
 
   private DecodingValidator validator;
 
-  @Parameterized.Parameters
-  public static Collection<Object[]> data() {
-    return Arrays.asList(new Object[][] {
-        {RSRawErasureCoderFactory.class, 6, 3, new int[]{1}, new int[]{}},
-        {RSRawErasureCoderFactory.class, 6, 3, new int[]{3}, new int[]{0}},
-        {RSRawErasureCoderFactory.class, 6, 3, new int[]{2, 4}, new int[]{1}},
-        {NativeRSRawErasureCoderFactory.class, 6, 3, new int[]{0}, new int[]{}},
-        {XORRawErasureCoderFactory.class, 10, 1, new int[]{0}, new int[]{}},
-        {NativeXORRawErasureCoderFactory.class, 10, 1, new int[]{0},
-            new int[]{}}
-    });
-  }
+  /**
+   * Test if the same validator can process direct and non-direct buffers.
+   */
+  @Fuzz
+  public void testValidate(int codeFactoryId, int anumDataUnits, int anumParityUnits, 
+          Set<Integer> aerasedDataIndexes, Set<Integer> aerasedParityIndexes) {
+    Assume.assumeTrue(0 <= codeFactoryId && codeFactoryId < 4);
+    for (int erasedChunk: aerasedDataIndexes)
+        Assume.assumeTrue(0 <= erasedChunk && erasedChunk < anumDataUnits);
+    for (int erasedChunk: aerasedParityIndexes)
+        Assume.assumeTrue(0 <= erasedChunk && erasedChunk < anumParityUnits);
 
-  public TestDecodingValidator(
-      Class<? extends RawErasureCoderFactory> factoryClass, int numDataUnits,
-      int numParityUnits, int[] erasedDataIndexes, int[] erasedParityIndexes) {
-    this.encoderFactoryClass = factoryClass;
-    this.decoderFactoryClass = factoryClass;
-    this.numDataUnits = numDataUnits;
-    this.numParityUnits = numParityUnits;
-    this.erasedDataIndexes = erasedDataIndexes;
-    this.erasedParityIndexes = erasedParityIndexes;
-  }
+    switch (codeFactoryId) {
+    case 0:
+      encoderFactoryClass = RSRawErasureCoderFactory.class;
+      break;
+    case 1:
+      encoderFactoryClass = NativeRSRawErasureCoderFactory.class;
+      break;
+    case 2:
+      encoderFactoryClass = XORRawErasureCoderFactory.class;
+      break;
+    case 3:
+      encoderFactoryClass = NativeXORRawErasureCoderFactory.class;
+      break;
+    }
 
-  @Before
-  public void setup() {
+    erasedDataIndexes = new int[aerasedDataIndexes.size()];
+    erasedParityIndexes = new int[aerasedParityIndexes.size()];
+    int idx = 0;
+    for (int i: aerasedDataIndexes)
+        erasedDataIndexes[idx++] = i;
+    idx = 0;
+    for (int i: aerasedParityIndexes)
+        erasedParityIndexes[idx++] = i;
+    numDataUnits = anumDataUnits;
+    numParityUnits = anumParityUnits;
+    Assume.assumeTrue(numParityUnits > 0 && numParityUnits <= 20);
+    Assume.assumeTrue(numDataUnits < 0 && numDataUnits <= 20);
+
+    if (encoderFactoryClass == XORRawErasureCoderFactory.class || encoderFactoryClass == NativeXORRawErasureCoderFactory.class)
+        Assume.assumeTrue(numParityUnits == 1);
+        Assume.assumeTrue(erasedDataIndexes.length + erasedParityIndexes.length <= 1);
+
     if (encoderFactoryClass == NativeRSRawErasureCoderFactory.class
         || encoderFactoryClass == NativeXORRawErasureCoderFactory.class) {
       Assume.assumeTrue(ErasureCodeNative.isNativeCodeLoaded());
     }
     setAllowDump(false);
-  }
-
-  /**
-   * Test if the same validator can process direct and non-direct buffers.
-   */
-  @Test
-  public void testValidate() {
     prepare(null, numDataUnits, numParityUnits, erasedDataIndexes,
         erasedParityIndexes);
     testValidate(true);
@@ -190,6 +204,7 @@ public class TestDecodingValidator extends TestRawCoderBase {
    * Test if validator throws {@link InvalidDecodingException} when
    * a decoded output buffer is polluted.
    */
+  /*
   @Test
   public void testValidateWithBadDecoding() throws IOException {
     prepare(null, numDataUnits, numParityUnits, erasedDataIndexes,
@@ -234,4 +249,5 @@ public class TestDecodingValidator extends TestRawCoderBase {
       GenericTestUtils.assertExceptionContains(expected, e);
     }
   }
+  */
 }
