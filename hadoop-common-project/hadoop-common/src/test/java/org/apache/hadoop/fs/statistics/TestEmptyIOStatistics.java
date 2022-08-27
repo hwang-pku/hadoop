@@ -40,10 +40,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class TestEmptyIOStatistics extends AbstractHadoopTestBase {
 
   private final IOStatistics empty = emptyStatistics();
+  public final String key = "anything";
 
   @Test
   public void testUnknownStatistic() throws Throwable {
-    assertStatisticCounterIsUntracked(empty, "anything");
+    assertStatisticCounterIsUntracked(empty, key);
   }
 
   @Test
@@ -51,7 +52,7 @@ public class TestEmptyIOStatistics extends AbstractHadoopTestBase {
     // expect an exception to be raised when an assertion
     // is made that an unknown statistic is tracked,.
     assertThatThrownBy(() ->
-        assertStatisticCounterIsTracked(empty, "anything"))
+        assertStatisticCounterIsTracked(empty, key))
         .isInstanceOf(AssertionError.class);
   }
 
@@ -60,7 +61,7 @@ public class TestEmptyIOStatistics extends AbstractHadoopTestBase {
     // expect an exception to be raised when
     // an assertion is made about the value of an unknown statistics
     assertThatThrownBy(() ->
-        verifyStatisticCounterValue(empty, "anything", 0))
+        verifyStatisticCounterValue(empty, key, 0))
         .isInstanceOf(AssertionError.class);
   }
 
