@@ -115,23 +115,18 @@ public class TestEmptyIOStatistics extends AbstractHadoopTestBase {
         .isSameAs(empty);
   }
 
-  @Test
-  public void testStringifyNullSource() throws Throwable {
-    assertThat(IOStatisticsLogging.ioStatisticsSourceToString(null))
-        .isEmpty();
+  private Object[] testParametersForStringifyNulls() {
+    return new Object[] {
+        new Object[] {IOStatisticsLogging.ioStatisticsSourceToString(null)},
+        new Object[] {IOStatisticsLogging.ioStatisticsSourceToString(IOStatisticsBinding.wrap(null))},
+        new Object[] {ioStatisticsToString(null)},
+    };
   }
 
   @Test
-  public void testStringifyNullStats() throws Throwable {
-    assertThat(
-        IOStatisticsLogging.ioStatisticsSourceToString(
-            IOStatisticsBinding.wrap(null)))
-        .isEmpty();
-  }
-
-  @Test
-  public void testStringificationNull() throws Throwable {
-    assertThat(ioStatisticsToString(null))
+  @Parameters(method = "testParametersForStringifyNulls")
+  public void testStringifyNulls(String str) throws Throwable {
+    assertThat(str)
         .describedAs("Null statistics should stringify to \"\"")
         .isEmpty();
   }
