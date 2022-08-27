@@ -48,7 +48,8 @@ public class TestEmptyIOStatistics extends AbstractHadoopTestBase {
         new Object[] {"12345sas@##%^"},
         new Object[] {"1234"},
         new Object[] {"      "},
-        new Object[] {""}
+        new Object[] {""},
+        new Object[] {" .?// | \\  "}
         };
   }
 
