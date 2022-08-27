@@ -68,12 +68,24 @@ public class TestEmptyIOStatistics extends AbstractHadoopTestBase {
         .isInstanceOf(AssertionError.class);
   }
 
+  private Object[] testParametersForKeyAndValue() {
+    return new Object[] {
+        new Object[] {"anything", 0},
+        new Object[] {"12345sas@##%^", -1},
+        new Object[] {"1234", 100},
+        new Object[] {"      ", Long.MIN_VALUE},
+        new Object[] {"", Long.MAX_VALUE},
+        new Object[] {" .?// | \\  ", 999999999}
+    };
+  }
+
   @Test
-  public void testStatisticsValueAssertion(String key) throws Throwable {
+  @Parameters(method = "testParametersForKeyAndValue")
+  public void testStatisticsValueAssertion(String key, long value) throws Throwable {
     // expect an exception to be raised when
     // an assertion is made about the value of an unknown statistics
     assertThatThrownBy(() ->
-        verifyStatisticCounterValue(empty, key, 0))
+        verifyStatisticCounterValue(empty, key, value))
         .isInstanceOf(AssertionError.class);
   }
 
