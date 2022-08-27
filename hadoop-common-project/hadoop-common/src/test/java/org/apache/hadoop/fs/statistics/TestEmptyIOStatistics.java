@@ -19,6 +19,7 @@
 package org.apache.hadoop.fs.statistics;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
 
 import org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding;
@@ -40,15 +41,25 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class TestEmptyIOStatistics extends AbstractHadoopTestBase {
 
   private final IOStatistics empty = emptyStatistics();
-  public final String key = "anything";
+
+  private Object[] testParametersForKey() {
+    return new Object[] {
+        new Object[] {"anything"},
+        new Object[] {"12345sas@##%^"},
+        new Object[] {"1234"},
+        new Object[] {"      "},
+        new Object[] {""}
+        };
+  }
 
   @Test
-  public void testUnknownStatistic() throws Throwable {
+  @Parameters(method = "testParametersForKey")
+  public void testUnknownStatistic(String key) throws Throwable {
     assertStatisticCounterIsUntracked(empty, key);
   }
 
   @Test
-  public void testStatisticsTrackedAssertion() throws Throwable {
+  public void testStatisticsTrackedAssertion(String key) throws Throwable {
     // expect an exception to be raised when an assertion
     // is made that an unknown statistic is tracked,.
     assertThatThrownBy(() ->
@@ -57,7 +68,7 @@ public class TestEmptyIOStatistics extends AbstractHadoopTestBase {
   }
 
   @Test
-  public void testStatisticsValueAssertion() throws Throwable {
+  public void testStatisticsValueAssertion(String key) throws Throwable {
     // expect an exception to be raised when
     // an assertion is made about the value of an unknown statistics
     assertThatThrownBy(() ->
