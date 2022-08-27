@@ -18,10 +18,12 @@
 
 package org.apache.hadoop.fs.statistics;
 
+import junitparams.JUnitParamsRunner;
 import org.junit.Test;
 
 import org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding;
 import org.apache.hadoop.test.AbstractHadoopTestBase;
+import org.junit.runner.RunWith;
 
 import static org.apache.hadoop.fs.statistics.IOStatisticAssertions.assertStatisticCounterIsTracked;
 import static org.apache.hadoop.fs.statistics.IOStatisticAssertions.assertStatisticCounterIsUntracked;
@@ -34,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /**
  * Test handling of the empty IO statistics class.
  */
+@RunWith(JUnitParamsRunner.class)
 public class TestEmptyIOStatistics extends AbstractHadoopTestBase {
 
   private final IOStatistics empty = emptyStatistics();
