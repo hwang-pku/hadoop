@@ -59,6 +59,7 @@ public class TestEmptyIOStatistics extends AbstractHadoopTestBase {
   }
 
   @Test
+  @Parameters(method = "testParametersForKey")
   public void testStatisticsTrackedAssertion(String key) throws Throwable {
     // expect an exception to be raised when an assertion
     // is made that an unknown statistic is tracked,.
