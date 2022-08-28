@@ -166,6 +166,14 @@ public class TestDU {
     return new Object[] {
                 new Object[] {8192, 1024, 3000, 0, 5000},
                 new Object[] {8192, 1024, 3000, 2000, 4000},
+                new Object[] {8192, 1024, 3000, 1001, 4001},
+                new Object[] {4096, 1024, 3000, 1001, 4001},
+                new Object[] {16384, 1024, 3000, 1001, 4001},
+                new Object[] {8192, 10, 3000, 1001, 4001},
+                new Object[] {-8192, 10, 3000, 1001, 4001},
+                new Object[] {8192, -100, 3000, 1001, 4001},
+                new Object[] {0, 10, 3000, 1001, 4001},
+                new Object[] {8192, 0, 3000, 1001, 4001},
     };
   }
 
@@ -173,6 +181,8 @@ public class TestDU {
   @Parameters(method = "valueSetsForTestSetInitialValue")
   public void testDUSetInitialValue(int fileSize, long initialUse, long interval, long jitter, long sleep)
         throws IOException {
+    Assume.assumeTrue(interval + jitter <= sleep);
+    Assume.assumeTrue(fileSize >= 0 && initialUse >= 0);
     File file = new File(DU_DIR, "dataX");
     createFile(file, fileSize);
     DU du = new DU(file, interval, jitter, initialUse);
