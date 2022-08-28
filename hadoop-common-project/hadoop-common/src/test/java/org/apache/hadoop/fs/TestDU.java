@@ -137,14 +137,21 @@ public class TestDU {
         writtenSize <= (duSize + slack));
   }
 
+  private Object[] valueSetForDfsUsedValue() {
+    return new Object[] {
+                new Object[] {-Long.MAX_VALUE},
+    };
+  }
+
   @Test
-  public void testDUGetUsedWillNotReturnNegative() throws IOException {
+  @Parameters(method = "valueSetForDfsUsedValue")
+  public void testDUGetUsedWillNotReturnNegative(long dfsUsedValue) throws IOException {
     File file = new File(DU_DIR, "data");
     assertTrue(file.createNewFile());
     Configuration conf = new Configuration();
     conf.setLong(CommonConfigurationKeys.FS_DU_INTERVAL_KEY, 10000L);
     DU du = new DU(file, 10000L, 0, -1);
-    du.incDfsUsed(-Long.MAX_VALUE);
+    du.incDfsUsed(dfsUsedValue);
     long duSize = du.getUsed();
     assertTrue(String.valueOf(duSize), duSize >= 0L);
   }
