@@ -18,6 +18,7 @@
 package org.apache.hadoop.fs;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.hadoop.util.Shell;
 import org.junit.After;
 import org.junit.Before;
@@ -68,6 +69,12 @@ public class TestDU {
     file.close();
   }
 
+  private Object[] valueSetForWrittenSize() {
+    return new Object[] {
+                new Object[] {32*1024}
+    };
+  }
+
   /**
    * Verify that du returns expected used space for a file.
    * We assume here that if a file system crates a file of size
@@ -79,8 +86,8 @@ public class TestDU {
    * @throws InterruptedException
    */
   @Test
-  public void testDU() throws IOException, InterruptedException {
-    final int writtenSize = 32*1024;   // writing 32K
+  @Parameters(method = "valueSetForWrittenSize")
+  public void testDU(int writtenSize) throws IOException, InterruptedException {
     // Allow for extra 4K on-disk slack for local file systems
     // that may store additional file metadata (eg ext attrs).
     final int slack = 4*1024;
