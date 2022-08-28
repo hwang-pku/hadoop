@@ -162,20 +162,28 @@ public class TestDU {
     assertTrue(String.valueOf(duSize), duSize >= 0L);
   }
 
+  private Object[] valueSetsForTestSetInitialValue() {
+    return new Object[] {
+                new Object[] {8192, 1024, 3000, 0, 5000},
+    };
+  }
+
   @Test
-  public void testDUSetInitialValue() throws IOException {
+  @Parameters(method = "valueSetsForTestSetInitialValue")
+  public void testDUSetInitialValue(int fileSize, long initialUse, long interval, long jitter, long sleep)
+        throws IOException {
     File file = new File(DU_DIR, "dataX");
-    createFile(file, 8192);
-    DU du = new DU(file, 3000, 0, 1024);
+    createFile(file, fileSize);
+    DU du = new DU(file, interval, jitter, initialUse);
     du.init();
-    assertTrue("Initial usage setting not honored", du.getUsed() == 1024);
+    assertTrue("Initial usage setting not honored", du.getUsed() == initialUse);
 
     // wait until the first du runs.
     try {
-      Thread.sleep(5000);
+      Thread.sleep(sleep);
     } catch (InterruptedException ie) {}
 
-    assertTrue("Usage didn't get updated", du.getUsed() == 8192);
+    assertTrue("Usage didn't get updated", du.getUsed() == fileSize);
   }
 
 
