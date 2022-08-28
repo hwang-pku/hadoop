@@ -41,6 +41,7 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitParamsRunner.class)
 public class TestDU {
   final static private File DU_DIR = GenericTestUtils.getTestDir("dutmp");
+  final static int BLOCK_SIZE = 4096; // kindly update as per system (for mac -> diskutil info / | grep "Block Size" )
 
   @Before
   public void setUp() {
@@ -174,6 +175,8 @@ public class TestDU {
                 new Object[] {8192, -100, 3000, 1001, 4001},
                 new Object[] {0, 10, 3000, 1001, 4001},
                 new Object[] {8192, 0, 3000, 1001, 4001},
+                new Object[] {10, 10, 3000, 1001, 4001},
+                new Object[] {12, 10, 3000, 1001, 4001},
     };
   }
 
@@ -183,6 +186,7 @@ public class TestDU {
         throws IOException {
     Assume.assumeTrue(interval + jitter <= sleep);
     Assume.assumeTrue(fileSize >= 0 && initialUse >= 0);
+    Assume.assumeTrue(fileSize % BLOCK_SIZE == 0);
     File file = new File(DU_DIR, "dataX");
     createFile(file, fileSize);
     DU du = new DU(file, interval, jitter, initialUse);
