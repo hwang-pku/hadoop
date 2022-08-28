@@ -22,10 +22,10 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.Arrays;
+import java.util.Collection;import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import junitparams.JUnitParamsRunner;
 import org.junit.Test;
 
 import org.apache.hadoop.conf.Configuration;
@@ -37,17 +37,27 @@ import org.apache.hadoop.fs.PathIOException;
 import org.apache.hadoop.test.HadoopTestBase;
 import org.apache.hadoop.test.LambdaTestUtils;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  * Test the JSON serialization helper.
  */
-@RunWith(JUnitParamsRunner.class)
+@RunWith(Parameterized.class)
 public class TestJsonSerialization extends HadoopTestBase {
 
-  private final JsonSerialization<KeyVal> serDeser =
-      new JsonSerialization<>(KeyVal.class, true, true);
+  @Parameterized.Parameter(0)
+  public JsonSerialization<KeyVal> serDeser;
 
-  private final KeyVal source = new KeyVal("key", "1");
+  @Parameterized.Parameter(1)
+  public KeyVal source;
+
+  @Parameterized.Parameters
+  public static Collection<Object> testData() {
+    Object[][] data = new Object[][] { {new JsonSerialization<>(KeyVal.class, true, true),
+                                            new KeyVal("key", "1")}
+    };
+    return Arrays.asList(data);
+  }
 
   private static class KeyVal implements Serializable {
     private String name;
