@@ -165,6 +165,7 @@ public class TestDU {
   private Object[] valueSetsForTestSetInitialValue() {
     return new Object[] {
                 new Object[] {8192, 1024, 3000, 0, 5000},
+                new Object[] {8192, 1024, 3000, 2000, 4000},
     };
   }
 
