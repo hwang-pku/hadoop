@@ -140,6 +140,12 @@ public class TestDU {
   private Object[] valueSetForDfsUsedValue() {
     return new Object[] {
                 new Object[] {-Long.MAX_VALUE},
+                new Object[] {Long.MAX_VALUE},
+                new Object[] {32*1024},
+                new Object[] {Long.MIN_VALUE * -1},
+                new Object[] {Long.MIN_VALUE},
+                new Object[] {17*(-17)},
+                new Object[] {0}
     };
   }
 
