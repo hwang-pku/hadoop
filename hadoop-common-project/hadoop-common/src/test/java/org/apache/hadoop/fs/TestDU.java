@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.fs;
 
+import junitparams.JUnitParamsRunner;
 import org.apache.hadoop.util.Shell;
 import org.junit.After;
 import org.junit.Before;
@@ -32,8 +33,10 @@ import java.util.Random;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
 import org.apache.hadoop.test.GenericTestUtils;
+import org.junit.runner.RunWith;
 
 /** This test makes sure that "DU" does not get to run on each call to getUsed */
+@RunWith(JUnitParamsRunner.class)
 public class TestDU {
   final static private File DU_DIR = GenericTestUtils.getTestDir("dutmp");
 
