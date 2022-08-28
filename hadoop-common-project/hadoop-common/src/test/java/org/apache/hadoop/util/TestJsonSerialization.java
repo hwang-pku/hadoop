@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import junitparams.JUnitParamsRunner;
 import org.junit.Test;
 
 import org.apache.hadoop.conf.Configuration;
@@ -35,10 +36,12 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathIOException;
 import org.apache.hadoop.test.HadoopTestBase;
 import org.apache.hadoop.test.LambdaTestUtils;
+import org.junit.runner.RunWith;
 
 /**
  * Test the JSON serialization helper.
  */
+@RunWith(JUnitParamsRunner.class)
 public class TestJsonSerialization extends HadoopTestBase {
 
   private final JsonSerialization<KeyVal> serDeser =
