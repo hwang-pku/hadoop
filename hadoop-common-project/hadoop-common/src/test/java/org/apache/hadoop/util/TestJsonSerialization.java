@@ -54,7 +54,15 @@ public class TestJsonSerialization extends HadoopTestBase {
   @Parameterized.Parameters
   public static Collection<Object> testData() {
     Object[][] data = new Object[][] { {new JsonSerialization<>(KeyVal.class, true, true),
-                                            new KeyVal("key", "1")}
+                                            new KeyVal("key", "1")},
+                                       {new JsonSerialization<>(KeyVal.class, false, false),
+                                            new KeyVal(null, "123aA!@#$%^&*()?|/\\")},
+                                       {new JsonSerialization<>(KeyVal.class, true, false),
+                                            new KeyVal("123aA!@#$%^&*()?|/\\", null)},
+                                       {new JsonSerialization<>(KeyVal.class, false, true),
+                                            new KeyVal()},
+                                       {new JsonSerialization<>(KeyVal.class, true, true),
+                                            new KeyVal("", "   ")},
     };
     return Arrays.asList(data);
   }
