@@ -78,9 +78,11 @@ public class TestDU {
                 new Object[] {17*(-4)},
                 new Object[] {17*17},
                 new Object[] {19},
-                new Object[] {29*(-17)}, // add assume
+                new Object[] {29*(-17)},
                 new Object[] {0},
-                new Object[] {1}
+                new Object[] {1},
+                new Object[] {Integer.MAX_VALUE},
+                new Object[] {Integer.MIN_VALUE},
     };
   }
 
@@ -99,7 +101,7 @@ public class TestDU {
   public void testDU(int writtenSize) throws IOException, InterruptedException {
     // Allow for extra 4K on-disk slack for local file systems
     // that may store additional file metadata (eg ext attrs).
-    Assume.assumeTrue(writtenSize > 0);
+    Assume.assumeTrue(writtenSize >= 0 && writtenSize <= 32*1024*100);
     final int slack = 4*1024;
     File file = new File(DU_DIR, "data");
     createFile(file, writtenSize);
