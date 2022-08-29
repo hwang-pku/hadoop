@@ -182,8 +182,18 @@ public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
   }
 
   @Test
-  public void testFailingHookCaught() throws Throwable {
-    BreakableService service = new BreakableService(false, false, true);
+  @Parameters({
+  "false, false, true",
+  "false, false, false",
+  "false, true, true",
+  "false, true, false",
+  "true, false, true",
+  "true, false, false",
+  "true, true, true",
+  "true, true, false",
+  })
+  public void testFailingHookCaught(boolean failOnInit, boolean failOnStart, boolean failOnStop) throws Throwable {
+    BreakableService service = new BreakableService(failOnInit, failOnStart, failOnStop);
     setServiceToTeardown(service);
     ServiceShutdownHook hook = new ServiceShutdownHook(service);
     hook.run();
