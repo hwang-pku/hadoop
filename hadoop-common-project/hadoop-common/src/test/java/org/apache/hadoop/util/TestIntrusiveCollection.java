@@ -153,13 +153,14 @@ public class TestIntrusiveCollection extends HadoopTestBase {
    * </pre>
    */
   @Test
-  public void testShouldRemoveAllElements() {
+  @Parameters({
+  "3"})
+  public void testShouldRemoveAllElements(int numberOfElements) {
     IntrusiveCollection<SimpleElement> intrusiveCollection =
       new IntrusiveCollection<>();
-    intrusiveCollection.add(new SimpleElement());
-    intrusiveCollection.add(new SimpleElement());
-    intrusiveCollection.add(new SimpleElement());
-
+    for (int i = 0; i < numberOfElements; i++) {
+        intrusiveCollection.add(new SimpleElement());
+    }
     intrusiveCollection.clear();
 
     assertTrue("Collection should be empty", intrusiveCollection.isEmpty());
