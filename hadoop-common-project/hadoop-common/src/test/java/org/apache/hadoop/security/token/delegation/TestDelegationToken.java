@@ -324,12 +324,14 @@ public class TestDelegationToken {
   }
   
   @Test
-  public void testGetUserWithOwner() {
+  @Parameters({
+  "owner"})
+  public void testGetUserWithOwner(String owner) {
     TestDelegationTokenIdentifier ident =
-        new TestDelegationTokenIdentifier(new Text("owner"), null, null);
+        new TestDelegationTokenIdentifier(new Text(owner), null, null);
     UserGroupInformation ugi = ident.getUser();
     assertNull(ugi.getRealUser());
-    assertEquals("owner", ugi.getUserName());
+    assertEquals(owner, ugi.getUserName());
     assertEquals(AuthenticationMethod.TOKEN, ugi.getAuthenticationMethod());
   }
 
