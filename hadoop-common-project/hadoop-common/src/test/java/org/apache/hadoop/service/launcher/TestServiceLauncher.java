@@ -34,7 +34,7 @@ import org.apache.hadoop.service.launcher.testservices.StringConstructorOnlyServ
 import static org.apache.hadoop.test.GenericTestUtils.*;
 import static org.apache.hadoop.service.launcher.testservices.ExceptionInExecuteLaunchableService.*;
 
-import org.junit.Test;
+import org.junit.Assume;import org.junit.Test;
 import org.junit.runner.RunWith;
 @RunWith(JUnitParamsRunner.class)
 public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
@@ -156,13 +156,14 @@ public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
   }
 
   @Test
-  public void testInnerCauseNotInFormat() throws Throwable {
-
-    Exception cause = new Exception("cause");
+  @Parameters(method = "valueSetForCause")
+  public void testInnerCauseNotInFormat(String causeStr) throws Throwable {
+    Assume.assumeTrue(causeStr != "");
+    Exception cause = new Exception(causeStr);
     ServiceLaunchException ex =
         new ServiceLaunchException(0, "%03x:", 32, cause);
     assertExceptionContains("020", ex);
-    assertFalse(ex.getMessage().contains("cause"));
+    assertFalse(ex.getMessage().contains(causeStr));
     assertSame(cause, ex.getCause());
   }
 
