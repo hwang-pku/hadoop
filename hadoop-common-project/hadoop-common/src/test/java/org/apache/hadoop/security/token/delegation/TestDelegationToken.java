@@ -242,6 +242,7 @@ public class TestDelegationToken {
   "asd@, hfg&$, 4567&Adas, 0, 0, 0, 0",
   "alice, bob, colin@, 123, 321, 314, 12345",
   "alice, bob@, colin, 123, 321, 314, 12345",
+  "ace 12, hdf@75, colin32, 123, 321, 314, 12345",
   })
   public void testSerialization(String owner, String renewer, String realUser, int issueDate, int masterKeyId,
      int maxDate, int sequenceNumber) throws Exception {
