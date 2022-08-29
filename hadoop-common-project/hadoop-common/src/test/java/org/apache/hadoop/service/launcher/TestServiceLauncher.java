@@ -19,6 +19,7 @@
 package org.apache.hadoop.service.launcher;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.service.BreakableService;
 import org.apache.hadoop.service.launcher.testservices.FailingStopInStartService;
@@ -38,19 +39,23 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitParamsRunner.class)
 public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
 
-  @Test
-  public void testRunService() throws Throwable {
-    assertRuns(RunningService.NAME);
+  private Object[] valueSetForTestingServicesAndConstructors()throws Throwable {
+    return new Object[] {
+        new Object[] {RunningService.NAME},
+        new Object[] {NullBindLaunchableService.NAME},
+        new Object[] {StringConstructorOnlyService.NAME},
+        new Object[] {InitInConstructorLaunchableService.NAME},
+        new Object[] {NoArgsAllowedService.NAME},
+        new Object[] {NoArgsAllowedService.NAME, LauncherArguments.ARG_CONF_PREFIXED, configFile(newConf())},
+        new Object[] {LaunchableRunningService.NAME},
+        new Object[] {StoppingInStartLaunchableService.NAME}
+    };
   }
 
   @Test
-  public void testNullBindService() throws Throwable {
-    assertRuns(NullBindLaunchableService.NAME);
-  }
-
-  @Test
-  public void testServiceLaunchStringConstructor() throws Throwable {
-    assertRuns(StringConstructorOnlyService.NAME);
+  @Parameters(method = "valueSetForTestingServicesAndConstructors")
+  public void testRunServicesAndConstructors(String... args) throws Throwable {
+    assertRuns(args);
   }
 
   /**
@@ -146,33 +151,11 @@ public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
   }
 
   @Test
-  public void testServiceInitInConstructor() throws Throwable {
-    assertRuns(InitInConstructorLaunchableService.NAME);
-  }
-
-  @Test
-  public void testRunNoArgsAllowedService() throws Throwable {
-    assertRuns(NoArgsAllowedService.NAME);
-  }
-
-  @Test
   public void testNoArgsOneArg() throws Throwable {
     assertLaunchOutcome(EXIT_COMMAND_ARGUMENT_ERROR, "1",
         NoArgsAllowedService.NAME, "one");
   }
 
-  @Test
-  public void testNoArgsHasConfsStripped() throws Throwable {
-    assertRuns(
-        NoArgsAllowedService.NAME,
-        LauncherArguments.ARG_CONF_PREFIXED,
-        configFile(newConf()));
-  }
-
-  @Test
-  public void testRunLaunchableService() throws Throwable {
-    assertRuns(LaunchableRunningService.NAME);
-  }
 
   @Test
   public void testArgBinding() throws Throwable {
@@ -182,10 +165,6 @@ public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
         LaunchableRunningService.ARG_FAILING);
   }
 
-  @Test
-  public void testStoppingInStartLaunchableService() throws Throwable {
-    assertRuns(StoppingInStartLaunchableService.NAME);
-  }
 
   @Test
   public void testShutdownHookNullReference() throws Throwable {
