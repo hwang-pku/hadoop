@@ -329,7 +329,10 @@ public class TestDelegationToken {
   "Owner@123",
   "",
   "   ",
-  "owner@"})
+  "owner@",
+  "@$!@#$%^&*()#",
+  "223423@23"
+  })
   public void testGetUserWithOwner(String owner) {
     TestDelegationTokenIdentifier ident =
         new TestDelegationTokenIdentifier(new Text(owner), null, null);
