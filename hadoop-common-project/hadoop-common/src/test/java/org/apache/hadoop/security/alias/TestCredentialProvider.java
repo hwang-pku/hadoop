@@ -18,6 +18,7 @@
 package org.apache.hadoop.security.alias;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.security.ProviderUtils;
 import org.junit.Test;
@@ -31,13 +32,19 @@ import static org.junit.Assert.assertArrayEquals;
 @RunWith(JUnitParamsRunner.class)
 public class TestCredentialProvider {
 
+  private Object[] valueSetForTestCredentialEntry() {
+    return new Object[] {
+        new Object[] {new char[]{1,2,3,4}, "cred1"},
+    };
+  }
+
   @Test
-  public void testCredentialEntry() throws Exception {
-    char[] key1 = new char[]{1,2,3,4};
-    CredentialProvider.CredentialEntry obj = 
-        new CredentialProvider.CredentialEntry("cred1", key1);
-    assertEquals("cred1", obj.getAlias());
-    assertArrayEquals(new char[]{1,2,3,4}, obj.getCredential());
+  @Parameters(method = "valueSetForTestCredentialEntry")
+  public void testCredentialEntry(char [] key1, String alias) throws Exception {
+    CredentialProvider.CredentialEntry obj =
+        new CredentialProvider.CredentialEntry(alias, key1);
+    assertEquals(alias, obj.getAlias());
+    assertArrayEquals(key1, obj.getCredential());
   }
 
   @Test
