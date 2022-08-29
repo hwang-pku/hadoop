@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import java.util.concurrent.Callable;
+import junitparams.JUnitParamsRunner;
 import org.apache.hadoop.fs.statistics.IOStatisticAssertions;
 import org.apache.hadoop.fs.statistics.MeanStatistic;
 import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
@@ -54,12 +55,14 @@ import org.apache.hadoop.security.token.delegation.AbstractDelegationTokenSecret
 import org.apache.hadoop.util.Daemon;
 import org.apache.hadoop.util.Time;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
+@RunWith(JUnitParamsRunner.class)
 public class TestDelegationToken {
   private static final Logger LOG =
       LoggerFactory.getLogger(TestDelegationToken.class);
