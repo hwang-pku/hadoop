@@ -403,23 +403,36 @@ public class TestDelegationToken {
                  ugi.getRealUser().getAuthenticationMethod());
   }
 
+  private Object[] valueSetForNumberOfElements() {
+     return new Object[] {
+                 new Object[] {2},
+                 new Object[] {5},
+                 new Object[] {0},
+                 new Object[] {-1},
+                 new Object[] {-10},
+                 new Object[] {10},
+     };
+   }
+
   @Test
-  public void testDelegationTokenCount() throws Exception {
+  @Parameters(method = "valueSetForNumberOfElements")
+  public void testDelegationTokenCount(int numberOfTokens) throws Exception {
+    Assume.assumeTrue(numberOfTokens >= 0);
     final TestDelegationTokenSecretManager dtSecretManager =
         new TestDelegationTokenSecretManager(24*60*60*1000,
             3*1000, 1*1000, 3600000);
     try {
       dtSecretManager.startThreads();
       assertThat(dtSecretManager.getCurrentTokensSize()).isZero();
-      final Token<TestDelegationTokenIdentifier> token1 =
-          generateDelegationToken(dtSecretManager, "SomeUser", "JobTracker");
-      assertThat(dtSecretManager.getCurrentTokensSize()).isOne();
-      final Token<TestDelegationTokenIdentifier> token2 =
-          generateDelegationToken(dtSecretManager, "SomeUser", "JobTracker");
-      assertThat(dtSecretManager.getCurrentTokensSize()).isEqualTo(2);
-      dtSecretManager.cancelToken(token1, "JobTracker");
-      assertThat(dtSecretManager.getCurrentTokensSize()).isOne();
-      dtSecretManager.cancelToken(token2, "JobTracker");
+      Token<TestDelegationTokenIdentifier>[] tokens = new Token[numberOfTokens];
+      for (int i = 0; i < numberOfTokens; i++) {
+        tokens[i] = generateDelegationToken(dtSecretManager, "SomeUser", "JobTracker");
+        assertThat(dtSecretManager.getCurrentTokensSize()).isEqualTo(i + 1);
+      }
+      for (int i = 0; i < numberOfTokens; i++) {
+        dtSecretManager.cancelToken(tokens[i], "JobTracker");
+        assertThat(dtSecretManager.getCurrentTokensSize()).isEqualTo(numberOfTokens - i - 1);
+      }
       assertThat(dtSecretManager.getCurrentTokensSize()).isZero();
     } finally {
       dtSecretManager.stopThreads();
