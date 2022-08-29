@@ -34,7 +34,12 @@ public class TestCredentialProvider {
 
   private Object[] valueSetForTestCredentialEntry() {
     return new Object[] {
-        new Object[] {new char[]{1,2,3,4}, "cred1"},
+        new Object[] {new char[]{1, 2, 3, 4}, "cred1"},
+        new Object[] {new char[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, "cred123456789"},
+        new Object[] {new char[]{1}, "00"},
+        new Object[] {new char[]{'a', 'b', 'c'}, "    "},
+        new Object[] {new char[]{1, 'b', '@', '#'}, "123@abc"},
+        new Object[] {new char[]{}, ""},
     };
   }
 
