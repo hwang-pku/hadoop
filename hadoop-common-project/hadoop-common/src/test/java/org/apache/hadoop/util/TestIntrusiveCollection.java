@@ -99,6 +99,17 @@ public class TestIntrusiveCollection extends HadoopTestBase {
     }
   }
 
+  private Object[] valueSetForNumberOfElements() {
+    return new Object[] {
+                new Object[] {1},
+                new Object[] {3},
+                new Object[] {0},
+                new Object[] {-1},
+                new Object[] {-10},
+                new Object[] {10},
+    };
+  }
+
   /**
    * <pre>
    * Scenario S1.1: Adding and removing elements
@@ -112,13 +123,7 @@ public class TestIntrusiveCollection extends HadoopTestBase {
    * </pre>
    */
   @Test
-  @Parameters({
-  "1",
-  "5",
-  "0",
-  "-1",
-  "-10",
-  "10"})
+  @Parameters(method = "valueSetForNumberOfElements")
   public void testShouldAddAndRemoveElements(int numberOfElementsToAddAndRemove) {
     Assume.assumeTrue(numberOfElementsToAddAndRemove >= 0);
     IntrusiveCollection<SimpleElement> intrusiveCollection =
@@ -153,8 +158,7 @@ public class TestIntrusiveCollection extends HadoopTestBase {
    * </pre>
    */
   @Test
-  @Parameters({
-  "3"})
+  @Parameters(method = "valueSetForNumberOfElements")
   public void testShouldRemoveAllElements(int numberOfElements) {
     IntrusiveCollection<SimpleElement> intrusiveCollection =
       new IntrusiveCollection<>();
