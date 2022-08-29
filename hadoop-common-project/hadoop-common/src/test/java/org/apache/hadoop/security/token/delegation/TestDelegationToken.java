@@ -370,17 +370,33 @@ public class TestDelegationToken {
     }
   }
 
+  private Object[] valueSetForTwoUserName() {
+    return new Object[] {
+                new Object[] {"owner", "realUser"},
+                new Object[] {"Owner@123", "realUser123"},
+                new Object[] {"   ", "      "},
+                new Object[] {"owner@", "real@"},
+                new Object[] {"@$!@#$%^&*()#", "!@#$%^&*()"},
+                new Object[] {"223423@23", "456789@98765"},
+    };
+  }
+
   @Test
-  public void testGetUserWithOwnerAndReal() {
-    Text owner = new Text("owner");
-    Text realUser = new Text("realUser");
+  @Parameters(method = "valueSetForTwoUserName")
+  public void testGetUserWithOwnerAndReal(String ownerStr, String realUserStr) {
+    Matcher match = nameParser.matcher(ownerStr);
+    Assume.assumeFalse(!match.matches() && ownerStr.contains("@"));
+    nameParser.matcher(realUserStr);
+    Assume.assumeFalse(!match.matches() && realUserStr.contains("@"));
+    Text owner = new Text(ownerStr);
+    Text realUser = new Text(realUserStr);
     TestDelegationTokenIdentifier ident =
         new TestDelegationTokenIdentifier(owner, null, realUser);
     UserGroupInformation ugi = ident.getUser();
     assertNotNull(ugi.getRealUser());
     assertNull(ugi.getRealUser().getRealUser());
-    assertEquals("owner", ugi.getUserName());
-    assertEquals("realUser", ugi.getRealUser().getUserName());
+    assertEquals(ownerStr, ugi.getUserName());
+    assertEquals(realUserStr, ugi.getRealUser().getUserName());
     assertEquals(AuthenticationMethod.PROXY,
                  ugi.getAuthenticationMethod());
     assertEquals(AuthenticationMethod.TOKEN,
