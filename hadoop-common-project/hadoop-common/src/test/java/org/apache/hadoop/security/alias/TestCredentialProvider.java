@@ -53,14 +53,13 @@ public class TestCredentialProvider {
   }
 
   @Test
-  public void testUnnestUri() throws Exception {
-    assertEquals(new Path("hdfs://nn.example.com/my/path"),
-        ProviderUtils.unnestUri(new URI("myscheme://hdfs@nn.example.com/my/path")));
-    assertEquals(new Path("hdfs://nn/my/path?foo=bar&baz=bat#yyy"),
-        ProviderUtils.unnestUri(new URI("myscheme://hdfs@nn/my/path?foo=bar&baz=bat#yyy")));
-    assertEquals(new Path("inner://hdfs@nn1.example.com/my/path"),
-        ProviderUtils.unnestUri(new URI("outer://inner@hdfs@nn1.example.com/my/path")));
-    assertEquals(new Path("user:///"),
-        ProviderUtils.unnestUri(new URI("outer://user/")));
+  @Parameters({
+  "hdfs://nn.example.com/my/path, myscheme://hdfs@nn.example.com/my/path",
+  "hdfs://nn/my/path?foo=bar&baz=bat#yyy, myscheme://hdfs@nn/my/path?foo=bar&baz=bat#yyy",
+  "inner://hdfs@nn1.example.com/my/path, outer://inner@hdfs@nn1.example.com/my/path",
+  "user:///, outer://user/"
+  })
+  public void testUnnestUri(String pathString, String uriString) throws Exception {
+    assertEquals(new Path(pathString), ProviderUtils.unnestUri(new URI(uriString)));
   }
 }
