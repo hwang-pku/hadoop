@@ -756,20 +756,20 @@ public class TestDelegationToken {
   }
 
   @Test
-  public void testMultipleDelegationTokenSecretManagerMetrics() {
-    TestDelegationTokenSecretManager dtSecretManager1 =
+  @Parameters(method = "valueSetForNumberOfElements")
+  public void testMultipleDelegationTokenSecretManagerMetrics(int numberOfDtSecretManagers) {
+    Assume.assumeTrue(numberOfDtSecretManagers >= 0);
+    TestDelegationTokenSecretManager[] dtSecretManagers =
+        new TestDelegationTokenSecretManager[numberOfDtSecretManagers];
+    for (int i = 0; i < numberOfDtSecretManagers; i++) {
+        if (i != 0 && i % 2 == 0) {
+            DefaultMetricsSystem.instance().init("test");
+        }
+        dtSecretManagers[i] =
         new TestDelegationTokenSecretManager(0, 0, 0, 0);
-    assertNotNull(dtSecretManager1.getMetrics());
+        assertNotNull(dtSecretManagers[i].getMetrics());
+    }
 
-    TestDelegationTokenSecretManager dtSecretManager2 =
-        new TestDelegationTokenSecretManager(0, 0, 0, 0);
-    assertNotNull(dtSecretManager2.getMetrics());
-
-    DefaultMetricsSystem.instance().init("test");
-
-    TestDelegationTokenSecretManager dtSecretManager3 =
-        new TestDelegationTokenSecretManager(0, 0, 0, 0);
-    assertNotNull(dtSecretManager3.getMetrics());
   }
 
   @Test
