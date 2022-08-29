@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
 
 import org.apache.hadoop.test.HadoopTestBase;
@@ -107,17 +108,22 @@ public class TestIntrusiveCollection extends HadoopTestBase {
    * </pre>
    */
   @Test
-  public void testShouldAddElement() {
+  @Parameters({
+  "1"})
+  public void testShouldAddElements(int numberOfElementsToAdd) {
     IntrusiveCollection<SimpleElement> intrusiveCollection =
       new IntrusiveCollection<>();
-
-    SimpleElement element = new SimpleElement();
-    intrusiveCollection.add(element);
-
-    assertFalse("Collection should not be empty",
-        intrusiveCollection.isEmpty());
-    assertTrue("Collection should contain added element",
-        intrusiveCollection.contains(element));
+    SimpleElement[] elements = new SimpleElement[numberOfElementsToAdd];
+    for (int i = 0; i < numberOfElementsToAdd; i++) {
+        elements[i] = new SimpleElement();
+        intrusiveCollection.add(elements[i]);
+        assertFalse("Collection should not be empty",
+            intrusiveCollection.isEmpty());
+    }
+    for (int i = 0; i < numberOfElementsToAdd; i++) {
+        assertTrue("Collection should contain added element",
+            intrusiveCollection.contains(elements[i]));
+    }
   }
 
   /**
