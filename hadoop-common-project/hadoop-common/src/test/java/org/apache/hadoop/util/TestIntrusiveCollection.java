@@ -101,11 +101,14 @@ public class TestIntrusiveCollection extends HadoopTestBase {
 
   /**
    * <pre>
-   * Scenario S1.1: Adding an element
+   * Scenario S1.1: Adding and removing elements
    * Given  an IntrusiveCollection has been created
    *  and    the IntrusiveCollection is empty
-   * When    I insert an element
-   * Then    the IntrusiveCollection contains the newly added element.
+   * When    I insert elements
+   *  and    then remove them
+   * Then    The IntrusiveCollection contains the newly added elements
+   *  and    doesn't find them once removed
+   *  and    the IntrusiveCollection is empty at last
    * </pre>
    */
   @Test
@@ -116,49 +119,33 @@ public class TestIntrusiveCollection extends HadoopTestBase {
   "-1",
   "-10",
   "10"})
-  public void testShouldAddElements(int numberOfElementsToAdd) {
-    Assume.assumeTrue(numberOfElementsToAdd >= 0);
+  public void testShouldAddAndRemoveElements(int numberOfElementsToAddAndRemove) {
+    Assume.assumeTrue(numberOfElementsToAddAndRemove >= 0);
     IntrusiveCollection<SimpleElement> intrusiveCollection =
       new IntrusiveCollection<>();
-    SimpleElement[] elements = new SimpleElement[numberOfElementsToAdd];
-    for (int i = 0; i < numberOfElementsToAdd; i++) {
+    SimpleElement[] elements = new SimpleElement[numberOfElementsToAddAndRemove];
+    for (int i = 0; i < numberOfElementsToAddAndRemove; i++) {
         elements[i] = new SimpleElement();
         intrusiveCollection.add(elements[i]);
         assertFalse("Collection should not be empty",
             intrusiveCollection.isEmpty());
     }
-    for (int i = 0; i < numberOfElementsToAdd; i++) {
+    for (int i = 0; i < numberOfElementsToAddAndRemove; i++) {
         assertTrue("Collection should contain added element",
             intrusiveCollection.contains(elements[i]));
     }
-  }
-
-  /**
-   * <pre>
-   * Scenario S1.2: Removing an element
-   * Given  an IntrusiveCollection has been created
-   *  and    the InstrusiveCollection contains a single element
-   * When    I remove the element
-   * Then    the IntrusiveCollection is empty.
-   * </pre>
-   */
-  @Test
-  public void testShouldRemoveElement() {
-    IntrusiveCollection<SimpleElement> intrusiveCollection =
-      new IntrusiveCollection<>();
-    SimpleElement element = new SimpleElement();
-    intrusiveCollection.add(element);
-
-    intrusiveCollection.remove(element);
-
+    for (int i = 0; i < numberOfElementsToAddAndRemove; i++) {
+        intrusiveCollection.remove(elements[i]);
+        assertFalse("Collection should not contain removed element",
+            intrusiveCollection.contains(elements[i]));
+    }
     assertTrue("Collection should be empty", intrusiveCollection.isEmpty());
-    assertFalse("Collection should not contain removed element",
-        intrusiveCollection.contains(element));
   }
+
 
   /**
    * <pre>
-   * Scenario S1.3: Removing all elements
+   * Scenario S1.2: Removing all elements
    * Given  an IntrusiveCollection has been created
    *  and    the IntrusiveCollection contains multiple elements
    * When    I remove all elements
@@ -180,7 +167,7 @@ public class TestIntrusiveCollection extends HadoopTestBase {
 
   /**
    * <pre>
-   * Scenario S1.4: Iterating through elements
+   * Scenario S1.3: Iterating through elements
    * Given  an IntrusiveCollection has been created
    *  and    the IntrusiveCollection contains multiple elements
    * When    I iterate through the IntrusiveCollection
