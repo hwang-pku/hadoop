@@ -727,10 +727,16 @@ public class TestDelegationToken {
   }
 
   @Test
-  public void testDelegationKeyEqualAndHash() {
-    DelegationKey key1 = new DelegationKey(1111, 2222, "keyBytes".getBytes());
-    DelegationKey key2 = new DelegationKey(1111, 2222, "keyBytes".getBytes());
-    DelegationKey key3 = new DelegationKey(3333, 2222, "keyBytes".getBytes());
+  @Parameters({
+  "1111,2222,keyBytes,3333,2222,keyBytes",
+  "1111,2222,keyBytes,1111,3333,keyBytes",
+  "1111,2222,keyBytes,1111,2222,keyBytes1",
+  "1111,2222,keyBytes,3333,2222,",
+  })
+  public void testDelegationKeyEqualAndHash(int keyId1, long date1, String s1, int keyId2, long date2, String s2) {
+    DelegationKey key1 = new DelegationKey(keyId1, date1, s1.getBytes());
+    DelegationKey key2 = new DelegationKey(keyId1, date1, s1.getBytes());
+    DelegationKey key3 = new DelegationKey(keyId2, date2, s2.getBytes());
     Assert.assertEquals(key1, key2);
     Assert.assertFalse(key2.equals(key3));
   }
