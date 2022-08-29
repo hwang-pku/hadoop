@@ -182,6 +182,7 @@ public class TestIntrusiveCollection extends HadoopTestBase {
   @Test
   @Parameters(method = "valueSetForNumberOfElements")
   public void testIterateShouldReturnAllElements(int numberOfElements) {
+    Assume.assumeTrue(numberOfElements >= 0);
     IntrusiveCollection<SimpleElement> intrusiveCollection =
       new IntrusiveCollection<>();
     SimpleElement[] elements = new SimpleElement[numberOfElements];
