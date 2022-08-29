@@ -57,9 +57,13 @@ public class TestCredentialProvider {
   "hdfs://nn.example.com/my/path, myscheme://hdfs@nn.example.com/my/path",
   "hdfs://nn/my/path?foo=bar&baz=bat#yyy, myscheme://hdfs@nn/my/path?foo=bar&baz=bat#yyy",
   "inner://hdfs@nn1.example.com/my/path, outer://inner@hdfs@nn1.example.com/my/path",
-  "user:///, outer://user/"
+  "user:///, outer://user/",
+  "rootuser:///, outer://rootuser/",
+  "inner://rootuser?a=b&c=123, outer://inner@rootuser?a=b&c=123",
+  "https://rootuser#abcxy23, outer://https@rootuser#abcxy23"
   })
   public void testUnnestUri(String pathString, String uriString) throws Exception {
     assertEquals(new Path(pathString), ProviderUtils.unnestUri(new URI(uriString)));
+    // give time to thinking about generalizing above assert (unnestUri found to be too complex for a one liner)
   }
 }
