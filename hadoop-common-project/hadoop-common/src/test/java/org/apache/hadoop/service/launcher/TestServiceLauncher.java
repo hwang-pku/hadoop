@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.service.launcher;
 
+import junitparams.JUnitParamsRunner;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.service.BreakableService;
 import org.apache.hadoop.service.launcher.testservices.FailingStopInStartService;
@@ -33,7 +34,8 @@ import static org.apache.hadoop.test.GenericTestUtils.*;
 import static org.apache.hadoop.service.launcher.testservices.ExceptionInExecuteLaunchableService.*;
 
 import org.junit.Test;
-
+import org.junit.runner.RunWith;
+@RunWith(JUnitParamsRunner.class)
 public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
 
   @Test
