@@ -180,22 +180,21 @@ public class TestIntrusiveCollection extends HadoopTestBase {
    * </pre>
    */
   @Test
-  public void testIterateShouldReturnAllElements() {
+  @Parameters(method = "valueSetForNumberOfElements")
+  public void testIterateShouldReturnAllElements(int numberOfElements) {
     IntrusiveCollection<SimpleElement> intrusiveCollection =
       new IntrusiveCollection<>();
-    SimpleElement elem1 = new SimpleElement();
-    SimpleElement elem2 = new SimpleElement();
-    SimpleElement elem3 = new SimpleElement();
-    intrusiveCollection.add(elem1);
-    intrusiveCollection.add(elem2);
-    intrusiveCollection.add(elem3);
+    SimpleElement[] elements = new SimpleElement[numberOfElements];
+    for (int i = 0; i < numberOfElements; i++) {
+        elements[i] = new SimpleElement();
+        intrusiveCollection.add(elements[i]);
+    }
 
     Iterator<SimpleElement> iterator = intrusiveCollection.iterator();
 
-    assertEquals("First element returned is incorrect", elem1, iterator.next());
-    assertEquals("Second element returned is incorrect", elem2,
-        iterator.next());
-    assertEquals("Third element returned is incorrect", elem3, iterator.next());
+    for (int i = 0; i < numberOfElements; i++) {
+        assertEquals((i + 1) + " element returned is incorrect", elements[i], iterator.next());
+    }
     assertFalse("Iterator should not have next element", iterator.hasNext());
   }
 }
