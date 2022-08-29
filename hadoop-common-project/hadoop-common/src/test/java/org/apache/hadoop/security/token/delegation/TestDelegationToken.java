@@ -32,6 +32,7 @@ import java.util.Map;
 
 import java.util.concurrent.Callable;
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.hadoop.fs.statistics.IOStatisticAssertions;
 import org.apache.hadoop.fs.statistics.MeanStatistic;
 import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
@@ -224,12 +225,15 @@ public class TestDelegationToken {
   }
   
   @Test
-  public void testSerialization(String string, String string1, String string2, int issueDate, int masterKeyId,
+  @Parameters({
+  "alice, bob, colin, 123, 321, 314, 12345"
+  })
+  public void testSerialization(String owner, String renewer, String realUser, int issueDate, int masterKeyId,
      int maxDate, int sequenceNumber) throws Exception {
     TestDelegationTokenIdentifier origToken = new 
-                        TestDelegationTokenIdentifier(new Text(string),
-                                          new Text(string1),
-                                          new Text(string2));
+                        TestDelegationTokenIdentifier(new Text(owner),
+                                          new Text(renewer),
+                                          new Text(realUser));
     TestDelegationTokenIdentifier newToken = new TestDelegationTokenIdentifier();
     origToken.setIssueDate(issueDate);
     origToken.setMasterKeyId(masterKeyId);
@@ -244,9 +248,9 @@ public class TestDelegationToken {
     newToken.readFields(inBuf);
     
     // now test the fields
-    assertEquals(string, newToken.getUser().getUserName());
-    assertEquals(new Text(string1), newToken.getRenewer());
-    assertEquals(string2, newToken.getUser().getRealUser().getUserName());
+    assertEquals(owner, newToken.getUser().getUserName());
+    assertEquals(new Text(renewer), newToken.getRenewer());
+    assertEquals(realUser, newToken.getUser().getRealUser().getUserName());
     assertEquals(issueDate, newToken.getIssueDate());
     assertEquals(masterKeyId, newToken.getMasterKeyId());
     assertEquals(maxDate, newToken.getMaxDate());
