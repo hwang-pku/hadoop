@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.hadoop.fs.statistics.IOStatisticAssertions;
@@ -38,6 +40,7 @@ import org.apache.hadoop.fs.statistics.MeanStatistic;
 import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
 import org.apache.hadoop.metrics2.lib.MutableCounterLong;
 import org.apache.hadoop.metrics2.lib.MutableRate;
+import org.apache.hadoop.security.authentication.util.KerberosName;
 import org.apache.hadoop.test.LambdaTestUtils;
 import org.junit.Assert;
 
@@ -55,6 +58,7 @@ import org.apache.hadoop.security.token.TokenIdentifier;
 import org.apache.hadoop.security.token.delegation.AbstractDelegationTokenSecretManager.DelegationTokenInformation;
 import org.apache.hadoop.util.Daemon;
 import org.apache.hadoop.util.Time;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -68,6 +72,8 @@ public class TestDelegationToken {
   private static final Logger LOG =
       LoggerFactory.getLogger(TestDelegationToken.class);
   private static final Text KIND = new Text("MY KIND");
+    private static final Pattern nameParser =
+        Pattern.compile("([^/@]+)(/([^/@]+))?(@([^/@]+))?");
 
   public static class TestDelegationTokenIdentifier 
   extends AbstractDelegationTokenIdentifier
@@ -228,10 +234,23 @@ public class TestDelegationToken {
   @Parameters({
   "alice, bob, colin, 123, 321, 314, 12345",
   "alice, alice, alice, 1, 1, 1, 1",
-  ", , , 1, 1, 1, 1"
+  ", , , 1, 1, 1, 1",
+  ", , , 0, 0, 0, 0",
+  "a, b, c, -1, -1, -1, -1",
+  "asd@123, hfg&$, 4567&Adas, 0, 0, 0, 0",
+  "ace 12, hdf75, colin@32, 123, 321, 314, 12345",
+  "asd@, hfg&$, 4567&Adas, 0, 0, 0, 0",
+  "alice, bob, colin@, 123, 321, 314, 12345",
+  "alice, bob@, colin, 123, 321, 314, 12345",
   })
   public void testSerialization(String owner, String renewer, String realUser, int issueDate, int masterKeyId,
      int maxDate, int sequenceNumber) throws Exception {
+    Matcher match = nameParser.matcher(owner);
+    Assume.assumeFalse(!match.matches() && owner.contains("@"));
+    match = nameParser.matcher(renewer);
+    Assume.assumeFalse(!match.matches() && renewer.contains("@"));
+    match = nameParser.matcher(realUser);
+    Assume.assumeFalse(!match.matches() && realUser.contains("@"));
     TestDelegationTokenIdentifier origToken = new 
                         TestDelegationTokenIdentifier(new Text(owner),
                                           new Text(renewer),
@@ -250,6 +269,13 @@ public class TestDelegationToken {
     newToken.readFields(inBuf);
     
     // now test the fields
+//    String kerberosRule =
+//            "RULE:[1:$1@$0](.*@EXAMPLE.COM)s/@.*//\nDEFAULT";
+//    String kerberosRule =
+//            "RULE:[1:$1@$0](.*@BAR)s/@.*//\nDEFAULT";
+
+//    KerberosName.setRules(kerberosRule);
+//    KerberosName.setRules("DEFAULT");
     if ( (owner == null) || (owner.toString().isEmpty())) {
          assertNull(newToken.getUser());
     } else {
