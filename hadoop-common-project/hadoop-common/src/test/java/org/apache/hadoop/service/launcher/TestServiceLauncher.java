@@ -104,7 +104,11 @@ public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
    */
   @Test
   @Parameters({
-  "32,020"
+  "32,020",
+  "64,040",
+  "96,060",
+  "128,080",
+  "16,010"
   })
   public void testBasicExceptionFormatting(int argValue, String expectedText) throws Throwable {
     ServiceLaunchException ex = new ServiceLaunchException(0, "%03x", argValue);
