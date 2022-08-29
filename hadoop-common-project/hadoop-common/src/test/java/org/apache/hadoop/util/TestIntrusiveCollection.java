@@ -32,6 +32,7 @@ import java.util.Map;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.junit.Assume;
 import org.junit.Test;
 
 import org.apache.hadoop.test.HadoopTestBase;
@@ -109,8 +110,14 @@ public class TestIntrusiveCollection extends HadoopTestBase {
    */
   @Test
   @Parameters({
-  "1"})
+  "1",
+  "5",
+  "0",
+  "-1",
+  "-10",
+  "10"})
   public void testShouldAddElements(int numberOfElementsToAdd) {
+    Assume.assumeTrue(numberOfElementsToAdd >= 0);
     IntrusiveCollection<SimpleElement> intrusiveCollection =
       new IntrusiveCollection<>();
     SimpleElement[] elements = new SimpleElement[numberOfElementsToAdd];
