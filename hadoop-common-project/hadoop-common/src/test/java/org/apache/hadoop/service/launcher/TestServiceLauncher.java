@@ -132,14 +132,26 @@ public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
     assertExceptionContains(format, ex);
   }
 
-  @Test
-  public void testInnerCause() throws Throwable {
+  private Object[] valueSetForCause() {
+    return new Object[] {
+                new Object[] {"cause"},
+                new Object[] {""},
+                new Object[] {"   "},
+                new Object[] {"!@#$%^&*()"},
+                new Object[] {"123@abc"},
+                new Object[] {"abc@123"},
+    };
+  }
 
-    Exception cause = new Exception("cause");
+  @Test
+  @Parameters(method = "valueSetForCause")
+  public void testInnerCause(String causeStr) throws Throwable {
+
+    Exception cause = new Exception(causeStr);
     ServiceLaunchException ex =
         new ServiceLaunchException(0, "%03x: %s", 32, cause);
     assertExceptionContains("020", ex);
-    assertExceptionContains("cause", ex);
+    assertExceptionContains(causeStr, ex);
     assertSame(cause, ex.getCause());
   }
 
