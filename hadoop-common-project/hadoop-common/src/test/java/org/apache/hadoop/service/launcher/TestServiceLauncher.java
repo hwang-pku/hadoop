@@ -75,40 +75,26 @@ public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
     assertEquals(FailingStopInStartService.EXIT_CODE, e.getExitCode());
   }
 
-  @Test
-  public void testEx() throws Throwable {
-    assertLaunchOutcome(EXIT_EXCEPTION_THROWN,
-        OTHER_EXCEPTION_TEXT,
-        NAME);
+  private Object[] valueSetForTestingExceptionAndExits()throws Throwable {
+    return new Object[] {
+        new Object[] {EXIT_EXCEPTION_THROWN, OTHER_EXCEPTION_TEXT, NAME},
+        new Object[] {EXIT_OTHER_FAILURE, SLE_TEXT, NAME, ARG_THROW_SLE},
+        new Object[] {IOE_EXIT_CODE, EXIT_IN_IOE_TEXT, NAME, ARG_THROW_IOE},
+        new Object[] {EXIT_EXCEPTION_THROWN, "java.lang.OutOfMemoryError", NAME, ARG_THROWABLE},
+        new Object[] {EXIT_COMMAND_ARGUMENT_ERROR, "1", NoArgsAllowedService.NAME, "one"},
+        new Object[] {EXIT_OTHER_FAILURE, "", LaunchableRunningService.NAME, LaunchableRunningService.ARG_FAILING},
+    };
   }
 
   /**
-   * This test verifies that exceptions in the
+   * Value set 2 verifies that exceptions in the
    * {@link LaunchableService#execute()} method are relayed if an instance of
    * an exit exceptions, and forwarded if not.
    */
   @Test
-  public void testServiceLaunchException() throws Throwable {
-    assertLaunchOutcome(EXIT_OTHER_FAILURE,
-        SLE_TEXT,
-        NAME,
-        ARG_THROW_SLE);
-  }
-
-  @Test
-  public void testIOE() throws Throwable {
-    assertLaunchOutcome(IOE_EXIT_CODE,
-        EXIT_IN_IOE_TEXT,
-        NAME,
-        ARG_THROW_IOE);
-  }
-
-  @Test
-  public void testThrowable() throws Throwable {
-    assertLaunchOutcome(EXIT_EXCEPTION_THROWN,
-        "java.lang.OutOfMemoryError",
-        NAME,
-        ARG_THROWABLE);
+  @Parameters(method = "valueSetForTestingExceptionAndExits")
+  public void testExceptionsAndExits(int expected, String text, String... args) throws Throwable {
+    assertLaunchOutcome(expected, text, args);
   }
 
   /**
@@ -149,22 +135,6 @@ public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
     assertFalse(ex.getMessage().contains("cause"));
     assertSame(cause, ex.getCause());
   }
-
-  @Test
-  public void testNoArgsOneArg() throws Throwable {
-    assertLaunchOutcome(EXIT_COMMAND_ARGUMENT_ERROR, "1",
-        NoArgsAllowedService.NAME, "one");
-  }
-
-
-  @Test
-  public void testArgBinding() throws Throwable {
-    assertLaunchOutcome(EXIT_OTHER_FAILURE,
-        "",
-        LaunchableRunningService.NAME,
-        LaunchableRunningService.ARG_FAILING);
-  }
-
 
   @Test
   public void testShutdownHookNullReference() throws Throwable {
