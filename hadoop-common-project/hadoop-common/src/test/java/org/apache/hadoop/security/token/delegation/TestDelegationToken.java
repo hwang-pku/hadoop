@@ -226,7 +226,8 @@ public class TestDelegationToken {
   
   @Test
   @Parameters({
-  "alice, bob, colin, 123, 321, 314, 12345"
+  "alice, bob, colin, 123, 321, 314, 12345",
+  "alice, alice, alice, 1, 1, 1, 1",
   })
   public void testSerialization(String owner, String renewer, String realUser, int issueDate, int masterKeyId,
      int maxDate, int sequenceNumber) throws Exception {
@@ -250,7 +251,11 @@ public class TestDelegationToken {
     // now test the fields
     assertEquals(owner, newToken.getUser().getUserName());
     assertEquals(new Text(renewer), newToken.getRenewer());
-    assertEquals(realUser, newToken.getUser().getRealUser().getUserName());
+    if ((realUser == null) || (realUser.isEmpty()) || realUser.equals(owner)) {
+        assertEquals(realUser, newToken.getRealUser().toString());
+    } else {
+        assertEquals(realUser, newToken.getUser().getRealUser().getUserName());
+    }
     assertEquals(issueDate, newToken.getIssueDate());
     assertEquals(masterKeyId, newToken.getMasterKeyId());
     assertEquals(maxDate, newToken.getMaxDate());
