@@ -325,14 +325,24 @@ public class TestDelegationToken {
   
   @Test
   @Parameters({
-  "owner"})
+  "owner",
+  "Owner@123",
+  "",
+  "   ",
+  "owner@"})
   public void testGetUserWithOwner(String owner) {
     TestDelegationTokenIdentifier ident =
         new TestDelegationTokenIdentifier(new Text(owner), null, null);
+    Matcher match = nameParser.matcher(owner);
+    Assume.assumeFalse(!match.matches() && owner.contains("@"));
     UserGroupInformation ugi = ident.getUser();
-    assertNull(ugi.getRealUser());
-    assertEquals(owner, ugi.getUserName());
-    assertEquals(AuthenticationMethod.TOKEN, ugi.getAuthenticationMethod());
+    if ( (owner == null) || (owner.isEmpty())) {
+        assertNull(ugi);
+    } else {
+        assertNull(ugi.getRealUser());
+        assertEquals(owner, ugi.getUserName());
+        assertEquals(AuthenticationMethod.TOKEN, ugi.getAuthenticationMethod());
+    }
   }
 
   @Test
