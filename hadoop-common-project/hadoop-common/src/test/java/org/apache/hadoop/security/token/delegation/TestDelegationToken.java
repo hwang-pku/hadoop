@@ -690,13 +690,26 @@ public class TestDelegationToken {
   }
       
   @Test
-  public void testSimpleDtidSerialization() throws IOException {
+  @Parameters({
+  "owner,renewer,realUser",
+  ",,",
+  ",b,",
+  "a,,",
+  ",,c",
+  "owner@,renewer@,realUser@",
+  "owner@123,,",
+  ",owner@123,",
+  ",,owner@123"
+  })
+  public void testSimpleDtidSerialization(String owner, String renewer, String realUser) throws IOException {
+    Matcher match = nameParser.matcher(owner);
+    Assume.assumeFalse(!match.matches() && owner.contains("@"));
+    match = nameParser.matcher(renewer);
+    Assume.assumeFalse(!match.matches() && renewer.contains("@"));
+    match = nameParser.matcher(realUser);
+    Assume.assumeFalse(!match.matches() && realUser.contains("@"));
     assertTrue(testDelegationTokenIdentiferSerializationRoundTrip(
-        new Text("owner"), new Text("renewer"), new Text("realUser")));
-    assertTrue(testDelegationTokenIdentiferSerializationRoundTrip(
-        new Text(""), new Text(""), new Text("")));
-    assertTrue(testDelegationTokenIdentiferSerializationRoundTrip(
-        new Text(""), new Text("b"), new Text("")));
+        new Text(owner), new Text(renewer), new Text(realUser)));
   }
   
   @Test
