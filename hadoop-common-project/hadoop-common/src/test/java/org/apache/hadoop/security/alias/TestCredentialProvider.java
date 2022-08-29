@@ -17,15 +17,18 @@
  */
 package org.apache.hadoop.security.alias;
 
+import junitparams.JUnitParamsRunner;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.security.ProviderUtils;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.net.URI;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
+@RunWith(JUnitParamsRunner.class)
 public class TestCredentialProvider {
 
   @Test
