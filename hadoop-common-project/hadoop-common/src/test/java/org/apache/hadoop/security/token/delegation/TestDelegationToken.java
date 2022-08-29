@@ -224,16 +224,17 @@ public class TestDelegationToken {
   }
   
   @Test
-  public void testSerialization() throws Exception {
+  public void testSerialization(String string, String string1, String string2, int issueDate, int masterKeyId,
+     int maxDate, int sequenceNumber) throws Exception {
     TestDelegationTokenIdentifier origToken = new 
-                        TestDelegationTokenIdentifier(new Text("alice"), 
-                                          new Text("bob"), 
-                                          new Text("colin"));
+                        TestDelegationTokenIdentifier(new Text(string),
+                                          new Text(string1),
+                                          new Text(string2));
     TestDelegationTokenIdentifier newToken = new TestDelegationTokenIdentifier();
-    origToken.setIssueDate(123);
-    origToken.setMasterKeyId(321);
-    origToken.setMaxDate(314);
-    origToken.setSequenceNumber(12345);
+    origToken.setIssueDate(issueDate);
+    origToken.setMasterKeyId(masterKeyId);
+    origToken.setMaxDate(maxDate);
+    origToken.setSequenceNumber(sequenceNumber);
     
     // clone origToken into newToken
     DataInputBuffer inBuf = new DataInputBuffer();
@@ -243,13 +244,13 @@ public class TestDelegationToken {
     newToken.readFields(inBuf);
     
     // now test the fields
-    assertEquals("alice", newToken.getUser().getUserName());
-    assertEquals(new Text("bob"), newToken.getRenewer());
-    assertEquals("colin", newToken.getUser().getRealUser().getUserName());
-    assertEquals(123, newToken.getIssueDate());
-    assertEquals(321, newToken.getMasterKeyId());
-    assertEquals(314, newToken.getMaxDate());
-    assertEquals(12345, newToken.getSequenceNumber());
+    assertEquals(string, newToken.getUser().getUserName());
+    assertEquals(new Text(string1), newToken.getRenewer());
+    assertEquals(string2, newToken.getUser().getRealUser().getUserName());
+    assertEquals(issueDate, newToken.getIssueDate());
+    assertEquals(masterKeyId, newToken.getMasterKeyId());
+    assertEquals(maxDate, newToken.getMaxDate());
+    assertEquals(sequenceNumber, newToken.getSequenceNumber());
     assertEquals(origToken, newToken);
   }
   
