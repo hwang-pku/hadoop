@@ -322,17 +322,21 @@ public class TestDelegationToken {
     UserGroupInformation ugi = ident.getUser();
     assertNull(ugi);
   }
-  
+
+  private Object[] valueSetForUserName() {
+    return new Object[] {
+                new Object[] {"owner"},
+                new Object[] {"Owner@123"},
+                new Object[] {""},
+                new Object[] {"   "},
+                new Object[] {"owner@"},
+                new Object[] {"@$!@#$%^&*()#"},
+                new Object[] {"223423@23"},
+    };
+  }
+
   @Test
-  @Parameters({
-  "owner",
-  "Owner@123",
-  "",
-  "   ",
-  "owner@",
-  "@$!@#$%^&*()#",
-  "223423@23"
-  })
+  @Parameters(method = "valueSetForUserName")
   public void testGetUserWithOwner(String owner) {
     TestDelegationTokenIdentifier ident =
         new TestDelegationTokenIdentifier(new Text(owner), null, null);
@@ -349,14 +353,21 @@ public class TestDelegationToken {
   }
 
   @Test
-  public void testGetUserWithOwnerEqualsReal() {
-    Text owner = new Text("owner");
+  @Parameters(method = "valueSetForUserName")
+  public void testGetUserWithOwnerEqualsReal(String str) {
+    Matcher match = nameParser.matcher(str);
+    Assume.assumeFalse(!match.matches() && str.contains("@"));
+    Text owner = new Text(str);
     TestDelegationTokenIdentifier ident =
         new TestDelegationTokenIdentifier(owner, null, owner);
     UserGroupInformation ugi = ident.getUser();
-    assertNull(ugi.getRealUser());
-    assertEquals("owner", ugi.getUserName());
-    assertEquals(AuthenticationMethod.TOKEN, ugi.getAuthenticationMethod());
+    if ( (owner == null) || (str.isEmpty())) {
+        assertNull(ugi);
+    } else {
+        assertNull(ugi.getRealUser());
+        assertEquals(str, ugi.getUserName());
+        assertEquals(AuthenticationMethod.TOKEN, ugi.getAuthenticationMethod());
+    }
   }
 
   @Test
