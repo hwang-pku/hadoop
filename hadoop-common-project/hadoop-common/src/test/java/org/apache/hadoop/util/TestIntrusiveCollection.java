@@ -30,15 +30,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import junitparams.JUnitParamsRunner;
 import org.junit.Test;
 
 import org.apache.hadoop.test.HadoopTestBase;
 import org.apache.hadoop.util.IntrusiveCollection.Element;
+import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(JUnitParamsRunner.class)
 public class TestIntrusiveCollection extends HadoopTestBase {
   static class SimpleElement implements IntrusiveCollection.Element {
     private Map<IntrusiveCollection<? extends Element>, Element>
