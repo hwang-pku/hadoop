@@ -116,9 +116,20 @@ public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
   }
 
   @Test
-  public void testNotEnoughArgsExceptionFormatting() throws Throwable {
-    ServiceLaunchException ex = new ServiceLaunchException(0, "%03x");
-    assertExceptionContains("%03x", ex);
+  @Parameters({
+  "%03x",
+  "%04x",
+  "%12x",
+  "%03y",
+  "@03y",
+  "@@@",
+  "format",
+  "213",
+  ""
+  })
+  public void testNotEnoughArgsExceptionFormatting(String format) throws Throwable {
+    ServiceLaunchException ex = new ServiceLaunchException(0, format);
+    assertExceptionContains(format, ex);
   }
 
   @Test
