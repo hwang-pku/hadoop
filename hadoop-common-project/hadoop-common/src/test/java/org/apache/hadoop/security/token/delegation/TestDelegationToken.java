@@ -228,6 +228,7 @@ public class TestDelegationToken {
   @Parameters({
   "alice, bob, colin, 123, 321, 314, 12345",
   "alice, alice, alice, 1, 1, 1, 1",
+  ", , , 1, 1, 1, 1"
   })
   public void testSerialization(String owner, String renewer, String realUser, int issueDate, int masterKeyId,
      int maxDate, int sequenceNumber) throws Exception {
@@ -249,7 +250,11 @@ public class TestDelegationToken {
     newToken.readFields(inBuf);
     
     // now test the fields
-    assertEquals(owner, newToken.getUser().getUserName());
+    if ( (owner == null) || (owner.toString().isEmpty())) {
+         assertNull(newToken.getUser());
+    } else {
+        assertEquals(owner, newToken.getUser().getUserName());
+    }
     assertEquals(new Text(renewer), newToken.getRenewer());
     if ((realUser == null) || (realUser.isEmpty()) || realUser.equals(owner)) {
         assertEquals(realUser, newToken.getRealUser().toString());
