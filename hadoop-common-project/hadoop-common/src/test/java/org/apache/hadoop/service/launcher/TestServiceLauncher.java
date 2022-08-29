@@ -103,9 +103,12 @@ public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
    * used as initializers.
    */
   @Test
-  public void testBasicExceptionFormatting() throws Throwable {
-    ServiceLaunchException ex = new ServiceLaunchException(0, "%03x", 32);
-    assertExceptionContains("020", ex);
+  @Parameters({
+  "32,020"
+  })
+  public void testBasicExceptionFormatting(int argValue, String expectedText) throws Throwable {
+    ServiceLaunchException ex = new ServiceLaunchException(0, "%03x", argValue);
+    assertExceptionContains(expectedText, ex);
   }
 
   @Test
