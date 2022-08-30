@@ -44,7 +44,10 @@ public class TestBlockDecompressorStream {
   @Test
   @Parameters({
   "0",
-  "4"
+  "4",
+  "-100",
+  "555",
+  "-277"
   })
   public void testRead1(int bufLen) throws IOException {
     testRead(bufLen);
@@ -65,8 +68,8 @@ public class TestBlockDecompressorStream {
     
     // check compressed output 
     buf = bytesOut.toByteArray();
-    assertEquals("empty file compressed output size is not " + (bufLen + 4),
-        bufLen + 4, buf.length);
+    assertEquals("empty file compressed output size is not " + (Math.max(0, bufLen) + 4),
+        Math.max(0, bufLen) + 4, buf.length);
     
     // use compressed output as input for decompression
     bytesIn = new ByteArrayInputStream(buf);
