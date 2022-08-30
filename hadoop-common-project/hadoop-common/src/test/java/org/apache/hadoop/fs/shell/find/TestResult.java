@@ -66,6 +66,12 @@ public class TestResult {
         new Object[] {Result.PASS, Result.PASS.combine(Result.PASS)}, // test equals with two PASSes
         new Object[] {Result.FAIL, Result.FAIL.combine(Result.FAIL)}, // test equals with two FAILs
         new Object[] {Result.STOP, Result.STOP.combine(Result.STOP)}, // test equals with two STOPs
+        new Object[] {Result.STOP.combine(Result.STOP), Result.STOP.combine(Result.STOP)},
+        new Object[] {Result.PASS.combine(Result.PASS), Result.PASS.combine(Result.PASS)},
+        new Object[] {Result.FAIL.combine(Result.FAIL), Result.FAIL.combine(Result.FAIL)},
+        new Object[] {Result.STOP.combine(Result.PASS), Result.PASS.combine(Result.STOP)},
+        new Object[] {Result.STOP.combine(Result.FAIL), Result.FAIL.combine(Result.STOP)},
+        new Object[] {Result.FAIL.combine(Result.PASS), Result.PASS.combine(Result.FAIL)},
     };
   }
 
