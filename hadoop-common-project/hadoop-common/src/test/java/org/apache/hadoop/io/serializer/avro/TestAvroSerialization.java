@@ -83,9 +83,10 @@ public class TestAvroSerialization {
   }
 
   @Test
-  public void testReflect() throws Exception {
+  @Parameters(method = "valueSetsForInteger")
+  public void testReflect(int value) throws Exception {
     RefSerializable before = new RefSerializable();
-    before.x = 10;
+    before.x = value;
     RefSerializable after = 
       SerializationTestUtil.testSerialization(conf, before);
     assertEquals(before, after);
