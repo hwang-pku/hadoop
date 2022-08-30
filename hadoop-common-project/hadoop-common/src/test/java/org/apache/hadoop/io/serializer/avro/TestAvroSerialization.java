@@ -34,10 +34,14 @@ public class TestAvroSerialization {
 
   private static final Configuration conf = new Configuration();
 
+  private Object[] valueSetsForInteger() {
+    return new Object[] {
+                new Object[] {5},
+    };
+  }
+
   @Test
-  @Parameters({
-  "5"
-  })
+  @Parameters(method = "valueSetsForInteger")
   public void testSpecific(int value) throws Exception {
     AvroRecord before = new AvroRecord();
     before.intField = value;
