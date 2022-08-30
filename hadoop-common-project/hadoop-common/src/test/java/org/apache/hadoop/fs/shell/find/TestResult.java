@@ -81,14 +81,21 @@ public class TestResult {
     assertEquals(one, two);
   }
 
+  private Object[] valueSetForTestingUnequalCombinations() {
+    return new Object[] {
+        new Object[] {Result.PASS, Result.FAIL},
+        new Object[] {Result.PASS, Result.STOP},
+        new Object[] {Result.FAIL, Result.PASS},
+        new Object[] {Result.FAIL, Result.STOP},
+        new Object[] {Result.STOP, Result.PASS},
+        new Object[] {Result.STOP, Result.FAIL},
+    };
+  }
+
   // test all combinations of not equals
   @Test
-  public void notEquals() {
-    assertFalse(Result.PASS.equals(Result.FAIL));
-    assertFalse(Result.PASS.equals(Result.STOP));
-    assertFalse(Result.FAIL.equals(Result.PASS));
-    assertFalse(Result.FAIL.equals(Result.STOP));
-    assertFalse(Result.STOP.equals(Result.PASS));
-    assertFalse(Result.STOP.equals(Result.FAIL));
+  @Parameters(method = "valueSetForTestingUnequalCombinations")
+  public void notEquals(Result one, Result two) {
+    assertFalse(one.equals(two));
   }
 }
