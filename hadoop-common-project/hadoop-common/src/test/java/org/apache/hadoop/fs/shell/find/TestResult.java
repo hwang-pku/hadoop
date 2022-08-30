@@ -19,12 +19,15 @@ package org.apache.hadoop.fs.shell.find;
 
 import static org.junit.Assert.*;
 
+import junitparams.JUnitParamsRunner;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeUnit;
 
+@RunWith(JUnitParamsRunner.class)
 public class TestResult {
 
   @Rule
