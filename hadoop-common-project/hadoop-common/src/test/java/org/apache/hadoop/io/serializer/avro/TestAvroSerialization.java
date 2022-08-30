@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.serializer.SerializationFactory;
 import org.apache.hadoop.io.serializer.SerializationTestUtil;
@@ -34,9 +35,12 @@ public class TestAvroSerialization {
   private static final Configuration conf = new Configuration();
 
   @Test
-  public void testSpecific() throws Exception {
+  @Parameters({
+  "5"
+  })
+  public void testSpecific(int value) throws Exception {
     AvroRecord before = new AvroRecord();
-    before.intField = 5;
+    before.intField = value;
     AvroRecord after = SerializationTestUtil.testSerialization(conf, before);
     assertEquals(before, after);
   }
