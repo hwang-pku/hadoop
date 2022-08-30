@@ -72,6 +72,13 @@ public class TestResult {
         new Object[] {Result.STOP.combine(Result.PASS), Result.PASS.combine(Result.STOP)},
         new Object[] {Result.STOP.combine(Result.FAIL), Result.FAIL.combine(Result.STOP)},
         new Object[] {Result.FAIL.combine(Result.PASS), Result.PASS.combine(Result.FAIL)},
+        new Object[] {Result.STOP.combine(Result.STOP), Result.PASS.combine(Result.STOP)},
+        new Object[] {Result.FAIL, Result.FAIL.combine(Result.FAIL)},
+        new Object[] {Result.FAIL, Result.PASS.combine(Result.FAIL)},
+        new Object[] {Result.STOP, Result.STOP.combine(Result.PASS)},
+        new Object[] {Result.PASS, Result.PASS.combine(Result.PASS)},
+        new Object[] {Result.FAIL, Result.FAIL.combine(Result.FAIL)},
+        new Object[] {Result.FAIL, Result.PASS.combine(Result.FAIL)},
     };
   }
 
@@ -89,6 +96,19 @@ public class TestResult {
         new Object[] {Result.FAIL, Result.STOP},
         new Object[] {Result.STOP, Result.PASS},
         new Object[] {Result.STOP, Result.FAIL},
+        new Object[] {Result.STOP, Result.PASS.combine(Result.PASS)},
+        new Object[] {Result.STOP, Result.PASS.combine(Result.FAIL)},
+        new Object[] {Result.STOP, Result.FAIL.combine(Result.FAIL)},
+        new Object[] {Result.STOP, Result.STOP.combine(Result.FAIL)},
+        new Object[] {Result.PASS, Result.STOP.combine(Result.STOP)},
+        new Object[] {Result.PASS, Result.FAIL.combine(Result.FAIL)},
+        new Object[] {Result.PASS, Result.PASS.combine(Result.FAIL)},
+        new Object[] {Result.PASS, Result.STOP.combine(Result.FAIL)},
+        new Object[] {Result.PASS, Result.STOP.combine(Result.PASS)},
+        new Object[] {Result.FAIL, Result.PASS.combine(Result.PASS)},
+        new Object[] {Result.FAIL, Result.STOP.combine(Result.STOP)},
+        new Object[] {Result.FAIL, Result.STOP.combine(Result.FAIL)},
+        new Object[] {Result.FAIL, Result.STOP.combine(Result.PASS)},
     };
   }
 
