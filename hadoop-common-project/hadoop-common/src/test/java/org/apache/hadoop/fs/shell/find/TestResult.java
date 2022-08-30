@@ -61,27 +61,17 @@ public class TestResult {
     assertEquals(isDescend, result.isDescend());
   }
 
-  // test equals with two PASSes
-  @Test
-  public void equalsPass() {
-    Result one = Result.PASS;
-    Result two = Result.PASS.combine(Result.PASS);
-    assertEquals(one, two);
+  private Object[] valueSetForTestingTwoEqualResults() {
+    return new Object[] {
+        new Object[] {Result.PASS, Result.PASS.combine(Result.PASS)}, // test equals with two PASSes
+        new Object[] {Result.FAIL, Result.FAIL.combine(Result.FAIL)}, // test equals with two FAILs
+        new Object[] {Result.STOP, Result.STOP.combine(Result.STOP)}, // test equals with two STOPs
+    };
   }
 
-  // test equals with two FAILs
   @Test
-  public void equalsFail() {
-    Result one = Result.FAIL;
-    Result two = Result.FAIL.combine(Result.FAIL);
-    assertEquals(one, two);
-  }
-
-  // test equals with two STOPS
-  @Test
-  public void equalsStop() {
-    Result one = Result.STOP;
-    Result two = Result.STOP.combine(Result.STOP);
+  @Parameters(method = "valueSetForTestingTwoEqualResults")
+  public void testTwoEqualsResults(Result one, Result two) {
     assertEquals(one, two);
   }
 
