@@ -21,11 +21,14 @@ package org.apache.hadoop.io.serializer.avro;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import junitparams.JUnitParamsRunner;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.serializer.SerializationFactory;
 import org.apache.hadoop.io.serializer.SerializationTestUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(JUnitParamsRunner.class)
 public class TestAvroSerialization {
 
   private static final Configuration conf = new Configuration();
