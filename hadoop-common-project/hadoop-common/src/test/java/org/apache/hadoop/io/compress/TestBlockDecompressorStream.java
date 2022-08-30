@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,14 +42,12 @@ public class TestBlockDecompressorStream {
   private ByteArrayOutputStream bytesOut;
 
   @Test
-  public void testRead1() throws IOException {
-    testRead(0);
-  }
-
-  @Test
-  public void testRead2() throws IOException {
-    // Test eof after getting non-zero block size info
-    testRead(4);
+  @Parameters({
+  "0",
+  "4"
+  })
+  public void testRead1(int bufLen) throws IOException {
+    testRead(bufLen);
   }
 
   private void testRead(int bufLen) throws IOException {
