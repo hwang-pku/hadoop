@@ -31,6 +31,7 @@ import java.nio.ByteBuffer;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,18 +44,15 @@ public class TestBlockDecompressorStream {
 
   @Test
   @Parameters({
-  "0",
-  "4",
-  "-100",
-  "555",
-  "-277"
+  "0, 1024",
+  "4, 2048",
+  "-100, -200",
+  "555, 0",
+  "-277, 100"
   })
-  public void testRead1(int bufLen) throws IOException {
-    testRead(bufLen);
-  }
-
-  private void testRead(int bufLen) throws IOException {
+  public void testRead(int bufLen, int buffSize) throws IOException {
     // compress empty stream
+    Assume.assumeTrue(buffSize > 0);
     bytesOut = new ByteArrayOutputStream();
     if (bufLen > 0) {
       bytesOut.write(ByteBuffer.allocate(bufLen).putInt(1024).array(), 0,
@@ -62,7 +60,7 @@ public class TestBlockDecompressorStream {
     }
     BlockCompressorStream blockCompressorStream = 
       new BlockCompressorStream(bytesOut, 
-          new FakeCompressor(), 1024, 0);
+          new FakeCompressor(), buffSize, 0);
     // close without any write
     blockCompressorStream.close();
     
@@ -76,7 +74,7 @@ public class TestBlockDecompressorStream {
     
     // get decompression stream
     try (BlockDecompressorStream blockDecompressorStream =
-      new BlockDecompressorStream(bytesIn, new FakeDecompressor(), 1024)) {
+      new BlockDecompressorStream(bytesIn, new FakeDecompressor(), buffSize)) {
       assertEquals("return value is not -1", 
           -1 , blockDecompressorStream.read());
     } catch (IOException e) {
