@@ -50,6 +50,7 @@ public class TestResult {
         new Object[] {Result.PASS.negate(), false, true}, // test the negation of PASS
         new Object[] {Result.FAIL.negate(), true, true}, // test the negation of FAIL
         new Object[] {Result.STOP.negate(), false, false}, // test the negation of STOP
+        new Object[] {Result.STOP.combine(Result.STOP), true, false}, // test the combine method with a STOP and a STOP
     };
   }
 
