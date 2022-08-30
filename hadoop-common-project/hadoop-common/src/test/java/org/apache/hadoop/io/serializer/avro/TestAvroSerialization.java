@@ -37,6 +37,10 @@ public class TestAvroSerialization {
   private Object[] valueSetsForInteger() {
     return new Object[] {
                 new Object[] {5},
+                new Object[] {0},
+                new Object[] {-1},
+                new Object[] {Integer.MIN_VALUE},
+                new Object[] {Integer.MAX_VALUE},
     };
   }
 
