@@ -83,7 +83,15 @@ public class TestBlockDecompressorStream {
   }
 
   @Test
-  public void testReadWhenIoExceptionOccure() throws IOException {
+  @Parameters({
+  "1024",
+  "2048",
+  "-200",
+  "0",
+  "100"
+  })
+  public void testReadWhenIoExceptionOccure(int buffSize) throws IOException {
+    Assume.assumeTrue(buffSize > 0);
     File file = new File("testReadWhenIOException");
     try {
       file.createNewFile();
@@ -95,7 +103,7 @@ public class TestBlockDecompressorStream {
       };
 
       try (BlockDecompressorStream blockDecompressorStream =
-          new BlockDecompressorStream(io, new FakeDecompressor(), 1024)) {
+          new BlockDecompressorStream(io, new FakeDecompressor(), buffSize)) {
         int byteRead = blockDecompressorStream.read();
         fail("Should not return -1 in case of IOException. Byte read "
             + byteRead);
