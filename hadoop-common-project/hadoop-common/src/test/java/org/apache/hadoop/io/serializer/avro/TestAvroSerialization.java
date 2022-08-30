@@ -54,9 +54,10 @@ public class TestAvroSerialization {
   }
 
   @Test
-  public void testReflectPkg() throws Exception {
+  @Parameters(method = "valueSetsForInteger")
+  public void testReflectPkg(int value) throws Exception {
     Record before = new Record();
-    before.x = 10;
+    before.x = value;
     conf.set(AvroReflectSerialization.AVRO_REFLECT_PACKAGES, 
         before.getClass().getPackage().getName());
     Record after = SerializationTestUtil.testSerialization(conf, before);
