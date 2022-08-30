@@ -20,6 +20,7 @@ package org.apache.hadoop.fs.shell.find;
 import static org.junit.Assert.*;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
 import org.junit.Test;
@@ -33,116 +34,30 @@ public class TestResult {
   @Rule
   public Timeout globalTimeout = new Timeout(10000, TimeUnit.MILLISECONDS);
 
-  // test the PASS value
-  @Test
-  public void testPass() {
-    Result result = Result.PASS;
-    assertTrue(result.isPass());
-    assertTrue(result.isDescend());
+  private Object[] valueSetForTestingSingleResult() {
+    return new Object[] {
+        new Object[] {Result.PASS, true, true}, // test the PASS value
+        new Object[] {Result.FAIL, false, true}, // test the FAIL value
+        new Object[] {Result.STOP, true, false}, // test the STOP value
+        new Object[] {Result.PASS.combine(Result.PASS), true, true}, // test combine method with two PASSes
+        new Object[] {Result.PASS.combine(Result.FAIL), false, true}, // test the combine method with a PASS and a FAIL
+        new Object[] {Result.FAIL.combine(Result.PASS), false, true}, // test the combine method with a FAIL and a PASS
+        new Object[] {Result.FAIL.combine(Result.FAIL), false, true}, // test the combine method with two FAILs
+        new Object[] {Result.PASS.combine(Result.STOP), true, false}, // test the combine method with a PASS and STOP
+        new Object[] {Result.STOP.combine(Result.FAIL), false, false}, // test the combine method with a STOP and FAIL
+        new Object[] {Result.STOP.combine(Result.PASS), true, false}, // test the combine method with a STOP and a PASS
+        new Object[] {Result.FAIL.combine(Result.STOP), false, false}, // test the combine method with a FAIL and a STOP
+        new Object[] {Result.PASS.negate(), false, true}, // test the negation of PASS
+        new Object[] {Result.FAIL.negate(), true, true}, // test the negation of FAIL
+        new Object[] {Result.STOP.negate(), false, false}, // test the negation of STOP
+    };
   }
 
-  // test the FAIL value
   @Test
-  public void testFail() {
-    Result result = Result.FAIL;
-    assertFalse(result.isPass());
-    assertTrue(result.isDescend());
-  }
-
-  // test the STOP value
-  @Test
-  public void testStop() {
-    Result result = Result.STOP;
-    assertTrue(result.isPass());
-    assertFalse(result.isDescend());
-  }
-
-  // test combine method with two PASSes
-  @Test
-  public void combinePassPass() {
-    Result result = Result.PASS.combine(Result.PASS);
-    assertTrue(result.isPass());
-    assertTrue(result.isDescend());
-  }
-
-  // test the combine method with a PASS and a FAIL
-  @Test
-  public void combinePassFail() {
-    Result result = Result.PASS.combine(Result.FAIL);
-    assertFalse(result.isPass());
-    assertTrue(result.isDescend());
-  }
-
-  // test the combine method with a FAIL and a PASS
-  @Test
-  public void combineFailPass() {
-    Result result = Result.FAIL.combine(Result.PASS);
-    assertFalse(result.isPass());
-    assertTrue(result.isDescend());
-  }
-
-  // test the combine method with two FAILs
-  @Test
-  public void combineFailFail() {
-    Result result = Result.FAIL.combine(Result.FAIL);
-    assertFalse(result.isPass());
-    assertTrue(result.isDescend());
-  }
-
-  // test the combine method with a PASS and STOP
-  @Test
-  public void combinePassStop() {
-    Result result = Result.PASS.combine(Result.STOP);
-    assertTrue(result.isPass());
-    assertFalse(result.isDescend());
-  }
-
-  // test the combine method with a STOP and FAIL
-  @Test
-  public void combineStopFail() {
-    Result result = Result.STOP.combine(Result.FAIL);
-    assertFalse(result.isPass());
-    assertFalse(result.isDescend());
-  }
-
-  // test the combine method with a STOP and a PASS
-  @Test
-  public void combineStopPass() {
-    Result result = Result.STOP.combine(Result.PASS);
-    assertTrue(result.isPass());
-    assertFalse(result.isDescend());
-  }
-
-  // test the combine method with a FAIL and a STOP
-  @Test
-  public void combineFailStop() {
-    Result result = Result.FAIL.combine(Result.STOP);
-    assertFalse(result.isPass());
-    assertFalse(result.isDescend());
-  }
-
-  // test the negation of PASS
-  @Test
-  public void negatePass() {
-    Result result = Result.PASS.negate();
-    assertFalse(result.isPass());
-    assertTrue(result.isDescend());
-  }
-
-  // test the negation of FAIL
-  @Test
-  public void negateFail() {
-    Result result = Result.FAIL.negate();
-    assertTrue(result.isPass());
-    assertTrue(result.isDescend());
-  }
-
-  // test the negation of STOP
-  @Test
-  public void negateStop() {
-    Result result = Result.STOP.negate();
-    assertFalse(result.isPass());
-    assertFalse(result.isDescend());
+  @Parameters(method = "valueSetForTestingSingleResult")
+  public void testSingleResult(Result result, boolean isPass, boolean isDescend) {
+    assertEquals(isPass, result.isPass());
+    assertEquals(isDescend, result.isDescend());
   }
 
   // test equals with two PASSes
