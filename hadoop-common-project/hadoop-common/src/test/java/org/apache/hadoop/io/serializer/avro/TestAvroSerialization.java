@@ -72,9 +72,10 @@ public class TestAvroSerialization {
   }
 
   @Test
-  public void testReflectInnerClass() throws Exception {
+  @Parameters(method = "valueSetsForInteger")
+  public void testReflectInnerClass(int value) throws Exception {
     InnerRecord before = new InnerRecord();
-    before.x = 10;
+    before.x = value;
     conf.set(AvroReflectSerialization.AVRO_REFLECT_PACKAGES, 
         before.getClass().getPackage().getName());
     InnerRecord after = SerializationTestUtil.testSerialization(conf, before);
