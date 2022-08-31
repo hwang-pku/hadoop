@@ -204,7 +204,13 @@ public class TestUTF8 {
                     new Object[] {new byte[] { 0x01, 0x02, (byte)0xf8, (byte)0x88, (byte)0x80, (byte)0x80, (byte)0x80,
                         0x04, 0x05 }, "Invalid UTF8 at f88880808004"}, // 5-byte UTF8 sequence, now considered illegal.
                     new Object[] {new byte[] { (byte)0xF0, (byte)0x9F, (byte)0x90 },
-                        "Truncated UTF8 at f09f90" } // Truncated CAT FACE character (3 out of 4 bytes)
+                        "Truncated UTF8 at f09f90" }, // Truncated CAT FACE character (3 out of 4 bytes)
+                    new Object[] {new byte[] { 0x05, 0x03, (byte)0xff, 0x01, 0x02, 0x03, 0x04, (byte)0xff, 0x05 },
+                        "Invalid UTF8 at ff01020304ff"}, // invalid UTF8
+                    new Object[] {new byte[] { 0x01, 0x02, (byte)0xf9, (byte)0x33, (byte)0x78, (byte)0x55, (byte)0x22,
+                        0x04, 0x05 }, "Invalid UTF8 at f93378552204"}, // 5-byte UTF8 sequence, now considered illegal.
+                    new Object[] {new byte[] { (byte)0xF0, (byte)0x9F, (byte)0x94 },
+                        "Truncated UTF8 at f09f94" } // Truncated TOP WITH UPWARDS ARROW character (3 out of 4 bytes)
         };
       }
 
