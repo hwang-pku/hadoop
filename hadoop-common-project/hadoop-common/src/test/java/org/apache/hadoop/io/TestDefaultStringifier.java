@@ -136,6 +136,9 @@ public class TestDefaultStringifier {
   private Object[] valueSetForTestStoreLoadArray() {
     return new Object[] {
                 new Object[] { "test.defaultstringifier.key2", new Integer[] {1,2,3,4,5} },
+                new Object[] { "   ", new Integer[] {} },
+                new Object[] { "", new Integer[] {Integer.MIN_VALUE, Integer.MAX_VALUE, 0} },
+                new Object[] { "!@#$%^&*()_+-={}][|;':,.<>?", new Integer[] {Integer.MIN_VALUE} },
     };
   }
 
