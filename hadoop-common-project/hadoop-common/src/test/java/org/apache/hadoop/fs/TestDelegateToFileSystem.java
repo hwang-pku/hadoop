@@ -20,6 +20,7 @@ package org.apache.hadoop.fs;
 import java.net.URI;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.hadoop.conf.Configuration;
 import org.junit.Assert;
@@ -44,8 +45,11 @@ public class TestDelegateToFileSystem {
   }
 
   @Test
-  public void testDefaultURIwithOutPort() throws Exception {
-    testDefaultUriInternal("hdfs://dummyhost");
+  @Parameters({
+  "hdfs://dummyhost",
+  })
+  public void testDefaultURIwithOutPort(String defaultUri) throws Exception {
+    testDefaultUriInternal(defaultUri);
   }
 
   @Test
