@@ -84,6 +84,11 @@ public class TestDefaultStringifier {
   private Object[] valueSetForIntegerValue() {
     return new Object[] {
                 new Object[] {48},
+                new Object[] {0},
+                new Object[] {-1},
+                new Object[] {Integer.MAX_VALUE},
+                new Object[] {Integer.MIN_VALUE},
+
     };
   }
 
