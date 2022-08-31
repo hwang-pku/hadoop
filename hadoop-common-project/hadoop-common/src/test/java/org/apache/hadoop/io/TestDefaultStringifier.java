@@ -111,12 +111,14 @@ public class TestDefaultStringifier {
   }
 
   @Test
-  public void testStoreLoad() throws IOException {
+  @Parameters({
+  "uninteresting test string,test.defaultstringifier.key1"
+  })
+  public void testStoreLoad(String testString, String keyName) throws IOException {
 
     LOG.info("Testing DefaultStringifier#store() and #load()");
     conf.set("io.serializations", "org.apache.hadoop.io.serializer.WritableSerialization");
-    Text text = new Text("uninteresting test string");
-    String keyName = "test.defaultstringifier.key1";
+    Text text = new Text(testString);
 
     DefaultStringifier.store(conf,text, keyName);
 
