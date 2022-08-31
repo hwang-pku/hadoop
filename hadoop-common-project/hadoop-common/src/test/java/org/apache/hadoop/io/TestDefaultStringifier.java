@@ -38,7 +38,16 @@ public class TestDefaultStringifier {
       LoggerFactory.getLogger(TestDefaultStringifier.class);
   private Object[] valueSetForTestWithWritable() {
     return new Object[] {
-                new Object[] {10, 40, "abcdefghijklmnopqrstuvwxyz".toCharArray()}
+                new Object[] {10, 40, "abcdefghijklmnopqrstuvwxyz".toCharArray()},
+                new Object[] {100, 100, "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()},
+                new Object[] {1, 1000, "1234567890".toCharArray()},
+                new Object[] {50, 400, "!@#$%^&*()_[]{}-=_+|;':,./<>?`~".toCharArray()},
+                new Object[] {1000, 10000, "abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()".toCharArray()},
+                new Object[] {0, 0, "abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()".toCharArray()},
+                new Object[] {-1, 5, "abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()".toCharArray()},
+                new Object[] {5, -5, "abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()".toCharArray()},
+                new Object[] {5, 0, "".toCharArray()},
+                new Object[] {5, 10, "".toCharArray()},
     };
   }
 
