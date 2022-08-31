@@ -21,13 +21,15 @@ package org.apache.hadoop.io;
 import java.io.IOException;
 import java.util.Random;
 
+import junitparams.JUnitParamsRunner;
 import org.apache.hadoop.conf.Configuration;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
-
+@RunWith(JUnitParamsRunner.class)
 public class TestDefaultStringifier {
 
   private static Configuration conf = new Configuration();
