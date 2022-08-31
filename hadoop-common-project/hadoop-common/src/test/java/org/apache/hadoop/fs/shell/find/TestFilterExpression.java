@@ -147,10 +147,11 @@ public class TestFilterExpression {
 
   // test that the isOperator method is called
   @Test
-  public void isOperator() {
-    when(expr.isAction()).thenReturn(true).thenReturn(false);
-    assertTrue(test.isAction());
-    assertFalse(test.isAction());
+  @Parameters(method = "valueSetForTwoBooleans")
+  public void isOperator(boolean b1, boolean b2) {
+    when(expr.isAction()).thenReturn(b1).thenReturn(b2);
+    assertEquals(b1, test.isAction());
+    assertEquals(b2, test.isAction());
     verify(expr, times(2)).isAction();
     verifyNoMoreInteractions(expr);
   }
