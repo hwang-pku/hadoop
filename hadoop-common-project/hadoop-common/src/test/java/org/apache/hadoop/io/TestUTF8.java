@@ -55,7 +55,11 @@ public class TestUTF8 {
 
       @Parameterized.Parameters
       public static Collection<Object> testData() {
-        Object[] data = new Object[][] { {100 , 10000} };
+        Object[] data = new Object[][] { {100 , 10000},
+                                         {1000 , 1000},
+                                         {10000 , 100},
+                                         {100000 , 10},
+        };
         return Arrays.asList(data);
       }
 
@@ -81,7 +85,9 @@ public class TestUTF8 {
 
           // generate a random string
           String before = getTestString();
-
+          if (before.length() >= 21845) {
+              continue;
+          }
           // Check that the bytes are stored correctly in Modified-UTF8 format.
           // Note that the DataInput and DataOutput interfaces convert between
           // bytes and Strings using the Modified-UTF8 format.
@@ -106,6 +112,9 @@ public class TestUTF8 {
         for (int i = 0; i < iterations; i++) {
           // generate a random string
           String before = getTestString();
+          if (before.length() >= 21845) {
+              continue;
+          }
 
           // write it
           out.reset();
