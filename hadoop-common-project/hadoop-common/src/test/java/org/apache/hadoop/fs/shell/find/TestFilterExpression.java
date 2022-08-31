@@ -65,16 +65,20 @@ public class TestFilterExpression {
     verifyNoMoreInteractions(expr);
   }
 
+  private Object[] valueSetForInteger() {
+    return new Object[] {
+                new Object[] {-1},
+                new Object[] {1},
+                new Object[] {0},
+                new Object[] {-1},
+                new Object[] {Integer.MAX_VALUE},
+                new Object[] {Integer.MIN_VALUE},
+    };
+  }
+
   // test the apply method is called and the result returned
   @Test
-  @Parameters({
-  "-1",
-  "1",
-  "0",
-  "-1",
-  "2147483647",
-  "-2147483648"
-  })
+  @Parameters(method = "valueSetForInteger")
   public void apply(int depth) throws IOException {
     Assume.assumeTrue(depth == -1);
     PathData item = mock(PathData.class);
@@ -158,8 +162,8 @@ public class TestFilterExpression {
 
   // test that the getPrecedence method is called
   @Test
-  public void getPrecedence() {
-    int precedence = 12345;
+  @Parameters(method = "valueSetForInteger")
+  public void getPrecedence(int precedence) {
     when(expr.getPrecedence()).thenReturn(precedence);
     assertEquals(precedence, test.getPrecedence());
     verify(expr).getPrecedence();
