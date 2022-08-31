@@ -28,6 +28,7 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.hadoop.fs.shell.PathData;
 
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
@@ -67,9 +68,15 @@ public class TestFilterExpression {
   // test the apply method is called and the result returned
   @Test
   @Parameters({
-  "-1"
+  "-1",
+  "1",
+  "0",
+  "-1",
+  "2147483647",
+  "-2147483648"
   })
   public void apply(int depth) throws IOException {
+    Assume.assumeTrue(depth == -1);
     PathData item = mock(PathData.class);
     when(expr.apply(item, depth)).thenReturn(Result.PASS).thenReturn(Result.FAIL);
     assertEquals(Result.PASS, test.apply(item, depth));
