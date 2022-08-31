@@ -30,6 +30,7 @@ import java.util.Random;
 import junitparams.JUnitParamsRunner;
 import org.apache.hadoop.test.GenericTestUtils;
 import org.apache.hadoop.util.StringUtils;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
@@ -59,12 +60,18 @@ public class TestUTF8 {
                                          {1000 , 1000},
                                          {10000 , 100},
                                          {100000 , 10},
+                                         {-10 , -10},
+                                         {-10 , 10},
+                                         {0 , 1},
+                                         {10 , -10},
+                                         {1 , 0},
         };
         return Arrays.asList(data);
       }
 
       public static String getTestString() throws Exception {
         StringBuilder buffer = new StringBuilder();
+        Assume.assumeTrue(randomStringBound > 0);
         int length = RANDOM.nextInt(randomStringBound);
         for (int i = 0; i < length; i++) {
           buffer.append((char)(RANDOM.nextInt(Character.MAX_VALUE)));
