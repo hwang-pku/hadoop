@@ -24,13 +24,16 @@ import java.io.IOException;
 import java.util.Deque;
 import java.util.concurrent.TimeUnit;
 
+import junitparams.JUnitParamsRunner;
 import org.apache.hadoop.fs.shell.PathData;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(JUnitParamsRunner.class)
 public class TestFilterExpression {
   private Expression expr;
   private FilterExpression test;
