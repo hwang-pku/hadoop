@@ -173,6 +173,14 @@ public class TestUTF8 {
       @Test
       @Parameters ({
       "\uD83D\uDC31",  // Test using the "CAT FACE" character (U+1F431)
+      "\uD83C\uDF92",  // 'SCHOOL SATCHEL' (U+1F392)
+      "\uD83C\uDFD3", // 'TABLE TENNIS PADDLE AND BALL' (U+1F3D3)
+      "\uD83C\uDFEE", // 'IZAKAYA LANTERN' (U+1F3EE)
+      "\uD83D\uDC15", // 'DOG' (U+1F415)
+      "\uD83D\uDC25", // 'FRONT-FACING BABY CHICK' (U+1F425)
+      "\uD83D\uDC4D", // 'THUMBS UP SIGN' (U+1F44D)
+      "\uD83D\uDD1D", // 'TOP WITH UPWARDS ARROW ABOVE' (U+1F51D)
+
       })
       public void testNonBasicMultilingualPlane(String symbolString) throws Exception {
         // See http://www.fileformat.info/info/unicode/char/1f431/index.htm
