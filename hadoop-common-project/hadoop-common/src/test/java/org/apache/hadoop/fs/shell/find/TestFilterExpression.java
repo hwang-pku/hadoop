@@ -25,6 +25,7 @@ import java.util.Deque;
 import java.util.concurrent.TimeUnit;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.hadoop.fs.shell.PathData;
 
 import org.junit.Before;
@@ -65,12 +66,15 @@ public class TestFilterExpression {
 
   // test the apply method is called and the result returned
   @Test
-  public void apply() throws IOException {
+  @Parameters({
+  "-1"
+  })
+  public void apply(int depth) throws IOException {
     PathData item = mock(PathData.class);
-    when(expr.apply(item, -1)).thenReturn(Result.PASS).thenReturn(Result.FAIL);
-    assertEquals(Result.PASS, test.apply(item, -1));
-    assertEquals(Result.FAIL, test.apply(item, -1));
-    verify(expr, times(2)).apply(item, -1);
+    when(expr.apply(item, depth)).thenReturn(Result.PASS).thenReturn(Result.FAIL);
+    assertEquals(Result.PASS, test.apply(item, depth));
+    assertEquals(Result.FAIL, test.apply(item, depth));
+    verify(expr, times(2)).apply(item, depth);
     verifyNoMoreInteractions(expr);
   }
 
