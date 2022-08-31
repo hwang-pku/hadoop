@@ -29,6 +29,7 @@ import java.util.Random;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.hadoop.test.GenericTestUtils;
 import org.apache.hadoop.util.StringUtils;
 import org.junit.Assume;
@@ -170,19 +171,22 @@ public class TestUTF8 {
        * This is a regression test for HADOOP-9103.
        */
       @Test
-      public void testNonBasicMultilingualPlane() throws Exception {
-        // Test using the "CAT FACE" character (U+1F431)
+      @Parameters ({
+      "\uD83D\uDC31",  // Test using the "CAT FACE" character (U+1F431)
+      })
+      public void testNonBasicMultilingualPlane(String symbolString) throws Exception {
         // See http://www.fileformat.info/info/unicode/char/1f431/index.htm
-        String catFace = "\uD83D\uDC31";
+        String hexString = Hex.encodeHexString(symbolString.getBytes());
+        byte[] bytes = Hex.decodeHex(hexString.toCharArray());
 
         // This encodes to 4 bytes in UTF-8:
-        byte[] encoded = catFace.getBytes("UTF-8");
-        assertEquals(4, encoded.length);
-        assertEquals("f09f90b1", StringUtils.byteToHexString(encoded));
+        byte[] encoded = symbolString.getBytes("UTF-8");
+        assertEquals(bytes.length, encoded.length);
+        assertEquals(hexString, StringUtils.byteToHexString(encoded));
 
         // Decode back to String using our own decoder
         String roundTrip = UTF8.fromBytes(encoded);
-        assertEquals(catFace, roundTrip);
+        assertEquals(symbolString, roundTrip);
       }
 
       /**
