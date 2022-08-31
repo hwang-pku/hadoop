@@ -112,7 +112,12 @@ public class TestDefaultStringifier {
 
   @Test
   @Parameters({
-  "uninteresting test string,test.defaultstringifier.key1"
+  "uninteresting test string,test.defaultstringifier.key1",
+  "uninterestingteststring,someKEY",
+  ",",
+  "   ,     ",
+  "!@#$%^&*()_1234567890,1234567890!@#$%^&*()",
+  ".,."
   })
   public void testStoreLoad(String testString, String keyName) throws IOException {
 
