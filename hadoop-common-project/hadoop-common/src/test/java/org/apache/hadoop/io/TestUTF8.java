@@ -197,55 +197,29 @@ public class TestUTF8 {
         assertEquals(symbolString, roundTrip);
       }
 
-      /**
-       * Test that decoding invalid UTF8 throws an appropriate error message.
-       */
-      @Test
-      public void testInvalidUTF8() throws Exception {
-        byte[] invalid = new byte[] {
-            0x01, 0x02, (byte)0xff, (byte)0xff, 0x01, 0x02, 0x03, 0x04, 0x05 };
-        try {
-          UTF8.fromBytes(invalid);
-          fail("did not throw an exception");
-        } catch (UTFDataFormatException utfde) {
-          GenericTestUtils.assertExceptionContains(
-              "Invalid UTF8 at ffff01020304", utfde);
-        }
+      private Object[] valueSetForInvalidOrTruncated() {
+        return new Object[] {
+                    new Object[] {new byte[] { 0x01, 0x02, (byte)0xff, (byte)0xff, 0x01, 0x02, 0x03, 0x04, 0x05 },
+                        "Invalid UTF8 at ffff01020304"}, // invalid UTF8
+                    new Object[] {new byte[] { 0x01, 0x02, (byte)0xf8, (byte)0x88, (byte)0x80, (byte)0x80, (byte)0x80,
+                        0x04, 0x05 }, "Invalid UTF8 at f88880808004"}, // 5-byte UTF8 sequence, now considered illegal.
+                    new Object[] {new byte[] { (byte)0xF0, (byte)0x9F, (byte)0x90 },
+                        "Truncated UTF8 at f09f90" } // Truncated CAT FACE character (3 out of 4 bytes)
+        };
       }
 
       /**
-       * Test for a 5-byte UTF8 sequence, which is now considered illegal.
+       * Test invalid and truncated UTF8 throws an appropriate error message.
        */
       @Test
-      public void test5ByteUtf8Sequence() throws Exception {
-        byte[] invalid = new byte[] {
-            0x01, 0x02, (byte)0xf8, (byte)0x88, (byte)0x80,
-            (byte)0x80, (byte)0x80, 0x04, 0x05 };
+      @Parameters(method = "valueSetForInvalidOrTruncated")
+      public void testInvalidAndTruncatedUTF8(byte[] invalidOrTruncated, String expectedText) throws Exception {
         try {
-          UTF8.fromBytes(invalid);
+          UTF8.fromBytes(invalidOrTruncated);
           fail("did not throw an exception");
         } catch (UTFDataFormatException utfde) {
           GenericTestUtils.assertExceptionContains(
-              "Invalid UTF8 at f88880808004", utfde);
-        }
-      }
-
-      /**
-       * Test that decoding invalid UTF8 due to truncation yields the correct
-       * exception type.
-       */
-      @Test
-      public void testInvalidUTF8Truncated() throws Exception {
-        // Truncated CAT FACE character -- this is a 4-byte sequence, but we
-        // only have the first three bytes.
-        byte[] truncated = new byte[] {
-            (byte)0xF0, (byte)0x9F, (byte)0x90 };
-        try {
-          UTF8.fromBytes(truncated);
-          fail("did not throw an exception");
-        } catch (UTFDataFormatException utfde) {
-          GenericTestUtils.assertExceptionContains(
-              "Truncated UTF8 at f09f90", utfde);
+              expectedText, utfde);
         }
       }
   }
