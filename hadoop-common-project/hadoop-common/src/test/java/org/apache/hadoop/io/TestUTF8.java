@@ -25,15 +25,18 @@ import java.io.UTFDataFormatException;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
+import junitparams.JUnitParamsRunner;
 import org.apache.hadoop.test.GenericTestUtils;
 import org.apache.hadoop.util.StringUtils;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /** Unit tests for UTF8. */
 @SuppressWarnings("deprecation")
+@RunWith(JUnitParamsRunner.class)
 public class TestUTF8 {
 
   private static final Random RANDOM = new Random();
