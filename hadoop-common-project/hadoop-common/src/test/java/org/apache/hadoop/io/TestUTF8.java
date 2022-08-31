@@ -148,6 +148,10 @@ public class TestUTF8 {
       private Object[] valueSetForNullEncoding() {
         return new Object[] {
                     new Object[] {new String(new char[] { 0 })},
+                    new Object[] {new String(new char[] { 0, 1, 2, 4 })},
+                    new Object[] {new String(new char[] { 'a', 'v', 'c', 'a', 't', 'V', 'Q'})},
+                    new Object[] {new String(new char[] { 'a', 'v', 'c', 'a', 't', 'V', 'Q', 0, 1, 2, 4})},
+                    new Object[] {new String(new char[] { })},
         };
       }
 
