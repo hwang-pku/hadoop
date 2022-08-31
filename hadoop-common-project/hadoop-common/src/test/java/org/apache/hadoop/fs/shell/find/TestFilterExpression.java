@@ -93,10 +93,16 @@ public class TestFilterExpression {
     verifyNoMoreInteractions(expr);
   }
 
+  private Object[] valueSetForStringArray() {
+    return new Object[] {
+                new Object[] {new String[] { "Usage 1", "Usage 2", "Usage 3" }},
+    };
+  }
+
   // test that the getUsage method is called
   @Test
-  public void getUsage() {
-    String[] usage = new String[] { "Usage 1", "Usage 2", "Usage 3" };
+  @Parameters(method = "valueSetForStringArray")
+  public void getUsage(String[] usage) {
     when(expr.getUsage()).thenReturn(usage);
     assertArrayEquals(usage, test.getUsage());
     verify(expr).getUsage();
