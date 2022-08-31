@@ -24,7 +24,7 @@ import junitparams.Parameters;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.hadoop.conf.Configuration;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.Assume;import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(JUnitParamsRunner.class)
@@ -47,8 +47,19 @@ public class TestDelegateToFileSystem {
   @Test
   @Parameters({
   "hdfs://dummyhost",
+  "",
+  "    ",
+  "hdfs://someText@123",
+  "hdfs://someText",
+  "http://localhost",
+  "http://local host",
+  "abcd.//",
+  "abcdaa/",
+  "abcdaaa",
+  "a",
   })
   public void testDefaultURIwithOutPort(String defaultUri) throws Exception {
+    Assume.assumeTrue(!defaultUri.contains(" ") && !defaultUri.isEmpty());
     testDefaultUriInternal(defaultUri);
   }
 
