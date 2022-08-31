@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Random;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.hadoop.test.GenericTestUtils;
 import org.apache.hadoop.util.StringUtils;
 import org.junit.Assume;
@@ -143,10 +144,16 @@ public class TestUTF8 {
 
   @RunWith(JUnitParamsRunner.class)
   public static class SecondParameterizedPart {
-      @Test
-      public void testNullEncoding() throws Exception {
-        String s = new String(new char[] { 0 });
 
+      private Object[] valueSetForNullEncoding() {
+        return new Object[] {
+                    new Object[] {new String(new char[] { 0 })},
+        };
+      }
+
+      @Test
+      @Parameters(method = "valueSetForNullEncoding")
+      public void testNullEncoding(String s) throws Exception {
         DataOutputBuffer dob = new DataOutputBuffer();
         new UTF8(s).write(dob);
 
