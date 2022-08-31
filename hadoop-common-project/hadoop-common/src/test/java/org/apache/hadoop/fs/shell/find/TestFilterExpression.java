@@ -73,6 +73,7 @@ public class TestFilterExpression {
                 new Object[] {-1},
                 new Object[] {Integer.MAX_VALUE},
                 new Object[] {Integer.MIN_VALUE},
+                new Object[] {12345},
     };
   }
 
