@@ -81,14 +81,21 @@ public class TestDefaultStringifier {
     }
   }
 
+  private Object[] valueSetForIntegerValue() {
+    return new Object[] {
+                new Object[] {48},
+    };
+  }
+
   @Test
-  public void testWithJavaSerialization() throws Exception {
+  @Parameters(method = "valueSetForIntegerValue")
+  public void testWithJavaSerialization(int value) throws Exception {
     conf.set("io.serializations", "org.apache.hadoop.io.serializer.JavaSerialization");
 
     LOG.info("Testing DefaultStringifier with Serializable Integer");
 
     //Integer implements Serializable
-    Integer testInt = Integer.valueOf(42);
+    Integer testInt = Integer.valueOf(value);
     DefaultStringifier<Integer> stringifier = new DefaultStringifier<Integer>(conf, Integer.class);
 
     String str = stringifier.toString(testInt);
