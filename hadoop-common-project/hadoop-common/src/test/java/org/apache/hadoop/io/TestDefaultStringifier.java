@@ -133,15 +133,17 @@ public class TestDefaultStringifier {
 
   }
 
+  private Object[] valueSetForTestStoreLoadArray() {
+    return new Object[] {
+                new Object[] { "test.defaultstringifier.key2", new Integer[] {1,2,3,4,5} },
+    };
+  }
+
   @Test
-  public void testStoreLoadArray() throws IOException {
+  @Parameters(method = "valueSetForTestStoreLoadArray")
+  public void testStoreLoadArray(String keyName, Integer[] array) throws IOException {
     LOG.info("Testing DefaultStringifier#storeArray() and #loadArray()");
     conf.set("io.serializations", "org.apache.hadoop.io.serializer.JavaSerialization");
-
-    String keyName = "test.defaultstringifier.key2";
-
-    Integer[] array = new Integer[] {1,2,3,4,5};
-
 
     DefaultStringifier.storeArray(conf, array, keyName);
 
