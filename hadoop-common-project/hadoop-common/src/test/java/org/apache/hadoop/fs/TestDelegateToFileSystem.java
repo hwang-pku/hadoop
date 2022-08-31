@@ -19,11 +19,14 @@ package org.apache.hadoop.fs;
 
 import java.net.URI;
 
+import junitparams.JUnitParamsRunner;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.hadoop.conf.Configuration;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(JUnitParamsRunner.class)
 public class TestDelegateToFileSystem {
 
   private static final String FTP_DUMMYHOST = "ftp://dummyhost";
