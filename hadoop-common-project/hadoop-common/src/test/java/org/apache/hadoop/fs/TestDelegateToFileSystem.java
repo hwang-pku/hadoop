@@ -66,8 +66,21 @@ public class TestDelegateToFileSystem {
   @Test
   @Parameters({
   "hdfs://dummyhost:8020",
+  "",
+  "    ",
+  "8020",
+  "8080",
+  "hdfs://someText@123:123",
+  "hdfs://someText:12312",
+  "http://localhost:8080",
+  "http://local host:9090",
+  "abcd.//:2012",
+  "abcdaa/:123",
+  "abcdaaa:6666",
+  "a",
   })
   public void testDefaultURIwithPort(String defaultUri) throws Exception {
+    Assume.assumeTrue(!defaultUri.contains(" ") && !defaultUri.isEmpty());
     testDefaultUriInternal(defaultUri);
   }
 }
