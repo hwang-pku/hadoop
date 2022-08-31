@@ -24,6 +24,7 @@ import java.util.Random;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.hadoop.conf.Configuration;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class TestDefaultStringifier {
   @Test
   @Parameters(method = "valueSetForTestWithWritable")
   public void testWithWritable(int iterations, int bound, char[] characters) throws Exception {
-
+    Assume.assumeTrue(bound > 0 && characters.length > 0);
     conf.set("io.serializations", "org.apache.hadoop.io.serializer.WritableSerialization");
 
     LOG.info("Testing DefaultStringifier with Text");
