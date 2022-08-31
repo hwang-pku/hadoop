@@ -158,10 +158,14 @@ public class DefaultStringifier<T> implements Stringifier<T> {
   public static <K> void storeArray(Configuration conf, K[] items,
       String keyName) throws IOException {
 
+    StringBuilder builder = new StringBuilder();
+    if (items.length == 0) {
+        conf.set(keyName, builder.toString());
+        return;
+    }
     DefaultStringifier<K> stringifier = new DefaultStringifier<K>(conf, 
         GenericsUtil.getClass(items[0]));
     try {
-      StringBuilder builder = new StringBuilder();
       for (K item : items) {
         builder.append(stringifier.toString(item)).append(SEPARATOR);
       }
