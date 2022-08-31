@@ -128,6 +128,9 @@ public class TestFilterExpression {
   private Object[] valueSetForTwoBooleans() {
     return new Object[] {
                 new Object[] {true, false},
+                new Object[] {true, true},
+                new Object[] {false, false},
+                new Object[] {false, true},
     };
   }
 
