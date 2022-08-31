@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.hadoop.conf.Configuration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,11 +36,15 @@ public class TestDefaultStringifier {
   private static Configuration conf = new Configuration();
   private static final Logger LOG =
       LoggerFactory.getLogger(TestDefaultStringifier.class);
-
-  private char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+  private Object[] valueSetForTestWithWritable() {
+    return new Object[] {
+                new Object[] {10, 40, "abcdefghijklmnopqrstuvwxyz".toCharArray()}
+    };
+  }
 
   @Test
-  public void testWithWritable() throws Exception {
+  @Parameters(method = "valueSetForTestWithWritable")
+  public void testWithWritable(int iterations, int bound, char[] characters) throws Exception {
 
     conf.set("io.serializations", "org.apache.hadoop.io.serializer.WritableSerialization");
 
@@ -48,12 +53,12 @@ public class TestDefaultStringifier {
     Random random = new Random();
 
     //test with a Text
-    for(int i=0;i<10;i++) {
+    for(int i=0;i<iterations;i++) {
       //generate a random string
       StringBuilder builder = new StringBuilder();
-      int strLen = random.nextInt(40);
+      int strLen = random.nextInt(bound);
       for(int j=0; j< strLen; j++) {
-        builder.append(alphabet[random.nextInt(alphabet.length)]);
+        builder.append(characters[random.nextInt(characters.length)]);
       }
       Text text = new Text(builder.toString());
       DefaultStringifier<Text> stringifier = new DefaultStringifier<Text>(conf, Text.class);
