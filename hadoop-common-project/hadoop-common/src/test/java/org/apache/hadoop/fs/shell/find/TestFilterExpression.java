@@ -125,12 +125,19 @@ public class TestFilterExpression {
     verifyNoMoreInteractions(expr);
   }
 
+  private Object[] valueSetForTwoBooleans() {
+    return new Object[] {
+                new Object[] {true, false},
+    };
+  }
+
   // test that the isAction method is called
   @Test
-  public void isAction() {
-    when(expr.isAction()).thenReturn(true).thenReturn(false);
-    assertTrue(test.isAction());
-    assertFalse(test.isAction());
+  @Parameters(method = "valueSetForTwoBooleans")
+  public void isAction(boolean b1, boolean b2) {
+    when(expr.isAction()).thenReturn(b1).thenReturn(b2);
+    assertEquals(b1, test.isAction());
+    assertEquals(b2, test.isAction());
     verify(expr, times(2)).isAction();
     verifyNoMoreInteractions(expr);
   }
