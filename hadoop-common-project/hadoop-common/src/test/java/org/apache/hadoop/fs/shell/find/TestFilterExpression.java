@@ -96,6 +96,7 @@ public class TestFilterExpression {
   private Object[] valueSetForStringArray() {
     return new Object[] {
                 new Object[] {new String[] { "Usage 1", "Usage 2", "Usage 3" }},
+                new Object[] {new String[] { "Help 1", "Help 2", "Help 3" }},
                 new Object[] {new String[] { "U", "U" }},
                 new Object[] {new String[] { "1", "2", "3", "4" }},
                 new Object[] {new String[] { }},
@@ -116,8 +117,8 @@ public class TestFilterExpression {
 
   // test that the getHelp method is called
   @Test
-  public void getHelp() {
-    String[] help = new String[] { "Help 1", "Help 2", "Help 3" };
+  @Parameters(method = "valueSetForStringArray")
+  public void getHelp(String[] help) {
     when(expr.getHelp()).thenReturn(help);
     assertArrayEquals(help, test.getHelp());
     verify(expr).getHelp();
