@@ -96,6 +96,11 @@ public class TestFilterExpression {
   private Object[] valueSetForStringArray() {
     return new Object[] {
                 new Object[] {new String[] { "Usage 1", "Usage 2", "Usage 3" }},
+                new Object[] {new String[] { "U", "U" }},
+                new Object[] {new String[] { "1", "2", "3", "4" }},
+                new Object[] {new String[] { }},
+                new Object[] {new String[] { "", "    ", "      ", "", "", "", "", "                      " }},
+                new Object[] {new String[] { "123@abc", "ABC@4567", "!@#$%^&*()__+=-{}][;':,./?><" }},
     };
   }
 
