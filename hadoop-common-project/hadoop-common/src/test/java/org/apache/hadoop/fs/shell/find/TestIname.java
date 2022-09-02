@@ -54,9 +54,9 @@ public class TestIname {
 
   // test a matching name (same case)
   @Test
-  public void applyMatch() throws IOException {
-    setup("name");
-    PathData item = new PathData("/directory/path/name", mockFs.getConf());
+  public void applyMatch(final String matchingName) throws IOException {
+    setup(matchingName);
+    PathData item = new PathData("/directory/path/" + matchingName, mockFs.getConf());
     assertEquals(Result.PASS, name.apply(item, -1));
   }
 
