@@ -88,7 +88,12 @@ public class TestFindClass extends Assert {
                 new Object[] {FindClass.E_CREATE_FAILED, // testCreateFailsInPrivateConstructor
                                       FindClass.A_CREATE,
                                       "org.apache.hadoop.util.TestFindClass$PrivateConstructor"},
-                new Object[] {FindClass.SUCCESS, FindClass.A_RESOURCE, LOG4J_PROPERTIES}, // testLoadFindsLog4J
+                new Object[] {FindClass.SUCCESS, // testLoadFindsLog4J
+                                     FindClass.A_RESOURCE, LOG4J_PROPERTIES},
+                new Object[] {FindClass.E_NOT_FOUND, // testPrintFailsNoSuchClass
+                                     FindClass.A_PRINTRESOURCE, "org.apache.hadoop.util.ThereIsNoSuchClass"},
+                new Object[] {FindClass.SUCCESS, // testPrintClass
+                                     FindClass.A_PRINTRESOURCE, LOG4J_PROPERTIES},
     };
   }
 
