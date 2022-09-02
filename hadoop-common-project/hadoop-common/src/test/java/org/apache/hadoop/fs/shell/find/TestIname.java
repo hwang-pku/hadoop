@@ -27,6 +27,7 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.shell.PathData;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
@@ -86,6 +87,7 @@ public class TestIname {
   "name,name",
   })
   public void applyNotMatch(String name, final String nonMatchingName) throws IOException {
+    Assume.assumeTrue(!name.equals(nonMatchingName));
     setup(name);
     PathData item = new PathData("/directory/path/" + nonMatchingName, mockFs.getConf());
     assertEquals(Result.FAIL, this.name.apply(item, -1));
