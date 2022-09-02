@@ -97,6 +97,12 @@ public class TestIname {
   @Test
   @Parameters({
   "name,NaMe",
+  "nAmE,NaMe",
+  "NAME,namE",
+  "NAME,name",
+  "name,NAME",
+  "name@123,NAME@123",
+  " A , a    ",
   })
   public void applyMixedCase(String name, final String matchingName) throws IOException {
     setup(name);
