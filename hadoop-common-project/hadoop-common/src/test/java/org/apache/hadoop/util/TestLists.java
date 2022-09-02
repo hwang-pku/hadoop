@@ -172,6 +172,15 @@ public class TestLists {
     return new Object[] {
                 new Object[] {new String[]{"record1", "record2", "record3"},
                     (Object) new String[]{"record1", "record2", "record3"}},
+                new Object[] {new String[]{"record4", "record5", "record6", "record7", "record8"},
+                    (Object) new String[]{"record1"}},
+                new Object[] {new String[]{"R!", "R@", "R#", "R$", "R %"},
+                    (Object) new String[]{"record2", "record3"}},
+                new Object[] {new String[]{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""},
+                    (Object) new String[]{"     ", "    ", "\"\", \"\", \"\" "}},
+                new Object[] {new String[]{null, null, null, null, null, null, null, null, null, null, null, null },
+                    (Object) new String[]{}},
+
     };
   }
 
