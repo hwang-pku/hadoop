@@ -19,16 +19,20 @@ package org.apache.hadoop.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import junitparams.JUnitParamsRunner;
 import org.junit.Assert;
 import org.apache.hadoop.util.FindClass;
 import org.apache.hadoop.util.ToolRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Test the find class logic
  */
+
+@RunWith(JUnitParamsRunner.class)
 public class TestFindClass extends Assert {
   private static final Logger LOG =
       LoggerFactory.getLogger(TestFindClass.class);
