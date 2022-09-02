@@ -39,6 +39,15 @@ public class TestLists {
   private Object[] valueSetToAddArray() {
     return new Object[] {
                 new Object[] {new String[]{"record1"}},
+                new Object[] {new String[]{"record1", "record2", "record3"}},
+                new Object[] {new String[]{"r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r",
+                    "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r"}},
+                new Object[] {new String[]{"", "", "", ""}},
+                new Object[] {new String[]{"    ", "   ", "          ", " "}},
+                new Object[] {new String[]{"123", "345", "!@#$%", ")(*&", null}},
+                new Object[] {new String[]{"!@#$%^&*()_+-={}][|:';,./?><qwertyuioplkjhgfdsazxcvbnm1234567890"}},
+                new Object[] {new String[]{}},
+                new Object[] {new String[]{null, null, null, null, null}},
     };
   }
 
