@@ -80,6 +80,13 @@ public class TestLists {
   private Object[] valueSetToProvideStringElementsAndCountToAddMore() {
     return new Object[] {
                 new Object[] {1, "record1", "record2", "record3"},
+                new Object[] {0, "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r",
+                    "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r"},
+                new Object[] {100, "", "", "", ""},
+                new Object[] {200, "    ", "   ", "          ", " "},
+                new Object[] {7, "123", "345", "!@#$%", ")(*&", null},
+                new Object[] {-4, "!@#$%^&*()_+-={}][|:';,./?><qwertyuioplkjhgfdsazxcvbnm1234567890"},
+                new Object[] {-100, "", "       ", null, null},
     };
   }
 
@@ -90,7 +97,7 @@ public class TestLists {
     for (int i = 0; i < nMore; i++) {
         list.add("record" + (i + elements.length + 1));
     }
-    Assert.assertEquals(elements.length + nMore, list.size());
+    Assert.assertEquals(elements.length + Math.max(nMore, 0), list.size());
     int i = 0;
     for (String s : elements) {
         Assert.assertEquals(s, list.get(i++));
