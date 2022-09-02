@@ -103,27 +103,13 @@ public class TestIname {
   "name,NAME",
   "name@123,NAME@123",
   " A , a    ",
+  "n*e,name", // test a matching glob pattern (same case)
+  "n*e,NaMe" // test a matching glob pattern (different case)
   })
-  public void applyMixedCase(String name, final String matchingName) throws IOException {
+  public void applyGlobAndMixedCases(String name, final String matchingName) throws IOException {
     setup(name);
     PathData item = new PathData("/directory/path/" + matchingName, mockFs.getConf());
     assertEquals(Result.PASS, this.name.apply(item, -1));
-  }
-
-  // test a matching glob pattern (same case)
-  @Test
-  public void applyGlob() throws IOException {
-    setup("n*e");
-    PathData item = new PathData("/directory/path/name", mockFs.getConf());
-    assertEquals(Result.PASS, name.apply(item, -1));
-  }
-
-  // test a matching glob pattern (different case)
-  @Test
-  public void applyGlobMixedCase() throws IOException {
-    setup("n*e");
-    PathData item = new PathData("/directory/path/NaMe", mockFs.getConf());
-    assertEquals(Result.PASS, name.apply(item, -1));
   }
 
   // test a non-matching glob pattern
