@@ -41,6 +41,12 @@ public class TestDecompressorStream {
   @Parameterized.Parameters
   public static Collection<Object> testData() {
     Object[][] data = new Object[][] { {"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"},
+                                       {"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"},
+                                       {"!@#$%^&*()_+-=[]}{';:<>?/.,1234567890qwertyuioplkjhgfdsazxcvbnm"},
+                                       {"qwertyuioplkjhgfdsazxcvbnm"},
+                                       {"1234567890"},
+                                       {"                                                                "},
+                                       {"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
         };
     return Arrays.asList(data);
     }
