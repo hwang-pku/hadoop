@@ -73,10 +73,10 @@ public class TestIname {
 
   // test a non-matching name
   @Test
-  public void applyNotMatch() throws IOException {
-    setup("name");
-    PathData item = new PathData("/directory/path/notname", mockFs.getConf());
-    assertEquals(Result.FAIL, name.apply(item, -1));
+  public void applyNotMatch(String name, final String nonMatchingName) throws IOException {
+    setup(name);
+    PathData item = new PathData("/directory/path/" + nonMatchingName, mockFs.getConf());
+    assertEquals(Result.FAIL, this.name.apply(item, -1));
   }
 
   // test a matching name (different case)
