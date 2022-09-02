@@ -143,6 +143,8 @@ public class TestLists {
                 new Object[] {new String[]{"a", "b", "c", "d", "e"}, 2},
                 new Object[] {new String[]{"a", "b", "c", "d", "e"}, 1},
                 new Object[] {new String[]{"a", "b", "c", "d", "e"}, 6},
+                new Object[] {new String[]{"a", "b", "c", "d", "e"}, 13},
+                new Object[] {new String[]{"a", "b", "c"}, 3},
     };
   }
 
