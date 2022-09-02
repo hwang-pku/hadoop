@@ -125,7 +125,10 @@ public class TestIname {
   // test a non-matching glob pattern
   @Test
   @Parameters({
-  "n*e,notmatch"
+  "n*e,notmatch",
+  "*e,naM@123",
+  "***name,namename123",
+  "name**,amename",
   })
   public void applyGlobNotMatch(String arg, final String nonMatchName) throws IOException {
     setup(arg);
