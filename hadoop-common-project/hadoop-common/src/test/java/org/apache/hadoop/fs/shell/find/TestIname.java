@@ -95,10 +95,10 @@ public class TestIname {
 
   // test a matching name (different case)
   @Test
-  public void applyMixedCase() throws IOException {
-    setup("name");
-    PathData item = new PathData("/directory/path/NaMe", mockFs.getConf());
-    assertEquals(Result.PASS, name.apply(item, -1));
+  public void applyMixedCase(String name, final String matchingName) throws IOException {
+    setup(name);
+    PathData item = new PathData("/directory/path/" + matchingName, mockFs.getConf());
+    assertEquals(Result.PASS, this.name.apply(item, -1));
   }
 
   // test a matching glob pattern (same case)
