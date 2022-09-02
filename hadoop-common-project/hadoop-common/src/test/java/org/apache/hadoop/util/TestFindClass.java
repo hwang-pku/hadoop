@@ -20,6 +20,7 @@ package org.apache.hadoop.util;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Assert;
 import org.apache.hadoop.util.FindClass;
 import org.apache.hadoop.util.ToolRunner;
@@ -50,9 +51,16 @@ public class TestFindClass extends Assert {
     assertEquals(expected, result);
   }
 
+  private Object[] valueSetForRun() {
+    return new Object[] {
+                new Object[] {FindClass.E_USAGE, "org.apache.hadoop.util.TestFindClass"},
+    };
+  }
+
   @Test
-  public void testUsage() throws Throwable {
-    run(FindClass.E_USAGE, "org.apache.hadoop.util.TestFindClass");
+  @Parameters(method = "valueSetForRun")
+  public void testUsage(int expected, String... args) throws Throwable {
+    run(expected, args);
   }
 
   @Test
