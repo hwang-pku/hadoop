@@ -18,9 +18,11 @@
 
 package org.apache.hadoop.util;
 
+import junitparams.JUnitParamsRunner;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,6 +32,7 @@ import java.util.Set;
 /**
  * Simple tests for utility class Lists.
  */
+@RunWith(JUnitParamsRunner.class)
 public class TestLists {
 
   @Test
