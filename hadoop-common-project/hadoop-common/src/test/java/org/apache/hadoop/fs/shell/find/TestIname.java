@@ -74,7 +74,16 @@ public class TestIname {
   // test a non-matching name
   @Test
   @Parameters({
-  "name,notname"
+  "name,notname",
+  "nameasdf,knjsbahdsa",
+  "NAME,KJILHJKH",
+  "name@123,@123",
+  "!@#$%^&*()-=+_,)(*&^%$#@!",
+  "123123,123 123",
+  ",null",
+  "      ,    ",
+  "      ,",
+  "name,name",
   })
   public void applyNotMatch(String name, final String nonMatchingName) throws IOException {
     setup(name);
