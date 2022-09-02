@@ -168,24 +168,32 @@ public class TestLists {
             .hasSize(stringList.length%pageSize==0 ? Math.min(stringList.length, pageSize): stringList.length%pageSize);
   }
 
+  private Object[] valueSetToProvideTwoArrays() {
+    return new Object[] {
+                new Object[] {new String[]{"record1", "record2", "record3"},
+                    (Object) new String[]{"record1", "record2", "record3"}},
+    };
+  }
+
   @Test
-  public void testArrayListWithSize() {
-    List<String> list = Lists.newArrayListWithCapacity(3);
-    list.add("record1");
-    list.add("record2");
-    list.add("record3");
-    Assert.assertEquals(3, list.size());
-    Assert.assertEquals("record1", list.get(0));
-    Assert.assertEquals("record2", list.get(1));
-    Assert.assertEquals("record3", list.get(2));
-    list = Lists.newArrayListWithCapacity(3);
-    list.add("record1");
-    list.add("record2");
-    list.add("record3");
-    Assert.assertEquals(3, list.size());
-    Assert.assertEquals("record1", list.get(0));
-    Assert.assertEquals("record2", list.get(1));
-    Assert.assertEquals("record3", list.get(2));
+  @Parameters(method = "valueSetToProvideTwoArrays")
+  public void testArrayListWithSize(String[] list1, String[] list2) {
+    List<String> list = Lists.newArrayListWithCapacity(list1.length);
+    for(int i=0;i<list1.length;i++) {
+        list.add(list1[i]);
+    }
+    Assert.assertEquals(list1.length, list.size());
+    for(int i=0;i<list1.length;i++) {
+        Assert.assertEquals(list1[i], list.get(i));
+    }
+    list = Lists.newArrayListWithCapacity(list2.length);
+    for(int i=0;i<list2.length;i++) {
+            list.add(list2[i]);
+    }
+    Assert.assertEquals(list2.length, list.size());
+    for(int i=0;i<list2.length;i++) {
+        Assert.assertEquals(list2[i], list.get(i));
+    }
   }
 
 }
