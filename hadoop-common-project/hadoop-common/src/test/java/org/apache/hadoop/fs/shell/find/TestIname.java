@@ -95,6 +95,9 @@ public class TestIname {
 
   // test a matching name (different case)
   @Test
+  @Parameters({
+  "name,NaMe",
+  })
   public void applyMixedCase(String name, final String matchingName) throws IOException {
     setup(name);
     PathData item = new PathData("/directory/path/" + matchingName, mockFs.getConf());
