@@ -111,14 +111,17 @@ public class TestLists {
   }
 
   @Test
-  public void testItrArrayLists() {
+  @Parameters(method = "valueSetToProvideStringElementsAndCountToAddMore")
+  public void testItrArrayLists(int nMore, String... elements) {
     Set<String> set = new HashSet<>();
-    set.add("record1");
-    set.add("record2");
-    set.add("record3");
+    for (String s : elements) {
+        set.add(s);
+    }
     List<String> list = Lists.newArrayList(set);
-    list.add("record4");
-    Assert.assertEquals(4, list.size());
+    for (int i = 0; i < nMore; i++) {
+        list.add("record" + (i + elements.length + 1));
+    }
+    Assert.assertEquals(set.size() + Math.max(nMore, 0), list.size());
   }
 
   @Test
