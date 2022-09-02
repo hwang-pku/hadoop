@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.shell.PathData;
 import org.junit.Before;
@@ -54,6 +55,9 @@ public class TestIname {
 
   // test a matching name (same case)
   @Test
+  @Parameters({
+  "name",
+  })
   public void applyMatch(final String matchingName) throws IOException {
     setup(matchingName);
     PathData item = new PathData("/directory/path/" + matchingName, mockFs.getConf());
