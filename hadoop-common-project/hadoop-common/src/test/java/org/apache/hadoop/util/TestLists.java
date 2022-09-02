@@ -138,46 +138,32 @@ public class TestLists {
     Assert.assertEquals(set.size() + Math.max(nMore, 0), list.size());
   }
 
+  private Object[] valueSetToProvideStringArrayAndPageSize() {
+    return new Object[] {
+                new Object[] {new String[]{"a", "b", "c", "d", "e"}, 2},
+                new Object[] {new String[]{"a", "b", "c", "d", "e"}, 1},
+                new Object[] {new String[]{"a", "b", "c", "d", "e"}, 6},
+    };
+  }
+
   @Test
-  public void testListsPartition() {
+  @Parameters(method = "valueSetToProvideStringArrayAndPageSize")
+  public void testListsPartition(String[] stringList, int pageSize) {
     List<String> list = new ArrayList<>();
-    list.add("a");
-    list.add("b");
-    list.add("c");
-    list.add("d");
-    list.add("e");
+    for(int i=0;i<stringList.length;i++) {
+        list.add(stringList[i]);
+    }
     List<List<String>> res = Lists.
-            partition(list, 2);
+            partition(list, pageSize);
     Assertions.assertThat(res)
             .describedAs("Number of partitions post partition")
-            .hasSize(3);
+            .hasSize((int) Math.ceil(stringList.length/(pageSize*1.0)));
     Assertions.assertThat(res.get(0))
             .describedAs("Number of elements in first partition")
-            .hasSize(2);
-    Assertions.assertThat(res.get(2))
+            .hasSize(Math.min(stringList.length, pageSize));
+    Assertions.assertThat(res.get((int) Math.ceil(stringList.length/(pageSize*1.0))-1))
             .describedAs("Number of elements in last partition")
-            .hasSize(1);
-
-    List<List<String>> res2 = Lists.
-            partition(list, 1);
-    Assertions.assertThat(res2)
-            .describedAs("Number of partitions post partition")
-            .hasSize(5);
-    Assertions.assertThat(res2.get(0))
-            .describedAs("Number of elements in first partition")
-            .hasSize(1);
-    Assertions.assertThat(res2.get(4))
-            .describedAs("Number of elements in last partition")
-            .hasSize(1);
-
-    List<List<String>> res3 = Lists.
-            partition(list, 6);
-    Assertions.assertThat(res3)
-            .describedAs("Number of partitions post partition")
-            .hasSize(1);
-    Assertions.assertThat(res3.get(0))
-            .describedAs("Number of elements in first partition")
-            .hasSize(5);
+            .hasSize(stringList.length%pageSize==0 ? Math.min(stringList.length, pageSize): stringList.length%pageSize);
   }
 
   @Test
