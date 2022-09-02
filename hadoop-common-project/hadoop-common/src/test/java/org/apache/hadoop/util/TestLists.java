@@ -77,15 +77,30 @@ public class TestLists {
     }
   }
 
+  private Object[] valueSetToProvideStringElementsAndCountToAddMore() {
+    return new Object[] {
+                new Object[] {1, "record1", "record2", "record3"},
+    };
+  }
+
   @Test
-  public void testVarArgArrayLists() {
-    List<String> list = Lists.newArrayList("record1", "record2", "record3");
-    list.add("record4");
-    Assert.assertEquals(4, list.size());
-    Assert.assertEquals("record1", list.get(0));
-    Assert.assertEquals("record2", list.get(1));
-    Assert.assertEquals("record3", list.get(2));
-    Assert.assertEquals("record4", list.get(3));
+  @Parameters(method = "valueSetToProvideStringElementsAndCountToAddMore")
+  public void testVarArgArrayLists(int nMore, String... elements) {
+    List<String> list = Lists.newArrayList(elements);
+    for (int i = 0; i < nMore; i++) {
+        list.add("record" + (i + elements.length + 1));
+    }
+    Assert.assertEquals(elements.length + nMore, list.size());
+    int i = 0;
+    for (String s : elements) {
+        Assert.assertEquals(s, list.get(i++));
+    }
+    int j = 0;
+    while (i < nMore) {
+        Assert.assertEquals("record" + (j + elements.length + 1), list.get(i));
+        j++;
+        i++;
+    }
   }
 
   @Test
