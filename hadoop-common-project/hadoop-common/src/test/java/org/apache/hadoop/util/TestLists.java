@@ -19,6 +19,7 @@
 package org.apache.hadoop.util;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,12 +36,23 @@ import java.util.Set;
 @RunWith(JUnitParamsRunner.class)
 public class TestLists {
 
+  private Object[] valueSetToAddArray() {
+    return new Object[] {
+                new Object[] {new String[]{"record1"}},
+    };
+  }
+
   @Test
-  public void testAddToEmptyArrayList() {
+  @Parameters(method = "valueSetToAddArray")
+  public void testAddToEmptyArrayList(String [] stringArr) {
     List<String> list = Lists.newArrayList();
-    list.add("record1");
-    Assert.assertEquals(1, list.size());
-    Assert.assertEquals("record1", list.get(0));
+    for (int i = 0; i < stringArr.length; i++) {
+        list.add(stringArr[i]);
+    }
+    Assert.assertEquals(stringArr.length, list.size());
+    for (int i = 0; i < stringArr.length; i++) {
+        Assert.assertEquals(stringArr[i], list.get(i));
+    }
   }
 
   @Test
