@@ -24,16 +24,26 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 
-import junitparams.JUnitParamsRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-@RunWith(JUnitParamsRunner.class)
+@RunWith(Parameterized.class)
 public class TestDecompressorStream {
-  private static final String TEST_STRING =
-      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  @Parameterized.Parameter(0)
+  public String TEST_STRING;
+
+  @Parameterized.Parameters
+  public static Collection<Object> testData() {
+    Object[][] data = new Object[][] { {"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"},
+        };
+    return Arrays.asList(data);
+    }
 
   private ByteArrayInputStream bytesIn;
   private Decompressor decompressor;
