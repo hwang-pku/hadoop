@@ -36,7 +36,7 @@ import java.util.Set;
 @RunWith(JUnitParamsRunner.class)
 public class TestLists {
 
-  private Object[] valueSetToAddArray() {
+  private Object[] valueSetToProvideStringArray() {
     return new Object[] {
                 new Object[] {new String[]{"record1"}},
                 new Object[] {new String[]{"record1", "record2", "record3"}},
@@ -52,7 +52,7 @@ public class TestLists {
   }
 
   @Test
-  @Parameters(method = "valueSetToAddArray")
+  @Parameters(method = "valueSetToProvideStringArray")
   public void testAddToEmptyArrayList(String [] stringArr) {
     List<String> list = Lists.newArrayList();
     for (int i = 0; i < stringArr.length; i++) {
@@ -65,11 +65,16 @@ public class TestLists {
   }
 
   @Test
-  public void testAddToEmptyLinkedList() {
+  @Parameters(method = "valueSetToProvideStringArray")
+  public void testAddToEmptyLinkedList(String [] stringArr) {
     List<String> list = Lists.newLinkedList();
-    list.add("record1");
-    Assert.assertEquals(1, list.size());
-    Assert.assertEquals("record1", list.get(0));
+    for (int i = 0; i < stringArr.length; i++) {
+        list.add(stringArr[i]);
+    }
+    Assert.assertEquals(stringArr.length, list.size());
+    for (int i = 0; i < stringArr.length; i++) {
+        Assert.assertEquals(stringArr[i], list.get(i));
+    }
   }
 
   @Test
