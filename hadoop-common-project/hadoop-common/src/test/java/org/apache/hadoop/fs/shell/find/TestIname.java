@@ -57,6 +57,13 @@ public class TestIname {
   @Test
   @Parameters({
   "name",
+  "nameasdf",
+  "NAME",
+  "name@123",
+  "!@#$%^&*()-=+_",
+  "123123",
+  "",
+  "     ",
   })
   public void applyMatch(final String matchingName) throws IOException {
     setup(matchingName);
