@@ -73,6 +73,9 @@ public class TestIname {
 
   // test a non-matching name
   @Test
+  @Parameters({
+  "name,notname"
+  })
   public void applyNotMatch(String name, final String nonMatchingName) throws IOException {
     setup(name);
     PathData item = new PathData("/directory/path/" + nonMatchingName, mockFs.getConf());
