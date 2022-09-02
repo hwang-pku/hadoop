@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.Before;
+import org.junit.Assume;import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -47,6 +47,8 @@ public class TestDecompressorStream {
                                        {"1234567890"},
                                        {"                                                                "},
                                        {"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+                                       {"1234567890123456789012345"},
+                                       {"12345678901234567890123456"},
         };
     return Arrays.asList(data);
     }
@@ -101,6 +103,7 @@ public class TestDecompressorStream {
 
   @Test
   public void testSkip() throws IOException {
+    Assume.assumeTrue(TEST_STRING.length() > 25);
     assertThat(decompressorStream.skip(12)).isEqualTo(12L);
     assertThat(decompressorStream.read()).isEqualTo(TEST_STRING.charAt(12));
     assertThat(decompressorStream.read()).isEqualTo(TEST_STRING.charAt(13));
