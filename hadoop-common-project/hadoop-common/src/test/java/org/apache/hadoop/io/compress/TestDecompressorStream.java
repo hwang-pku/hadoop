@@ -49,6 +49,10 @@ public class TestDecompressorStream {
                                        {"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
                                        {"1234567890123456789012345"},
                                        {"12345678901234567890123456"},
+                                       {"=-_+)(*&^%$#@!`~[]{}|';:/.,<>?!@#$%^&*()_"},
+                                       {" 1 1 1 1 1 1 1 1 1 1 1 1 1 1"},
+                                       {""},
+                                       {null},
         };
     return Arrays.asList(data);
     }
@@ -59,6 +63,7 @@ public class TestDecompressorStream {
 
   @Before
   public void setUp() throws IOException {
+    Assume.assumeTrue(TEST_STRING != null);
     bytesIn = new ByteArrayInputStream(TEST_STRING.getBytes());
     decompressor = new FakeDecompressor();
     decompressorStream =
