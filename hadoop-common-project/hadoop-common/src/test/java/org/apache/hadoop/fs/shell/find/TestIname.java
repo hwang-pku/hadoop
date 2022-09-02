@@ -104,7 +104,17 @@ public class TestIname {
   "name@123,NAME@123",
   " A , a    ",
   "n*e,name", // test a matching glob pattern (same case)
-  "n*e,NaMe" // test a matching glob pattern (different case)
+  "n*,name",
+  "*,name@123",
+  "*,",
+  "*,     ",
+  "*,   a  ",
+  "a*,   a  ",
+  "n*e,NaMe", // test a matching glob pattern (different case)
+  "n*,NAMe",
+  "*,NaME@12345",
+  "*,   AA  ",
+  "***, name@NAME ",
   })
   public void applyGlobAndMixedCases(String name, final String matchingName) throws IOException {
     setup(name);
