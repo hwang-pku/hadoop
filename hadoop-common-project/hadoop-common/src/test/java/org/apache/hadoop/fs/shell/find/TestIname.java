@@ -124,9 +124,12 @@ public class TestIname {
 
   // test a non-matching glob pattern
   @Test
-  public void applyGlobNotMatch() throws IOException {
-    setup("n*e");
-    PathData item = new PathData("/directory/path/notmatch", mockFs.getConf());
+  @Parameters({
+  "n*e,notmatch"
+  })
+  public void applyGlobNotMatch(String arg, final String nonMatchName) throws IOException {
+    setup(arg);
+    PathData item = new PathData("/directory/path/" + nonMatchName, mockFs.getConf());
     assertEquals(Result.FAIL, name.apply(item, -1));
   }
 }
