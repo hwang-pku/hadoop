@@ -125,14 +125,17 @@ public class TestLists {
   }
 
   @Test
-  public void testItrLinkedLists() {
+  @Parameters(method = "valueSetToProvideStringElementsAndCountToAddMore")
+  public void testItrLinkedLists(int nMore, String... elements) {
     Set<String> set = new HashSet<>();
-    set.add("record1");
-    set.add("record2");
-    set.add("record3");
+    for (String s : elements) {
+        set.add(s);
+    }
     List<String> list = Lists.newLinkedList(set);
-    list.add("record4");
-    Assert.assertEquals(4, list.size());
+    for (int i = 0; i < nMore; i++) {
+        list.add("record" + (i + elements.length + 1));
+    }
+    Assert.assertEquals(set.size() + Math.max(nMore, 0), list.size());
   }
 
   @Test
