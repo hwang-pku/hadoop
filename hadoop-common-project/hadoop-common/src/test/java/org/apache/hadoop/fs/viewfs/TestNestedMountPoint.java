@@ -121,6 +121,8 @@ public class TestNestedMountPoint {
   "/a/b/c/d/e/f,/a/b/c/d/e,/f", // /a/b/c/d/e/f resolves to /a/b/c/d/e and /f
   "/a/b/c/d/e,/a/b/c/d/e,/", // /a/b/c/d/e resolves to /a/b/c/d/e and /
   "/a/b/c/d/e/f/g/h/i,/a/b/c/d/e,/f/g/h/i", // /a/b/c/d/e/f/g/h/i resolves to /a/b/c/d/e and /f/g/h/i
+  "/a/b/c/d/e/f/g,/a/b/c/d/e,/f/g", // /a/b/c/d/e/f/g/ resolves to /a/b/c/d/e and /f/g
+  "/a/b/c/d/e/f/g/h/i/j/k/l/m,/a/b/c/d/e,/f/g/h/i/j/k/l/m", // /a/b/c/d/e/f/g/ resolves to /a/b/c/d/e and /f/g
   })
   public void testPathResolveToLink(String path, String resolvedPath, String remainingPath) throws Exception {
 
