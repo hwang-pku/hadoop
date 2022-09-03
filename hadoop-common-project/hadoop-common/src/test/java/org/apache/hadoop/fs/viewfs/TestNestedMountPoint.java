@@ -134,6 +134,14 @@ public class TestNestedMountPoint {
                 new Object[] {"/a/b/c/d/e", "/a/b/c/d", "/e", false, NN3_TARGET},
                 // /a/b/c/d/e/f/g/h/i resolves to /a/b/c/d/e and /f/g/h/i
                 new Object[] {"/a/b/c/d/e/f/g/h/i", "/a/b/c/d/e", "/f/g/h/i", false, NN4_TARGET},
+                // /a/b/e/c/d/a/g/h/i resolves to /a/b/e and /c/d/a/g/h/i
+                new Object[] {"/a/b/e/c/d/a/g/h/i", "/a/b/e", "/c/d/a/g/h/i", false, NN2_TARGET},
+                // /a/b/a/c/d/a/g/h/i resolves to /a/b and /a/c/d/a/g/h/i
+                new Object[] {"/a/b/a/c/d/a/g/h/i", "/a/b", "/a/c/d/a/g/h/i", false, NN1_TARGET},
+                // /b/c/d/e/d/a/g/h/i resolves to /b/c/d/e and /d/a/g/h/i
+                new Object[] {"/b/c/d/e/d/a/g/h/i", "/b/c/d/e", "/d/a/g/h/i", false, NN5_TARGET},
+                // /b/c/d/e/f/d/a/g/h/i resolves to /b/c/d/e/f and /d/a/g/h/i
+                new Object[] {"/b/c/d/e/f/d/a/g/h/i", "/b/c/d/e/f", "/d/a/g/h/i", false, NN6_TARGET},
     };
   }
 
