@@ -20,6 +20,7 @@ package org.apache.hadoop.fs.viewfs;
 import java.net.URI;
 import java.util.List;
 import java.util.function.Function;
+import junitparams.JUnitParamsRunner;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FsConstants;
@@ -28,11 +29,13 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 
 /**
  * Unit test of nested mount point support in INodeTree
  */
+@RunWith(JUnitParamsRunner.class)
 public class TestNestedMountPoint {
   private InodeTree inodeTree;
   private Configuration conf;
