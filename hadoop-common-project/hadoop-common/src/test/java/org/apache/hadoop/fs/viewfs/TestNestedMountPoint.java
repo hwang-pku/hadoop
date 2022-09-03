@@ -184,7 +184,9 @@ public class TestNestedMountPoint {
                 // Old Test 8 testPathResolveToDirLinkLastComponentInternalDirNotResolveLastComponent
                 // /a/b/c resolves to /a/b and /c
                 new Object[] {"/a/b/c", "/a/b", "/c", false, NN1_TARGET, InodeTree.ResultKind.EXTERNAL_DIR},
-
+                // Old Test 9 testPathResolveToLinkFallBack
+                // /a/e resolves to linkfallback
+                new Object[] {"/a/e", "/", "/a/e", true, LINKFALLBACK_TARGET, InodeTree.ResultKind.EXTERNAL_DIR},
     };
   }
 
@@ -200,24 +202,16 @@ public class TestNestedMountPoint {
     if (resultKind == InodeTree.ResultKind.EXTERNAL_DIR) {
         Assert.assertTrue(resolveResult.targetFileSystem instanceof TestNestMountPointFileSystem);
         Assert.assertEquals(expectedURI, ((TestNestMountPointFileSystem) resolveResult.targetFileSystem).getUri());
-        Assert.assertTrue(resolveResult.isLastInternalDirLink());
+        if (expectedURI == LINKFALLBACK_TARGET) {
+            Assert.assertFalse(resolveResult.isLastInternalDirLink());
+        } else {
+            Assert.assertTrue(resolveResult.isLastInternalDirLink());
+        }
     } else {
         Assert.assertTrue(resolveResult.targetFileSystem instanceof TestNestMountPointInternalFileSystem);
         Assert.assertEquals(fsUri, ((TestNestMountPointInternalFileSystem) resolveResult.targetFileSystem).getUri());
         Assert.assertFalse(resolveResult.isLastInternalDirLink());
     }
-  }
-
-  @Test
-  public void testPathResolveToLinkFallBack() throws Exception {
-    // /a/e resolves to linkfallback
-    InodeTree.ResolveResult resolveResult = inodeTree.resolve("/a/e", true);
-    Assert.assertEquals(InodeTree.ResultKind.EXTERNAL_DIR, resolveResult.kind);
-    Assert.assertEquals("/", resolveResult.resolvedPath);
-    Assert.assertEquals(new Path("/a/e"), resolveResult.remainingPath);
-    Assert.assertTrue(resolveResult.targetFileSystem instanceof TestNestMountPointFileSystem);
-    Assert.assertEquals(LINKFALLBACK_TARGET, ((TestNestMountPointFileSystem) resolveResult.targetFileSystem).getUri());
-    Assert.assertFalse(resolveResult.isLastInternalDirLink());
   }
 
   @Test
