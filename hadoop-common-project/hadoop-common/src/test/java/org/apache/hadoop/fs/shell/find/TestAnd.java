@@ -46,6 +46,8 @@ public class TestAnd {
                 new Object[] {Result.PASS, Result.PASS, Result.PASS},
                 // Test 2 testFailFirst -> test the first expression failing
                 new Object[] {Result.FAIL, Result.PASS, Result.FAIL},
+                // Test 3 testFailSecond -> test the second expression failing
+                new Object[] {Result.PASS, Result.FAIL, Result.FAIL},
     };
   }
 
@@ -75,13 +77,6 @@ public class TestAnd {
     }
     verifyNoMoreInteractions(first);
     verifyNoMoreInteractions(second);
-  }
-
-
-  // test the second expression failing
-  @Test
-  public void testFailSecond() throws IOException {
-    testPass(Result.PASS, Result.FAIL, Result.FAIL);
   }
 
   // test both expressions failing
