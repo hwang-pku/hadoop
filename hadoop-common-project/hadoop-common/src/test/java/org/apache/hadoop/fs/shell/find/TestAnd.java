@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.hadoop.fs.shell.PathData;
+import org.junit.Assume;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
 import org.junit.Test;
@@ -92,6 +93,8 @@ public class TestAnd {
   "setOptions", // Test 8: testSetOptions :- test setOptions is called on child
   "prepare", // Test 9: testPrepare :- test prepare is called on child
   "finish", // Test 10: testFinish :- test finish is called on child
+  "randomTestName", // check ignore on random function name
+  "", // check ignore on random function name
   })
   public void testCallFunctionOnChild(String function) throws IOException {
     And and = new And();
@@ -124,7 +127,7 @@ public class TestAnd {
             break;
         }
         default: {
-            return;
+            Assume.assumeTrue(false);
         }
     }
     verifyNoMoreInteractions(first);
