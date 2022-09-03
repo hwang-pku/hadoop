@@ -50,6 +50,12 @@ public class TestAnd {
                 new Object[] {Result.PASS, Result.FAIL, Result.FAIL},
                 // Test 4 testFailBoth -> test both expressions failing
                 new Object[] {Result.FAIL, Result.FAIL, Result.FAIL},
+                // Test 5 testStopFirst -> test the first expression stopping
+                new Object[] {Result.STOP, Result.PASS, Result.STOP},
+                // Test 6 testStopSecond -> test the second expression stopping
+                new Object[] {Result.PASS, Result.STOP, Result.STOP},
+                // Test 7 testStopFail -> test first expression stopping and second failing
+                new Object[] {Result.STOP, Result.FAIL, Result.STOP.combine(Result.FAIL)},
     };
   }
 
@@ -74,29 +80,11 @@ public class TestAnd {
 
     assertEquals(expectedResult, and.apply(pathData, -1));
     verify(first).apply(pathData, -1);
-    if (firstResult == Result.PASS) {
+    if (firstResult == Result.PASS || firstResult == Result.STOP) {
         verify(second).apply(pathData, -1);
     }
     verifyNoMoreInteractions(first);
     verifyNoMoreInteractions(second);
-  }
-
-  // test the first expression stopping
-  @Test
-  public void testStopFirst() throws IOException {
-    testPass(Result.STOP, Result.PASS, Result.STOP);
-  }
-
-  // test the second expression stopping
-  @Test
-  public void testStopSecond() throws IOException {
-    testPass(Result.PASS, Result.STOP, Result.STOP);
-  }
-
-  // test first expression stopping and second failing
-  @Test
-  public void testStopFail() throws IOException {
-    testPass(Result.STOP, Result.FAIL, Result.STOP.combine(Result.FAIL));
   }
 
   // test setOptions is called on child
