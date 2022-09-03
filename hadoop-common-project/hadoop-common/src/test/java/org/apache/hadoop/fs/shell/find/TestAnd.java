@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.hadoop.fs.shell.PathData;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
@@ -39,8 +40,16 @@ public class TestAnd {
   @Rule
   public Timeout globalTimeout = new Timeout(10000, TimeUnit.MILLISECONDS);
 
+  private Object[] valueSetsForDifferentCases() {
+    return new Object[] {
+                new Object[] {Result.PASS, Result.PASS, Result.PASS},
+    };
+  }
+
+
   // test all expressions passing
   @Test
+  @Parameters(method = "valueSetsForDifferentCases")
   public void testPass(Result firstResult, Result secondResult, Result expectedResult) throws IOException {
     And and = new And();
 
