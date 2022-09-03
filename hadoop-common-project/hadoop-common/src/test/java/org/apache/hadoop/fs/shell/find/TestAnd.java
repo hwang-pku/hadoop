@@ -87,9 +87,13 @@ public class TestAnd {
     verifyNoMoreInteractions(second);
   }
 
-  // test setOptions is called on child
   @Test
-  public void testSetOptions() throws IOException {
+  @Parameters({
+  "setOptions", // Test 8: testSetOptions :- test setOptions is called on child
+  "prepare", // Test 9: testPrepare :- test prepare is called on child
+  "finish", // Test 10: testFinish :- test finish is called on child
+  })
+  public void testCallFunctionOnChild(String function) throws IOException {
     And and = new And();
     Expression first = mock(Expression.class);
     Expression second = mock(Expression.class);
@@ -99,48 +103,30 @@ public class TestAnd {
     children.add(first);
     and.addChildren(children);
 
-    FindOptions options = mock(FindOptions.class);
-    and.setOptions(options);
-    verify(first).setOptions(options);
-    verify(second).setOptions(options);
-    verifyNoMoreInteractions(first);
-    verifyNoMoreInteractions(second);
-  }
-
-  // test prepare is called on child
-  @Test
-  public void testPrepare() throws IOException {
-    And and = new And();
-    Expression first = mock(Expression.class);
-    Expression second = mock(Expression.class);
-
-    Deque<Expression> children = new LinkedList<Expression>();
-    children.add(second);
-    children.add(first);
-    and.addChildren(children);
-
-    and.prepare();
-    verify(first).prepare();
-    verify(second).prepare();
-    verifyNoMoreInteractions(first);
-    verifyNoMoreInteractions(second);
-  }
-
-  // test finish is called on child
-  @Test
-  public void testFinish() throws IOException {
-    And and = new And();
-    Expression first = mock(Expression.class);
-    Expression second = mock(Expression.class);
-
-    Deque<Expression> children = new LinkedList<Expression>();
-    children.add(second);
-    children.add(first);
-    and.addChildren(children);
-
-    and.finish();
-    verify(first).finish();
-    verify(second).finish();
+    switch (function) {
+        case "setOptions": {
+            FindOptions options = mock(FindOptions.class);
+            and.setOptions(options);
+            verify(first).setOptions(options);
+            verify(second).setOptions(options);
+            break;
+        }
+        case "prepare": {
+            and.prepare();
+            verify(first).prepare();
+            verify(second).prepare();
+            break;
+        }
+        case "finish": {
+            and.finish();
+            verify(first).finish();
+            verify(second).finish();
+            break;
+        }
+        default: {
+            return;
+        }
+    }
     verifyNoMoreInteractions(first);
     verifyNoMoreInteractions(second);
   }
