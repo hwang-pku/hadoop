@@ -21,6 +21,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.function.Function;
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FsConstants;
@@ -116,33 +117,20 @@ public class TestNestedMountPoint {
   }
 
   @Test
-  public void testPathResolveToLink() throws Exception {
-    // /a/b/c/d/e/f resolves to /a/b/c/d/e and /f
-    InodeTree.ResolveResult resolveResult = inodeTree.resolve("/a/b/c/d/e/f", true);
+  @Parameters({
+  "/a/b/c/d/e/f,/a/b/c/d/e,/f", // /a/b/c/d/e/f resolves to /a/b/c/d/e and /f
+  "/a/b/c/d/e,/a/b/c/d/e,/", // /a/b/c/d/e resolves to /a/b/c/d/e and /
+  "/a/b/c/d/e/f/g/h/i,/a/b/c/d/e,/f/g/h/i", // /a/b/c/d/e/f/g/h/i resolves to /a/b/c/d/e and /f/g/h/i
+  })
+  public void testPathResolveToLink(String path, String resolvedPath, String remainingPath) throws Exception {
+
+    InodeTree.ResolveResult resolveResult = inodeTree.resolve(path, true);
     Assert.assertEquals(InodeTree.ResultKind.EXTERNAL_DIR, resolveResult.kind);
-    Assert.assertEquals("/a/b/c/d/e", resolveResult.resolvedPath);
-    Assert.assertEquals(new Path("/f"), resolveResult.remainingPath);
+    Assert.assertEquals(resolvedPath, resolveResult.resolvedPath);
+    Assert.assertEquals(new Path(remainingPath), resolveResult.remainingPath);
     Assert.assertTrue(resolveResult.targetFileSystem instanceof TestNestMountPointFileSystem);
     Assert.assertEquals(NN4_TARGET, ((TestNestMountPointFileSystem) resolveResult.targetFileSystem).getUri());
     Assert.assertTrue(resolveResult.isLastInternalDirLink());
-
-    // /a/b/c/d/e resolves to /a/b/c/d/e and /
-    InodeTree.ResolveResult resolveResult2 = inodeTree.resolve("/a/b/c/d/e", true);
-    Assert.assertEquals(InodeTree.ResultKind.EXTERNAL_DIR, resolveResult2.kind);
-    Assert.assertEquals("/a/b/c/d/e", resolveResult2.resolvedPath);
-    Assert.assertEquals(new Path("/"), resolveResult2.remainingPath);
-    Assert.assertTrue(resolveResult2.targetFileSystem instanceof TestNestMountPointFileSystem);
-    Assert.assertEquals(NN4_TARGET, ((TestNestMountPointFileSystem) resolveResult2.targetFileSystem).getUri());
-    Assert.assertTrue(resolveResult2.isLastInternalDirLink());
-
-    // /a/b/c/d/e/f/g/h/i resolves to /a/b/c/d/e and /f/g/h/i
-    InodeTree.ResolveResult resolveResult3 = inodeTree.resolve("/a/b/c/d/e/f/g/h/i", true);
-    Assert.assertEquals(InodeTree.ResultKind.EXTERNAL_DIR, resolveResult3.kind);
-    Assert.assertEquals("/a/b/c/d/e", resolveResult3.resolvedPath);
-    Assert.assertEquals(new Path("/f/g/h/i"), resolveResult3.remainingPath);
-    Assert.assertTrue(resolveResult3.targetFileSystem instanceof TestNestMountPointFileSystem);
-    Assert.assertEquals(NN4_TARGET, ((TestNestMountPointFileSystem) resolveResult3.targetFileSystem).getUri());
-    Assert.assertTrue(resolveResult3.isLastInternalDirLink());
   }
 
   @Test
