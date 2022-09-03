@@ -41,23 +41,23 @@ public class TestAnd {
 
   // test all expressions passing
   @Test
-  public void testPass() throws IOException {
+  public void testPass(Result firstResult, Result secondResult, Result expectedResult) throws IOException {
     And and = new And();
 
     PathData pathData = mock(PathData.class);
 
     Expression first = mock(Expression.class);
-    when(first.apply(pathData, -1)).thenReturn(Result.PASS);
+    when(first.apply(pathData, -1)).thenReturn(firstResult);
 
     Expression second = mock(Expression.class);
-    when(second.apply(pathData, -1)).thenReturn(Result.PASS);
+    when(second.apply(pathData, -1)).thenReturn(secondResult);
 
     Deque<Expression> children = new LinkedList<Expression>();
     children.add(second);
     children.add(first);
     and.addChildren(children);
 
-    assertEquals(Result.PASS, and.apply(pathData, -1));
+    assertEquals(expectedResult, and.apply(pathData, -1));
     verify(first).apply(pathData, -1);
     verify(second).apply(pathData, -1);
     verifyNoMoreInteractions(first);
@@ -91,26 +91,7 @@ public class TestAnd {
   // test the second expression failing
   @Test
   public void testFailSecond() throws IOException {
-    And and = new And();
-
-    PathData pathData = mock(PathData.class);
-
-    Expression first = mock(Expression.class);
-    when(first.apply(pathData, -1)).thenReturn(Result.PASS);
-
-    Expression second = mock(Expression.class);
-    when(second.apply(pathData, -1)).thenReturn(Result.FAIL);
-
-    Deque<Expression> children = new LinkedList<Expression>();
-    children.add(second);
-    children.add(first);
-    and.addChildren(children);
-
-    assertEquals(Result.FAIL, and.apply(pathData, -1));
-    verify(first).apply(pathData, -1);
-    verify(second).apply(pathData, -1);
-    verifyNoMoreInteractions(first);
-    verifyNoMoreInteractions(second);
+    testPass(Result.PASS, Result.FAIL, Result.FAIL);
   }
 
   // test both expressions failing
@@ -140,76 +121,19 @@ public class TestAnd {
   // test the first expression stopping
   @Test
   public void testStopFirst() throws IOException {
-    And and = new And();
-
-    PathData pathData = mock(PathData.class);
-
-    Expression first = mock(Expression.class);
-    when(first.apply(pathData, -1)).thenReturn(Result.STOP);
-
-    Expression second = mock(Expression.class);
-    when(second.apply(pathData, -1)).thenReturn(Result.PASS);
-
-    Deque<Expression> children = new LinkedList<Expression>();
-    children.add(second);
-    children.add(first);
-    and.addChildren(children);
-
-    assertEquals(Result.STOP, and.apply(pathData, -1));
-    verify(first).apply(pathData, -1);
-    verify(second).apply(pathData, -1);
-    verifyNoMoreInteractions(first);
-    verifyNoMoreInteractions(second);
+    testPass(Result.STOP, Result.PASS, Result.STOP);
   }
 
   // test the second expression stopping
   @Test
   public void testStopSecond() throws IOException {
-    And and = new And();
-
-    PathData pathData = mock(PathData.class);
-
-    Expression first = mock(Expression.class);
-    when(first.apply(pathData, -1)).thenReturn(Result.PASS);
-
-    Expression second = mock(Expression.class);
-    when(second.apply(pathData, -1)).thenReturn(Result.STOP);
-
-    Deque<Expression> children = new LinkedList<Expression>();
-    children.add(second);
-    children.add(first);
-    and.addChildren(children);
-
-    assertEquals(Result.STOP, and.apply(pathData, -1));
-    verify(first).apply(pathData, -1);
-    verify(second).apply(pathData, -1);
-    verifyNoMoreInteractions(first);
-    verifyNoMoreInteractions(second);
+    testPass(Result.PASS, Result.STOP, Result.STOP);
   }
 
   // test first expression stopping and second failing
   @Test
   public void testStopFail() throws IOException {
-    And and = new And();
-
-    PathData pathData = mock(PathData.class);
-
-    Expression first = mock(Expression.class);
-    when(first.apply(pathData, -1)).thenReturn(Result.STOP);
-
-    Expression second = mock(Expression.class);
-    when(second.apply(pathData, -1)).thenReturn(Result.FAIL);
-
-    Deque<Expression> children = new LinkedList<Expression>();
-    children.add(second);
-    children.add(first);
-    and.addChildren(children);
-
-    assertEquals(Result.STOP.combine(Result.FAIL), and.apply(pathData, -1));
-    verify(first).apply(pathData, -1);
-    verify(second).apply(pathData, -1);
-    verifyNoMoreInteractions(first);
-    verifyNoMoreInteractions(second);
+    testPass(Result.STOP, Result.FAIL, Result.STOP.combine(Result.FAIL));
   }
 
   // test setOptions is called on child
