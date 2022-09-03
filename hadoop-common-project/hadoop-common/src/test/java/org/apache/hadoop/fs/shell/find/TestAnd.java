@@ -42,12 +42,14 @@ public class TestAnd {
 
   private Object[] valueSetsForDifferentCases() {
     return new Object[] {
+                // Test 1 testPass ->  test all expressions passing
                 new Object[] {Result.PASS, Result.PASS, Result.PASS},
+                // Test 2 testFailFirst -> test the first expression failing
+                new Object[] {Result.FAIL, Result.PASS, Result.FAIL},
     };
   }
 
 
-  // test all expressions passing
   @Test
   @Parameters(method = "valueSetsForDifferentCases")
   public void testPass(Result firstResult, Result secondResult, Result expectedResult) throws IOException {
@@ -68,34 +70,13 @@ public class TestAnd {
 
     assertEquals(expectedResult, and.apply(pathData, -1));
     verify(first).apply(pathData, -1);
-    verify(second).apply(pathData, -1);
+    if (firstResult == Result.PASS) {
+        verify(second).apply(pathData, -1);
+    }
     verifyNoMoreInteractions(first);
     verifyNoMoreInteractions(second);
   }
 
-  // test the first expression failing
-  @Test
-  public void testFailFirst() throws IOException {
-    And and = new And();
-
-    PathData pathData = mock(PathData.class);
-
-    Expression first = mock(Expression.class);
-    when(first.apply(pathData, -1)).thenReturn(Result.FAIL);
-
-    Expression second = mock(Expression.class);
-    when(second.apply(pathData, -1)).thenReturn(Result.PASS);
-
-    Deque<Expression> children = new LinkedList<Expression>();
-    children.add(second);
-    children.add(first);
-    and.addChildren(children);
-
-    assertEquals(Result.FAIL, and.apply(pathData, -1));
-    verify(first).apply(pathData, -1);
-    verifyNoMoreInteractions(first);
-    verifyNoMoreInteractions(second);
-  }
 
   // test the second expression failing
   @Test
