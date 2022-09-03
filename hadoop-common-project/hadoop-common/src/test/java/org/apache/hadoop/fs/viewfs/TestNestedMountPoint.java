@@ -196,6 +196,9 @@ public class TestNestedMountPoint {
                 // Old Test 12 testPathResolveToInternalDirNotResolveLastComponent
                 // /b/c resolves to internal dir
                 new Object[] {"/b/c", "/b", "/c", false, LINKFALLBACK_TARGET, InodeTree.ResultKind.INTERNAL_DIR},
+                // Old Test 13 testSlashResolveToInternalDir
+                // / resolves to internal dir
+                new Object[] {"/", "/", "/", true, LINKFALLBACK_TARGET, InodeTree.ResultKind.INTERNAL_DIR},
     };
   }
 
@@ -221,17 +224,6 @@ public class TestNestedMountPoint {
         Assert.assertEquals(fsUri, ((TestNestMountPointInternalFileSystem) resolveResult.targetFileSystem).getUri());
         Assert.assertFalse(resolveResult.isLastInternalDirLink());
     }
-  }
-
-  @Test
-  public void testSlashResolveToInternalDir() throws Exception {
-    // / resolves to internal dir
-    InodeTree.ResolveResult resolveResult = inodeTree.resolve("/", true);
-    Assert.assertEquals(InodeTree.ResultKind.INTERNAL_DIR, resolveResult.kind);
-    Assert.assertEquals("/", resolveResult.resolvedPath);
-    Assert.assertEquals(new Path("/"), resolveResult.remainingPath);
-    Assert.assertTrue(resolveResult.targetFileSystem instanceof TestNestMountPointInternalFileSystem);
-    Assert.assertFalse(resolveResult.isLastInternalDirLink());
   }
 
   @Test
