@@ -116,14 +116,23 @@ public class TestNestedMountPoint {
     inodeTree = null;
   }
 
+  private Object[] valueSetForTestPathResolveToLink() {
+    return new Object[] {
+                // /a/b/c/d/e/f resolves to /a/b/c/d/e and /f
+                new Object[] {"/a/b/c/d/e/f","/a/b/c/d/e","/f"},
+                // /a/b/c/d/e resolves to /a/b/c/d/e and /
+                new Object[] {"/a/b/c/d/e","/a/b/c/d/e","/"},
+                // /a/b/c/d/e/f/g/h/i resolves to /a/b/c/d/e and /f/g/h/i
+                new Object[] {"/a/b/c/d/e/f/g/h/i", "/a/b/c/d/e", "/f/g/h/i"},
+                // /a/b/c/d/e/f/g/ resolves to /a/b/c/d/e and /f/g
+                new Object[] {"/a/b/c/d/e/f/g", "/a/b/c/d/e", "/f/g"},
+                // /a/b/c/d/e/f/g/h/i/j/k/l/m resolves to /a/b/c/d/e and /f/g/h/i/j/k/l/m
+                new Object[] {"/a/b/c/d/e/f/g/h/i/j/k/l/m", "/a/b/c/d/e", "/f/g/h/i/j/k/l/m"},
+    };
+  }
+
   @Test
-  @Parameters({
-  "/a/b/c/d/e/f,/a/b/c/d/e,/f", // /a/b/c/d/e/f resolves to /a/b/c/d/e and /f
-  "/a/b/c/d/e,/a/b/c/d/e,/", // /a/b/c/d/e resolves to /a/b/c/d/e and /
-  "/a/b/c/d/e/f/g/h/i,/a/b/c/d/e,/f/g/h/i", // /a/b/c/d/e/f/g/h/i resolves to /a/b/c/d/e and /f/g/h/i
-  "/a/b/c/d/e/f/g,/a/b/c/d/e,/f/g", // /a/b/c/d/e/f/g/ resolves to /a/b/c/d/e and /f/g
-  "/a/b/c/d/e/f/g/h/i/j/k/l/m,/a/b/c/d/e,/f/g/h/i/j/k/l/m", // /a/b/c/d/e/f/g/ resolves to /a/b/c/d/e and /f/g
-  })
+  @Parameters(method = "valueSetForTestPathResolveToLink")
   public void testPathResolveToLink(String path, String resolvedPath, String remainingPath) throws Exception {
 
     InodeTree.ResolveResult resolveResult = inodeTree.resolve(path, true);
@@ -136,12 +145,17 @@ public class TestNestedMountPoint {
   }
 
   @Test
-  public void testPathResolveToLinkNotResolveLastComponent() throws Exception {
+  @Parameters({
+  "/a/b/c/d/e/f,/a/b/c/d/e,/f", // /a/b/c/d/e/f resolves to /a/b/c/d/e and /f
+  "/a/b/c/d/e,/a/b/c/d,/e", // /a/b/c/d/e resolves to /a/b/c/d and /e
+  })
+  public void testPathResolveToLinkNotResolveLastComponent(String path, String resolvedPath,
+        String remainingPath, URI expectedURI) throws Exception {
     // /a/b/c/d/e/f resolves to /a/b/c/d/e and /f
-    InodeTree.ResolveResult resolveResult = inodeTree.resolve("/a/b/c/d/e/f", false);
+    InodeTree.ResolveResult resolveResult = inodeTree.resolve(path, false);
     Assert.assertEquals(InodeTree.ResultKind.EXTERNAL_DIR, resolveResult.kind);
-    Assert.assertEquals("/a/b/c/d/e", resolveResult.resolvedPath);
-    Assert.assertEquals(new Path("/f"), resolveResult.remainingPath);
+    Assert.assertEquals(resolvedPath, resolveResult.resolvedPath);
+    Assert.assertEquals(new Path(remainingPath), resolveResult.remainingPath);
     Assert.assertTrue(resolveResult.targetFileSystem instanceof TestNestMountPointFileSystem);
     Assert.assertEquals(NN4_TARGET, ((TestNestMountPointFileSystem) resolveResult.targetFileSystem).getUri());
     Assert.assertTrue(resolveResult.isLastInternalDirLink());
