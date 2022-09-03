@@ -118,6 +118,7 @@ public class TestNestedMountPoint {
 
   private Object[] valueSetForTestPathResolveToLink() {
     return new Object[] {
+                // Old Test 1 testPathResolveToLink
                 // /a/b/c/d/e/f resolves to /a/b/c/d/e and /f
                 new Object[] {"/a/b/c/d/e/f","/a/b/c/d/e","/f", true, NN4_TARGET},
                 // /a/b/c/d/e resolves to /a/b/c/d/e and /
@@ -129,6 +130,7 @@ public class TestNestedMountPoint {
                 // /a/b/c/d/e/f/g/h/i/j/k/l/m resolves to /a/b/c/d/e and /f/g/h/i/j/k/l/m
                 new Object[] {"/a/b/c/d/e/f/g/h/i/j/k/l/m", "/a/b/c/d/e", "/f/g/h/i/j/k/l/m", true, NN4_TARGET},
                 // /a/b/c/d/e/f resolves to /a/b/c/d/e and /f
+                // Old Test 2 testPathResolveToLinkNotResolveLastComponent
                 new Object[] {"/a/b/c/d/e/f", "/a/b/c/d/e", "/f", false, NN4_TARGET},
                 // /a/b/c/d/e resolves to /a/b/c/d and /e
                 new Object[] {"/a/b/c/d/e", "/a/b/c/d", "/e", false, NN3_TARGET},
@@ -142,6 +144,13 @@ public class TestNestedMountPoint {
                 new Object[] {"/b/c/d/e/d/a/g/h/i", "/b/c/d/e", "/d/a/g/h/i", false, NN5_TARGET},
                 // /b/c/d/e/f/d/a/g/h/i resolves to /b/c/d/e/f and /d/a/g/h/i
                 new Object[] {"/b/c/d/e/f/d/a/g/h/i", "/b/c/d/e/f", "/d/a/g/h/i", false, NN6_TARGET},
+                // Old Test 3 testPathResolveToDirLink
+                // /a/b/c/d/f resolves to /a/b/c/d, /f
+                new Object[] {"/a/b/c/d/f", "/a/b/c/d", "/f", true, NN3_TARGET},
+                // /a/b/c/d resolves to /a/b/c/d and /
+                new Object[] {"/a/b/c/d", "/a/b/c/d", "/", true, NN3_TARGET},
+                // /a/b/c/d/f/g/h/i resolves to /a/b/c/d and /f/g/h/i
+                new Object[] {"/a/b/c/d/f/g/h/i", "/a/b/c/d", "/f/g/h/i", true, NN3_TARGET},
     };
   }
 
@@ -157,36 +166,6 @@ public class TestNestedMountPoint {
     Assert.assertTrue(resolveResult.targetFileSystem instanceof TestNestMountPointFileSystem);
     Assert.assertEquals(expectedURI, ((TestNestMountPointFileSystem) resolveResult.targetFileSystem).getUri());
     Assert.assertTrue(resolveResult.isLastInternalDirLink());
-  }
-
-  @Test
-  public void testPathResolveToDirLink() throws Exception {
-    // /a/b/c/d/f resolves to /a/b/c/d, /f
-    InodeTree.ResolveResult resolveResult = inodeTree.resolve("/a/b/c/d/f", true);
-    Assert.assertEquals(InodeTree.ResultKind.EXTERNAL_DIR, resolveResult.kind);
-    Assert.assertEquals("/a/b/c/d", resolveResult.resolvedPath);
-    Assert.assertEquals(new Path("/f"), resolveResult.remainingPath);
-    Assert.assertTrue(resolveResult.targetFileSystem instanceof TestNestMountPointFileSystem);
-    Assert.assertEquals(NN3_TARGET, ((TestNestMountPointFileSystem) resolveResult.targetFileSystem).getUri());
-    Assert.assertTrue(resolveResult.isLastInternalDirLink());
-
-    // /a/b/c/d resolves to /a/b/c/d and /
-    InodeTree.ResolveResult resolveResult2 = inodeTree.resolve("/a/b/c/d", true);
-    Assert.assertEquals(InodeTree.ResultKind.EXTERNAL_DIR, resolveResult2.kind);
-    Assert.assertEquals("/a/b/c/d", resolveResult2.resolvedPath);
-    Assert.assertEquals(new Path("/"), resolveResult2.remainingPath);
-    Assert.assertTrue(resolveResult2.targetFileSystem instanceof TestNestMountPointFileSystem);
-    Assert.assertEquals(NN3_TARGET, ((TestNestMountPointFileSystem) resolveResult2.targetFileSystem).getUri());
-    Assert.assertTrue(resolveResult2.isLastInternalDirLink());
-
-    // /a/b/c/d/f/g/h/i resolves to /a/b/c/d and /f/g/h/i
-    InodeTree.ResolveResult resolveResult3 = inodeTree.resolve("/a/b/c/d/f/g/h/i", true);
-    Assert.assertEquals(InodeTree.ResultKind.EXTERNAL_DIR, resolveResult3.kind);
-    Assert.assertEquals("/a/b/c/d", resolveResult3.resolvedPath);
-    Assert.assertEquals(new Path("/f/g/h/i"), resolveResult3.remainingPath);
-    Assert.assertTrue(resolveResult3.targetFileSystem instanceof TestNestMountPointFileSystem);
-    Assert.assertEquals(NN3_TARGET, ((TestNestMountPointFileSystem) resolveResult3.targetFileSystem).getUri());
-    Assert.assertTrue(resolveResult3.isLastInternalDirLink());
   }
 
   @Test
