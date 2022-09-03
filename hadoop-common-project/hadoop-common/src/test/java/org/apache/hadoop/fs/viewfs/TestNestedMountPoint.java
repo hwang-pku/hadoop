@@ -119,28 +119,29 @@ public class TestNestedMountPoint {
   private Object[] valueSetForTestPathResolveToLink() {
     return new Object[] {
                 // /a/b/c/d/e/f resolves to /a/b/c/d/e and /f
-                new Object[] {"/a/b/c/d/e/f","/a/b/c/d/e","/f"},
+                new Object[] {"/a/b/c/d/e/f","/a/b/c/d/e","/f", true, NN4_TARGET},
                 // /a/b/c/d/e resolves to /a/b/c/d/e and /
-                new Object[] {"/a/b/c/d/e","/a/b/c/d/e","/"},
+                new Object[] {"/a/b/c/d/e","/a/b/c/d/e","/", true, NN4_TARGET},
                 // /a/b/c/d/e/f/g/h/i resolves to /a/b/c/d/e and /f/g/h/i
-                new Object[] {"/a/b/c/d/e/f/g/h/i", "/a/b/c/d/e", "/f/g/h/i"},
+                new Object[] {"/a/b/c/d/e/f/g/h/i", "/a/b/c/d/e", "/f/g/h/i", true, NN4_TARGET},
                 // /a/b/c/d/e/f/g/ resolves to /a/b/c/d/e and /f/g
-                new Object[] {"/a/b/c/d/e/f/g", "/a/b/c/d/e", "/f/g"},
+                new Object[] {"/a/b/c/d/e/f/g", "/a/b/c/d/e", "/f/g", true, NN4_TARGET},
                 // /a/b/c/d/e/f/g/h/i/j/k/l/m resolves to /a/b/c/d/e and /f/g/h/i/j/k/l/m
-                new Object[] {"/a/b/c/d/e/f/g/h/i/j/k/l/m", "/a/b/c/d/e", "/f/g/h/i/j/k/l/m"},
+                new Object[] {"/a/b/c/d/e/f/g/h/i/j/k/l/m", "/a/b/c/d/e", "/f/g/h/i/j/k/l/m", true, NN4_TARGET},
     };
   }
 
   @Test
   @Parameters(method = "valueSetForTestPathResolveToLink")
-  public void testPathResolveToLink(String path, String resolvedPath, String remainingPath) throws Exception {
+  public void testPathResolveToLink(String path, String resolvedPath, String remainingPath,
+        boolean resolveLastComponent, URI expectedURI) throws Exception {
 
-    InodeTree.ResolveResult resolveResult = inodeTree.resolve(path, true);
+    InodeTree.ResolveResult resolveResult = inodeTree.resolve(path, resolveLastComponent);
     Assert.assertEquals(InodeTree.ResultKind.EXTERNAL_DIR, resolveResult.kind);
     Assert.assertEquals(resolvedPath, resolveResult.resolvedPath);
     Assert.assertEquals(new Path(remainingPath), resolveResult.remainingPath);
     Assert.assertTrue(resolveResult.targetFileSystem instanceof TestNestMountPointFileSystem);
-    Assert.assertEquals(NN4_TARGET, ((TestNestMountPointFileSystem) resolveResult.targetFileSystem).getUri());
+    Assert.assertEquals(expectedURI, ((TestNestMountPointFileSystem) resolveResult.targetFileSystem).getUri());
     Assert.assertTrue(resolveResult.isLastInternalDirLink());
   }
 
