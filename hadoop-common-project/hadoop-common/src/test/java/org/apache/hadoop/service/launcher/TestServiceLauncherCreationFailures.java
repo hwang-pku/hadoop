@@ -46,24 +46,23 @@ public class TestServiceLauncherCreationFailures extends
   }
 
   @Test
-  public void testUnknownClass() throws Throwable {
-    assertServiceCreationFails("no.such.classname");
+  public void testUnknownClass(String classname) throws Throwable {
+    assertServiceCreationFails(classname);
   }
 
   @Test
   public void testNotAService() throws Throwable {
-    assertServiceCreationFails(SELF);
+    testUnknownClass(SELF);
   }
 
   @Test
   public void testNoSimpleConstructor() throws Throwable {
-    assertServiceCreationFails(
-        "org.apache.hadoop.service.launcher.FailureTestService");
+    testUnknownClass("org.apache.hadoop.service.launcher.FailureTestService");
   }
 
   @Test
   public void testFailInConstructor() throws Throwable {
-    assertServiceCreationFails(FailInConstructorService.NAME);
+    testUnknownClass(FailInConstructorService.NAME);
   }
 
   @Test
