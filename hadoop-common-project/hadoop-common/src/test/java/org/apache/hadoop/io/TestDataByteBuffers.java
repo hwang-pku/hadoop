@@ -35,25 +35,26 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class TestDataByteBuffers {
 
-  public static final int intBound = 1024;
-
   @Parameterized.Parameter(0)
   public static long seed;
 
   @Parameterized.Parameter(1)
   public int iter;
 
+  @Parameterized.Parameter(2)
+  public static int intBound;
+
   private static final Random RAND = new Random(seed);
 
   @Parameterized.Parameters
   public static Collection<Object> testData() {
-    Object[][] data = new Object[][] { {31L, 1000},
-                                       {100L, 100},
-                                       {1L, 10000},
-                                       {17, -200},
-                                       {-19, 20},
-                                       {0, 1500},
-                                       {Long.MAX_VALUE, Integer.MAX_VALUE},
+    Object[][] data = new Object[][] { {31L, 1000, 1024},
+                                       {100L, 100, 100009},
+                                       {1L, 10000, Integer.MAX_VALUE},
+                                       {17, -200, Integer.MIN_VALUE},
+                                       {-19, 20, -57},
+                                       {0, 1500, 3000},
+                                       {Long.MAX_VALUE, Integer.MAX_VALUE, 0},
     };
     return Arrays.asList(data);
   }
@@ -123,7 +124,8 @@ public class TestDataByteBuffers {
 
   @Test
   public void testBaseBuffers() throws IOException {
-    Assume.assumeTrue(iter <= 1000 *1000);
+    Assume.assumeTrue(iter <= 1000 * 1000);
+    Assume.assumeTrue(intBound > 0 && intBound <= 1024 * 1024);
     DataOutputBuffer dob = new DataOutputBuffer();
     writeJunk(dob, iter);
     DataInputBuffer dib = new DataInputBuffer();
@@ -138,7 +140,8 @@ public class TestDataByteBuffers {
 
   @Test
   public void testDataInputByteBufferCompatibility() throws IOException {
-    Assume.assumeTrue(iter <= 1000 *1000);
+    Assume.assumeTrue(iter <= 1000 * 1000);
+    Assume.assumeTrue(intBound > 0 && intBound <= 1024 * 1024);
     DataOutputBuffer dob = new DataOutputBuffer();
     writeJunk(dob, iter);
     ByteBuffer buf = ByteBuffer.wrap(dob.getData(), 0, dob.getLength());
