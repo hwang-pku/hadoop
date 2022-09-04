@@ -53,7 +53,11 @@ public class TestKeyProvider {
   @Test
   @Parameters({
   "/a/b,3",
-  "/aaa,12"
+  "/aaa,12",
+  ", 0",
+  "@#!&^^&$@,-1",
+  "@@,-99999",
+  "null,9999"
   })
   public void testBuildVersionName(final String name, final Integer version) throws Exception {
     assertEquals(name + "@" + version, KeyProvider.buildVersionName(name, version));
