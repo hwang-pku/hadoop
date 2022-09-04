@@ -64,8 +64,8 @@ public class TestKeyProvider {
   }
 
   @Test
-  public void testParseVersionName() throws Exception {
-    assertEquals("/a/b", KeyProvider.getBaseName("/a/b@3"));
+  public void testParseVersionName(final String name, final String version) throws Exception {
+    assertEquals(name, KeyProvider.getBaseName(name + "@" + version));
     assertEquals("/aaa", KeyProvider.getBaseName("/aaa@112"));
     try {
       KeyProvider.getBaseName("no-slashes");
