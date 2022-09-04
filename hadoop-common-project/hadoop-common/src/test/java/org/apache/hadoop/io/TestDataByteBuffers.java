@@ -22,6 +22,8 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Random;
 
 import org.junit.Test;
@@ -32,9 +34,20 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class TestDataByteBuffers {
 
-  public static final long seed = 31L;
-  public final int iter = 1000;
+  @Parameterized.Parameter(0)
+  public static long seed;
+
+  @Parameterized.Parameter(1)
+  public int iter;
+
   private static final Random RAND = new Random(seed);
+
+  @Parameterized.Parameters
+  public static Collection<Object> testData() {
+    Object[][] data = new Object[][] { {31L, 1000},
+    };
+    return Arrays.asList(data);
+  }
 
   private static void readJunk(DataInput in, int iter)
       throws IOException {
