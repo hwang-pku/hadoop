@@ -50,23 +50,31 @@ public class TestKeyProvider {
 
   private static final String CIPHER = "AES";
 
+  private Object[] valueSetForNameAndVersion() {
+    return new Object[] {
+                new Object[] {"/a/b", 3},
+                new Object[] { "/aaa", 12 },
+                new Object[] { "", 0 },
+                new Object[] { "@#!&^^&$@", -1 },
+                new Object[] { "@@", -99999 },
+                new Object[] { "qwertyuioplkjhgfdsazxcvbnm,,./<>?;'[]}{|+_)(*&^%$#@!-=", Integer.MIN_VALUE },
+                new Object[] { null, 9999},
+    };
+  }
+
   @Test
-  @Parameters({
-  "/a/b,3",
-  "/aaa,12",
-  ", 0",
-  "@#!&^^&$@,-1",
-  "@@,-99999",
-  "null,9999"
-  })
+  @Parameters(method = "valueSetForNameAndVersion")
   public void testBuildVersionName(final String name, final Integer version) throws Exception {
     assertEquals(name + "@" + version, KeyProvider.buildVersionName(name, version));
   }
 
   @Test
-  public void testParseVersionName(final String name, final String version) throws Exception {
+  @Parameters(method = "valueSetForNameAndVersion")
+  public void testParseVersionName(String name, final String version) throws Exception {
+    if (name == null) {
+        name = "null";
+    }
     assertEquals(name, KeyProvider.getBaseName(name + "@" + version));
-    assertEquals("/aaa", KeyProvider.getBaseName("/aaa@112"));
     try {
       KeyProvider.getBaseName("no-slashes");
       assertTrue("should have thrown", false);
