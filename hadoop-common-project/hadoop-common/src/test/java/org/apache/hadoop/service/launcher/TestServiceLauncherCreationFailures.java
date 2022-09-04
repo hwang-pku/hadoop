@@ -65,14 +65,19 @@ public class TestServiceLauncherCreationFailures extends
     assertServiceCreationFails(classname);
   }
 
-  @Test
-  public void testFailInInit(int exitCode, String name) throws Throwable {
-    assertLaunchOutcome(exitCode, "", name);
+  private Object[] valueSetForLaunchOutComes() {
+    return new Object[] {
+                // Old Test 6 :- testFailInInit
+                new Object[] {FailInInitService.EXIT_CODE, FailInInitService.NAME},
+                // Old Test 7 :- testFailInStart
+                new Object[] {FailInStartService.EXIT_CODE, FailInStartService.NAME},
+    };
   }
 
   @Test
-  public void testFailInStart() throws Throwable {
-    testFailInInit(FailInStartService.EXIT_CODE, FailInStartService.NAME);
+  @Parameters(method = "valueSetForLaunchOutComes")
+  public void testFailInInit(int exitCode, String name) throws Throwable {
+    assertLaunchOutcome(exitCode, "", name);
   }
 
   @Test
