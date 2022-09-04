@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -45,6 +46,12 @@ public class TestDataByteBuffers {
   @Parameterized.Parameters
   public static Collection<Object> testData() {
     Object[][] data = new Object[][] { {31L, 1000},
+                                       {100L, 100},
+                                       {1L, 10000},
+                                       {17, -200},
+                                       {-19, 20},
+                                       {0, 1500},
+                                       {Long.MAX_VALUE, Integer.MAX_VALUE},
     };
     return Arrays.asList(data);
   }
@@ -114,6 +121,7 @@ public class TestDataByteBuffers {
 
   @Test
   public void testBaseBuffers() throws IOException {
+    Assume.assumeTrue(iter <= 1000 *1000);
     DataOutputBuffer dob = new DataOutputBuffer();
     writeJunk(dob, iter);
     DataInputBuffer dib = new DataInputBuffer();
@@ -128,6 +136,7 @@ public class TestDataByteBuffers {
 
   @Test
   public void testDataInputByteBufferCompatibility() throws IOException {
+    Assume.assumeTrue(iter <= 1000 *1000);
     DataOutputBuffer dob = new DataOutputBuffer();
     writeJunk(dob, iter);
     ByteBuffer buf = ByteBuffer.wrap(dob.getData(), 0, dob.getLength());
