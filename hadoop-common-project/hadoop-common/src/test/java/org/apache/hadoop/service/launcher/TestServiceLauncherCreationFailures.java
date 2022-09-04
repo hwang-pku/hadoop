@@ -18,15 +18,18 @@
 
 package org.apache.hadoop.service.launcher;
 
+import junitparams.JUnitParamsRunner;
 import org.apache.hadoop.service.launcher.testservices.FailInConstructorService;
 import org.apache.hadoop.service.launcher.testservices.FailInInitService;
 import org.apache.hadoop.service.launcher.testservices.FailInStartService;
 import org.apache.hadoop.service.launcher.testservices.FailingStopInStartService;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Explore the ways in which the launcher is expected to (safely) fail.
  */
+@RunWith(JUnitParamsRunner.class)
 public class TestServiceLauncherCreationFailures extends
     AbstractServiceLauncherTestBase {
 
