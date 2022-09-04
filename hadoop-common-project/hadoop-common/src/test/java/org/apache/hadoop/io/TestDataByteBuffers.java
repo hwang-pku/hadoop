@@ -24,19 +24,21 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
-import junitparams.JUnitParamsRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import static org.junit.Assert.*;
 
-@RunWith(JUnitParamsRunner.class)
+@RunWith(Parameterized.class)
 public class TestDataByteBuffers {
 
-  private static final Random RAND = new Random(31L);
+  public static final long seed = 31L;
+  public final int iter = 1000;
+  private static final Random RAND = new Random(seed);
 
   private static void readJunk(DataInput in, int iter)
       throws IOException {
-    RAND.setSeed(31L);
+    RAND.setSeed(seed);
     for (int i = 0; i < iter; ++i) {
       switch (RAND.nextInt(7)) {
       case 0:
@@ -71,7 +73,7 @@ public class TestDataByteBuffers {
 
   private static void writeJunk(DataOutput out, int iter)
       throws IOException {
-    RAND.setSeed(31L);
+    RAND.setSeed(seed);
     for (int i = 0; i < iter; ++i) {
       switch (RAND.nextInt(7)) {
       case 0:
@@ -100,26 +102,26 @@ public class TestDataByteBuffers {
   @Test
   public void testBaseBuffers() throws IOException {
     DataOutputBuffer dob = new DataOutputBuffer();
-    writeJunk(dob, 1000);
+    writeJunk(dob, iter);
     DataInputBuffer dib = new DataInputBuffer();
     dib.reset(dob.getData(), 0, dob.getLength());
-    readJunk(dib, 1000);
+    readJunk(dib, iter);
 
     dob.reset();
-    writeJunk(dob, 1000);
+    writeJunk(dob, iter);
     dib.reset(dob.getData(), 0, dob.getLength());
-    readJunk(dib, 1000);
+    readJunk(dib, iter);
   }
 
   @Test
   public void testDataInputByteBufferCompatibility() throws IOException {
     DataOutputBuffer dob = new DataOutputBuffer();
-    writeJunk(dob, 1000);
+    writeJunk(dob, iter);
     ByteBuffer buf = ByteBuffer.wrap(dob.getData(), 0, dob.getLength());
 
     DataInputByteBuffer dib = new DataInputByteBuffer();
     dib.reset(buf);
-    readJunk(dib, 1000);
+    readJunk(dib, iter);
   }
 
 }
