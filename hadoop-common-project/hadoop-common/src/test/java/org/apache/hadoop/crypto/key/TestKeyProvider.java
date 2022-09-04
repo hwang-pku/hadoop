@@ -68,15 +68,24 @@ public class TestKeyProvider {
     assertEquals(name + "@" + version, KeyProvider.buildVersionName(name, version));
   }
 
+  private Object[] valueSetForValidAndInvalidValues() {
+    return new Object[] {
+                new Object[] {"/a/b@3", "/a/b"},
+                new Object[] { "/aaa@12", null},
+                new Object[] { "@", "" },
+                new Object[] { "@#!&^^&$@", -1 },
+                new Object[] { "@@", -99999 },
+                new Object[] { "qwertyuioplkjhgfdsazxcvbnm,,./<>?;'[]}{|+_)(*&^%$#@!-=", Integer.MIN_VALUE },
+                new Object[] { "123456789@0987654321", "1234567890987654321"},
+    };
+  }
+
   @Test
-  @Parameters(method = "valueSetForNameAndVersion")
-  public void testParseVersionName(String name, final String version) throws Exception {
-    if (name == null) {
-        name = "null";
-    }
-    assertEquals(name, KeyProvider.getBaseName(name + "@" + version));
+  @Parameters(method = "valueSetForValidAndInvalidValues")
+  public void testParseVersionName(String validVersionname, String invalidVersionname) throws Exception {
+    assertEquals(validVersionname.substring(0, validVersionname.lastIndexOf('@')), KeyProvider.getBaseName(validVersionname));
     try {
-      KeyProvider.getBaseName("no-slashes");
+      KeyProvider.getBaseName(invalidVersionname);
       assertTrue("should have thrown", false);
     } catch (IOException e) {
       assertTrue(true);
