@@ -50,8 +50,8 @@ public class TestKeyProvider {
   private static final String CIPHER = "AES";
 
   @Test
-  public void testBuildVersionName() throws Exception {
-    assertEquals("/a/b@3", KeyProvider.buildVersionName("/a/b", 3));
+  public void testBuildVersionName(final String name, final String version) throws Exception {
+    assertEquals(name + "@" + version, KeyProvider.buildVersionName(name, version));
     assertEquals("/aaa@12", KeyProvider.buildVersionName("/aaa", 12));
   }
 
