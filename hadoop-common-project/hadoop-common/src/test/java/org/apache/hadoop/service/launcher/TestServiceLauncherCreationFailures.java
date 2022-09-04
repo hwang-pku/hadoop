@@ -19,6 +19,7 @@
 package org.apache.hadoop.service.launcher;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.hadoop.service.launcher.testservices.FailInConstructorService;
 import org.apache.hadoop.service.launcher.testservices.FailInInitService;
 import org.apache.hadoop.service.launcher.testservices.FailInStartService;
@@ -45,7 +46,14 @@ public class TestServiceLauncherCreationFailures extends
     }
   }
 
+  private Object[] valueSetForServiceCreationFails() {
+    return new Object[] {
+                new Object[] {"no.such.classname"},
+    };
+  }
+
   @Test
+  @Parameters(method = "valueSetForServiceCreationFails")
   public void testUnknownClass(String classname) throws Throwable {
     assertServiceCreationFails(classname);
   }
