@@ -71,6 +71,8 @@ public class TestServiceLauncherCreationFailures extends
                 new Object[] {FailInInitService.EXIT_CODE, FailInInitService.NAME},
                 // Old Test 7 :- testFailInStart
                 new Object[] {FailInStartService.EXIT_CODE, FailInStartService.NAME},
+                // new
+                new Object[] {FailingStopInStartService.EXIT_CODE, FailingStopInStartService.NAME},
     };
   }
 
