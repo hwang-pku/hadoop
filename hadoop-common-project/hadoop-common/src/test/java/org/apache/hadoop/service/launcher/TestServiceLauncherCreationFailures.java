@@ -66,15 +66,13 @@ public class TestServiceLauncherCreationFailures extends
   }
 
   @Test
-  public void testFailInInit() throws Throwable {
-    assertLaunchOutcome(FailInInitService.EXIT_CODE, "",
-        FailInInitService.NAME);
+  public void testFailInInit(int exitCode, String name) throws Throwable {
+    assertLaunchOutcome(exitCode, "", name);
   }
 
   @Test
   public void testFailInStart() throws Throwable {
-    assertLaunchOutcome(FailInStartService.EXIT_CODE, "",
-        FailInStartService.NAME);
+    testFailInInit(FailInStartService.EXIT_CODE, FailInStartService.NAME);
   }
 
   @Test
