@@ -48,29 +48,21 @@ public class TestServiceLauncherCreationFailures extends
 
   private Object[] valueSetForServiceCreationFails() {
     return new Object[] {
+                // Old Test 2 :- testUnknownClass
                 new Object[] {"no.such.classname"},
+                // Old Test 3 :- testNotAService
+                new Object[] {SELF},
+                // Old Test 4 :- testNoSimpleConstructor
+                new Object[] {"org.apache.hadoop.service.launcher.FailureTestService"},
+                // Old Test 5 :- testFailInConstructor
+                new Object[] {FailInConstructorService.NAME},
     };
   }
 
   @Test
   @Parameters(method = "valueSetForServiceCreationFails")
-  public void testUnknownClass(String classname) throws Throwable {
+  public void testServiceCreationFails(String classname) throws Throwable {
     assertServiceCreationFails(classname);
-  }
-
-  @Test
-  public void testNotAService() throws Throwable {
-    testUnknownClass(SELF);
-  }
-
-  @Test
-  public void testNoSimpleConstructor() throws Throwable {
-    testUnknownClass("org.apache.hadoop.service.launcher.FailureTestService");
-  }
-
-  @Test
-  public void testFailInConstructor() throws Throwable {
-    testUnknownClass(FailInConstructorService.NAME);
   }
 
   @Test
