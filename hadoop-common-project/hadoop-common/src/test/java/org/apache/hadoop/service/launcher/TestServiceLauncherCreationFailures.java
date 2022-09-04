@@ -24,6 +24,7 @@ import org.apache.hadoop.service.launcher.testservices.FailInConstructorService;
 import org.apache.hadoop.service.launcher.testservices.FailInInitService;
 import org.apache.hadoop.service.launcher.testservices.FailInStartService;
 import org.apache.hadoop.service.launcher.testservices.FailingStopInStartService;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -79,6 +80,7 @@ public class TestServiceLauncherCreationFailures extends
   @Test
   @Parameters(method = "valueSetForLaunchOutComes")
   public void testFailInInit(int exitCode, String name) throws Throwable {
+    Assume.assumeTrue(exitCode == -1 || exitCode == -2);
     assertLaunchOutcome(exitCode, "", name);
   }
 
