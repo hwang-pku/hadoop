@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.crypto.key;
 
+import junitparams.JUnitParamsRunner;
 import org.junit.Assert;
 import org.apache.hadoop.conf.Configuration;
 
@@ -24,6 +25,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.security.ProviderUtils;
 import org.apache.hadoop.test.GenericTestUtils;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.net.URI;
@@ -42,6 +44,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.fail;
 
+@RunWith(JUnitParamsRunner.class)
 public class TestKeyProvider {
 
   private static final String CIPHER = "AES";
