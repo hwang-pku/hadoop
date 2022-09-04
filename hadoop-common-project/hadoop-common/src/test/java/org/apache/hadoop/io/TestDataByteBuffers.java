@@ -24,9 +24,12 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
+import junitparams.JUnitParamsRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
+@RunWith(JUnitParamsRunner.class)
 public class TestDataByteBuffers {
 
   private static final Random RAND = new Random(31L);
