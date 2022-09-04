@@ -35,6 +35,8 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class TestDataByteBuffers {
 
+  public static final int intBound = 1024;
+
   @Parameterized.Parameter(0)
   public static long seed;
 
@@ -78,7 +80,7 @@ public class TestDataByteBuffers {
             Float.floatToIntBits(in.readFloat()));
         break;
       case 6:
-        int len = RAND.nextInt(1024);
+        int len = RAND.nextInt(intBound);
         byte[] vb = new byte[len];
         RAND.nextBytes(vb);
         byte[] b = new byte[len];
@@ -109,7 +111,7 @@ public class TestDataByteBuffers {
       case 5:
         out.writeFloat(RAND.nextFloat()); break;
       case 6:
-        byte[] b = new byte[RAND.nextInt(1024)];
+        byte[] b = new byte[RAND.nextInt(intBound)];
         RAND.nextBytes(b);
         out.write(b);
         break;
