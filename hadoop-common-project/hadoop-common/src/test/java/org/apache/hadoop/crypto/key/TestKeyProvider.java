@@ -18,6 +18,7 @@
 package org.apache.hadoop.crypto.key;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Assert;
 import org.apache.hadoop.conf.Configuration;
 
@@ -50,9 +51,12 @@ public class TestKeyProvider {
   private static final String CIPHER = "AES";
 
   @Test
-  public void testBuildVersionName(final String name, final String version) throws Exception {
+  @Parameters({
+  "/a/b,3",
+  "/aaa,12"
+  })
+  public void testBuildVersionName(final String name, final Integer version) throws Exception {
     assertEquals(name + "@" + version, KeyProvider.buildVersionName(name, version));
-    assertEquals("/aaa@12", KeyProvider.buildVersionName("/aaa", 12));
   }
 
   @Test
