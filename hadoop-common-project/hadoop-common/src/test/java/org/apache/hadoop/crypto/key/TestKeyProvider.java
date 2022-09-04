@@ -95,14 +95,18 @@ public class TestKeyProvider {
   private Object[] valueSetForKeyMaterial() {
     return new Object[] {
                 new Object[] {new byte[]{1,2,3,4}, "key1", "1"},
+                new Object[] {new byte[]{'a','b','c','d'}, "key@@@@", "1123123"},
+                new Object[] {new byte[]{1,'a',3,'4',' ',' '}, "!@#$%^&*()", "asfjkbs"},
+                new Object[] {new byte[]{}, "", ""},
+                new Object[] {new byte[]{'@','*','!','#','$','%','^','&','@','(',')'}, ":';<>?/.,[]}{|", "!@#$%^)("},
+
     };
   }
 
   @Test
   @Parameters(method = "valueSetForKeyMaterial")
   public void testKeyMaterial(byte[] material, final String name, final String version) throws Exception {
-    byte[] key1 = material;
-    KeyProvider.KeyVersion obj = new KeyProvider.KeyVersion(name, name + "@" + version, key1);
+    KeyProvider.KeyVersion obj = new KeyProvider.KeyVersion(name, name + "@" + version, material);
     assertEquals(name + "@" + version, obj.getVersionName());
     assertArrayEquals(material, obj.getMaterial());
   }
