@@ -57,6 +57,11 @@ public class TestOptions {
   private Object[] valueSetForTestFind() {
     return new Object[] {
             new Object[] {new Object[]{1, "hi", true, "bye", 'x'}, 0, 1, 2},
+            new Object[] {new Object[]{"hi", 12345, 123, false}, 1, 0, 3},
+            new Object[] {new Object[]{"hi", "", "123", "false"}, -1, 0, -1},
+            new Object[] {new Object[]{1}, 0, -1, -1},
+            new Object[] {new Object[]{true, false}, -1, -1, 0},
+            new Object[] {new Object[]{}, -1, -1, -1},
     };
   }
 
@@ -66,5 +71,5 @@ public class TestOptions {
      assertEquals(objects[intInd], Options.getOption(Integer.class, objects).intValue());
      assertEquals(objects[stringInd], Options.getOption(String.class, objects));
      assertEquals(objects[boolInd], Options.getOption(Boolean.class, objects).booleanValue());
-  }  
+  }
 }
