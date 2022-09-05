@@ -62,14 +62,21 @@ public class TestOptions {
             new Object[] {new Object[]{1}, 0, -1, -1},
             new Object[] {new Object[]{true, false}, -1, -1, 0},
             new Object[] {new Object[]{}, -1, -1, -1},
+            new Object[] {new Object[]{1, "hi", true, "bye", 'x'}, 0, 1, 7},
     };
   }
 
   @Test
   @Parameters(method = "valueSetForTestFind")
   public void testFind(Object[] objects, int intInd, int stringInd, int boolInd) throws Exception {
-     assertEquals(objects[intInd], Options.getOption(Integer.class, objects).intValue());
-     assertEquals(objects[stringInd], Options.getOption(String.class, objects));
-     assertEquals(objects[boolInd], Options.getOption(Boolean.class, objects).booleanValue());
+     if(intInd >= 0) {
+        assertEquals(objects[intInd], Options.getOption(Integer.class, objects).intValue());
+     }
+     if(stringInd >= 0) {
+        assertEquals(objects[stringInd], Options.getOption(String.class, objects));
+     }
+     if(boolInd >= 0) {
+        assertEquals(objects[boolInd], Options.getOption(Boolean.class, objects).booleanValue());
+     }
   }
 }
