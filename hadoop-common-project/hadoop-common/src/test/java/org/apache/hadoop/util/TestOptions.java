@@ -19,6 +19,8 @@
 package org.apache.hadoop.util;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
@@ -26,16 +28,20 @@ import static org.junit.Assert.*;
 @RunWith(JUnitParamsRunner.class)
 public class TestOptions {
 
+  private Object[] valueSetForTestAppend() {
+    return new Object[] {
+                new Object[] {new String[]{"hi", "there"}, new String[]{"Dr.", "Who"}},
+                new Object[] {new String[]{"dd", "ee", "ff"}, new String[]{"aa", "bb", "cc"}},
+    };
+  }
+
   @Test
-  public void testAppend() throws Exception {
-    assertArrayEquals("first append",
-                      new String[]{"Dr.", "Who", "hi", "there"},
-                      Options.prependOptions(new String[]{"hi", "there"},
-                                             "Dr.", "Who"));
-    assertArrayEquals("second append",
-                      new String[]{"aa","bb","cc","dd","ee","ff"},
-                      Options.prependOptions(new String[]{"dd", "ee", "ff"},
-                                             "aa", "bb", "cc"));
+  @Parameters(method = "valueSetForTestAppend")
+  public void testAppend(String[] oldOpts, String[] newOpts) throws Exception {
+    assertArrayEquals("append failure",
+                      ArrayUtils.addAll(newOpts, oldOpts),
+                      Options.prependOptions(oldOpts,
+                                             newOpts));
   }
 
   @Test
