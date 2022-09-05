@@ -21,6 +21,7 @@ package org.apache.hadoop.util;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.commons.lang3.ArrayUtils;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
@@ -65,10 +66,17 @@ public class TestOptions {
             new Object[] {new Object[]{1, "hi", true, "bye", 'x'}, 0, 1, 7},
     };
   }
+  /*
+  * intInd -> index of first occurrence of integer in array
+  * stringInd -> index of first occurrence of string in array
+  * boolInd -> index of first occurrence of bool in array
+  * if any of the above is absent from the array, any -ve value could be provided.
+  * */
 
   @Test
   @Parameters(method = "valueSetForTestFind")
   public void testFind(Object[] objects, int intInd, int stringInd, int boolInd) throws Exception {
+     Assume.assumeTrue(Math.max(Math.max(intInd, stringInd), boolInd) < objects.length);
      if(intInd >= 0) {
         assertEquals(objects[intInd], Options.getOption(Integer.class, objects).intValue());
      }
