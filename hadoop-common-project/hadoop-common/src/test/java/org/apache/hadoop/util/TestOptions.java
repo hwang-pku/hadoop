@@ -54,9 +54,16 @@ public class TestOptions {
                                              newOpts));
   }
 
+  private Object[] valueSetForTestFind() {
+    return new Object[] {
+            new Object[] {new Object[]{1, "hi", true, "bye", 'x'}},
+    };
+  }
+
   @Test
-  public void testFind() throws Exception {
-     Object[] opts = new Object[]{1, "hi", true, "bye", 'x'};
+  @Parameters(method = "valueSetForTestFind")
+  public void testFind(Object[] objects) throws Exception {
+     Object[] opts = objects;
      assertEquals(1, Options.getOption(Integer.class, opts).intValue());
      assertEquals("hi", Options.getOption(String.class, opts));
      assertEquals(true, Options.getOption(Boolean.class, opts).booleanValue());
