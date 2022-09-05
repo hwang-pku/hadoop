@@ -32,6 +32,16 @@ public class TestOptions {
     return new Object[] {
                 new Object[] {new String[]{"hi", "there"}, new String[]{"Dr.", "Who"}},
                 new Object[] {new String[]{"dd", "ee", "ff"}, new String[]{"aa", "bb", "cc"}},
+                new Object[] {new String[]{"7", "8", "9"}, new String[]{"1", "2", "3", "4", "5", "6"}},
+                new Object[] {new String[]{"      ", "       ", "          "}, new String[]{" ", "    ", "    "}},
+                new Object[] {new String[]{""}, new String[]{""}},
+                new Object[] {new String[]{}, new String[]{"aa", "bb", "cc"}},
+                new Object[] {new String[]{}, new String[]{"Dr.", "Who"}},
+                new Object[] {new String[]{}, new String[]{}},
+                new Object[] {new String[]{null, null, null, null}, new String[]{null, null}},
+                new Object[] {new String[]{}, new String[]{null}},
+                new Object[] {new String[]{null}, new String[]{}},
+                new Object[] {new String[]{"!@#$%^&*()_+=-{}][|;',./?><"}, new String[]{"!@#$%^&*()_+=-{}][|;',./?><"}},
     };
   }
 
