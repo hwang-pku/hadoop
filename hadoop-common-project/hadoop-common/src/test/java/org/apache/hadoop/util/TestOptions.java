@@ -56,16 +56,15 @@ public class TestOptions {
 
   private Object[] valueSetForTestFind() {
     return new Object[] {
-            new Object[] {new Object[]{1, "hi", true, "bye", 'x'}},
+            new Object[] {new Object[]{1, "hi", true, "bye", 'x'}, 0, 1, 2},
     };
   }
 
   @Test
   @Parameters(method = "valueSetForTestFind")
-  public void testFind(Object[] objects) throws Exception {
-     Object[] opts = objects;
-     assertEquals(1, Options.getOption(Integer.class, opts).intValue());
-     assertEquals("hi", Options.getOption(String.class, opts));
-     assertEquals(true, Options.getOption(Boolean.class, opts).booleanValue());
+  public void testFind(Object[] objects, int intInd, int stringInd, int boolInd) throws Exception {
+     assertEquals(objects[intInd], Options.getOption(Integer.class, objects).intValue());
+     assertEquals(objects[stringInd], Options.getOption(String.class, objects));
+     assertEquals(objects[boolInd], Options.getOption(Boolean.class, objects).booleanValue());
   }  
 }
