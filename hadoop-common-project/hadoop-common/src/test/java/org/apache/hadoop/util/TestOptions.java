@@ -77,7 +77,7 @@ public class TestOptions {
   @Parameters(method = "valueSetForTestFind")
   public void testFind(Object[] objects, int intInd, int stringInd, int boolInd) throws Exception {
      Assume.assumeTrue(Math.max(Math.max(intInd, stringInd), boolInd) < objects.length);
-     //Assume.assumeTrue(checkFindArgs(objects, intInd, stringInd, boolInd));
+     Assume.assumeTrue(checkFindArgs(objects, intInd, stringInd, boolInd));
 
      if(intInd >= 0) {
         assertEquals(objects[intInd], Options.getOption(Integer.class, objects).intValue());
@@ -90,8 +90,8 @@ public class TestOptions {
      }
   }
   
-  private Boolean checkFindArgs(Object[] objects, int intInd, int stringInd, int boolInd) {
-     if(intInd != -1)
+  private boolean checkFindArgs(Object[] objects, int intInd, int stringInd, int boolInd) {
+     if(intInd >= 0)
      {
          if(!(objects[intInd] instanceof Integer)) {
             return false;
@@ -109,7 +109,7 @@ public class TestOptions {
             }
          }
      }
-     if(stringInd != -1)
+     if(stringInd >= 0)
      {
         if(!(objects[stringInd] instanceof String)) {
             return false;
@@ -127,7 +127,7 @@ public class TestOptions {
             }
         }
      }
-     if(boolInd != -1)
+     if(boolInd >= 0)
      {
         if(!(objects[boolInd] instanceof Boolean)) {
             return false;
