@@ -158,7 +158,7 @@ public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
   @Test
   @Parameters(method = "valueSetForCause")
   public void testInnerCauseNotInFormat(String causeStr) throws Throwable {
-    Assume.assumeTrue(causeStr != "");
+    Assume.assumeTrue(causeStr != "" && causeStr != null);
     Exception cause = new Exception(causeStr);
     ServiceLaunchException ex =
         new ServiceLaunchException(0, "%03x:", 32, cause);
