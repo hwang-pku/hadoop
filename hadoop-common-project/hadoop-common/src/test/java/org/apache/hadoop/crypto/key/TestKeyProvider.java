@@ -26,6 +26,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.security.ProviderUtils;
 import org.apache.hadoop.test.GenericTestUtils;
 import org.junit.Test;
+import org.junit.Assume;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
@@ -82,10 +83,10 @@ public class TestKeyProvider {
 
   @Test
   @Parameters(method = "valueSetForValidAndInvalidValues")
-  public void testParseVersionName(String validVersionname, String invalidVersionname) throws Exception {
-    assertEquals(validVersionname.substring(0, validVersionname.lastIndexOf('@')), KeyProvider.getBaseName(validVersionname));
+  public void testParseVersionName(String validVersionName, String invalidVersionName) throws Exception {
+    assertEquals(validVersionName.substring(0, validVersionName.lastIndexOf('@')), KeyProvider.getBaseName(validVersionName));
     try {
-      KeyProvider.getBaseName(invalidVersionname);
+      KeyProvider.getBaseName(invalidVersionName);
       assertTrue("should have thrown", false);
     } catch (IOException e) {
       assertTrue(true);
