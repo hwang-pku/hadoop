@@ -59,7 +59,7 @@ public class TestDelegateToFileSystem {
   "a",
   })
   public void testDefaultURIwithOutPort(String defaultUri) throws Exception {
-    Assume.assumeTrue(!defaultUri.contains(" ") && !defaultUri.isEmpty());
+    assumeValidURI(defaultUri);
     testDefaultUriInternal(defaultUri);
   }
 
@@ -80,7 +80,16 @@ public class TestDelegateToFileSystem {
   "a",
   })
   public void testDefaultURIwithPort(String defaultUri) throws Exception {
-    Assume.assumeTrue(!defaultUri.contains(" ") && !defaultUri.isEmpty());
+    assumeValidURI(defaultUri);
     testDefaultUriInternal(defaultUri);
+  }
+
+  private void assumeValidURI(String uri) {
+    Assume.assumeTrue(!uri.contains(" ") && !uri.isEmpty());
+    try {
+        new URI(uri);
+    } catch (Exception e) {
+        Assume.assumeNoException(e);
+    }
   }
 }
