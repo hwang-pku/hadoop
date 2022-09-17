@@ -34,7 +34,8 @@ import org.apache.hadoop.service.launcher.testservices.StringConstructorOnlyServ
 import static org.apache.hadoop.test.GenericTestUtils.*;
 import static org.apache.hadoop.service.launcher.testservices.ExceptionInExecuteLaunchableService.*;
 
-import org.junit.Assume;import org.junit.Test;
+import org.junit.Assume;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 @RunWith(JUnitParamsRunner.class)
 public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
