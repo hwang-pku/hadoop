@@ -126,6 +126,7 @@ public class TestDataByteBuffers {
   public void testBaseBuffers() throws IOException {
     Assume.assumeTrue(iter <= 1000 * 1000);
     Assume.assumeTrue(intBound > 0 && intBound <= 1024 * 1024);
+    Assume.assumeTrue(iter * intBound <= 1024 * 1024);
     DataOutputBuffer dob = new DataOutputBuffer();
     writeJunk(dob, iter);
     DataInputBuffer dib = new DataInputBuffer();
@@ -142,6 +143,7 @@ public class TestDataByteBuffers {
   public void testDataInputByteBufferCompatibility() throws IOException {
     Assume.assumeTrue(iter <= 1000 * 1000);
     Assume.assumeTrue(intBound > 0 && intBound <= 1024 * 1024);
+    Assume.assumeTrue(iter * intBound <= 1024 * 1024);
     DataOutputBuffer dob = new DataOutputBuffer();
     writeJunk(dob, iter);
     ByteBuffer buf = ByteBuffer.wrap(dob.getData(), 0, dob.getLength());
