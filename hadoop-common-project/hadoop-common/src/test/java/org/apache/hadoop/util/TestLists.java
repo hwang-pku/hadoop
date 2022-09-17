@@ -21,6 +21,7 @@ package org.apache.hadoop.util;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.assertj.core.api.Assertions;
+import org.junit.Assume;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -151,6 +152,7 @@ public class TestLists {
   @Test
   @Parameters(method = "valueSetToProvideStringArrayAndPageSize")
   public void testListsPartition(String[] stringList, int pageSize) {
+    Assume.assumeTrue(pageSize > 0);
     List<String> list = new ArrayList<>();
     for(int i=0;i<stringList.length;i++) {
         list.add(stringList[i]);
