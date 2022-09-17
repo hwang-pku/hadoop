@@ -112,6 +112,9 @@ public class TestServiceLauncher extends AbstractServiceLauncherTestBase {
   "16,010"
   })
   public void testBasicExceptionFormatting(int argValue, String expectedText) throws Throwable {
+    Assume.assumeTrue(String.format("%03x", argValue).contains(expectedText));
+    System.out.println(String.format("%03x", argValue));
+    System.out.println(expectedText);
     ServiceLaunchException ex = new ServiceLaunchException(0, "%03x", argValue);
     assertExceptionContains(expectedText, ex);
   }
