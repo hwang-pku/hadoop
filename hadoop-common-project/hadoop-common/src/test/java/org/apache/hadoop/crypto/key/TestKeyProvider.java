@@ -84,6 +84,8 @@ public class TestKeyProvider {
   @Test
   @Parameters(method = "valueSetForValidAndInvalidValues")
   public void testParseVersionName(String validVersionName, String invalidVersionName) throws Exception {
+    Assume.assumeTrue(validVersionName.lastIndexOf('@') != -1);
+    Assume.assumeTrue(invalidVersionName == null || invalidVersionName.lastIndexOf('@') == -1);
     assertEquals(validVersionName.substring(0, validVersionName.lastIndexOf('@')), KeyProvider.getBaseName(validVersionName));
     try {
       KeyProvider.getBaseName(invalidVersionName);
