@@ -39,6 +39,25 @@
 
   <dependencies>
     <dependency>
+        <groupId>edu.berkeley.cs.jqf</groupId>
+        <artifactId>jqf-fuzz</artifactId>
+        <version>1.7</version>
+        <exclusions>
+            <exclusion>
+                <groupId>org.jacoco</groupId>
+                <artifactId>org.jacoco.report</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.jacoco</groupId>
+                <artifactId>org.jacoco.core</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <dependency>
       <groupId>org.apache.hadoop.thirdparty</groupId>
       <artifactId>hadoop-shaded-protobuf_3_7</artifactId>
     </dependency>
