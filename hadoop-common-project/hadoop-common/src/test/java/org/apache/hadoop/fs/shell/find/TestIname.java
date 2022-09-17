@@ -117,6 +117,7 @@ public class TestIname {
   "***, name@NAME ",
   })
   public void applyGlobAndMixedCases(String name, final String matchingName) throws IOException {
+    Assume.assumeTrue(matchingName.toLowerCase().matches(name.toLowerCase().replaceAll("\\*", "\\.\\*")));
     setup(name);
     PathData item = new PathData("/directory/path/" + matchingName, mockFs.getConf());
     assertEquals(Result.PASS, this.name.apply(item, -1));
@@ -131,6 +132,7 @@ public class TestIname {
   "name**,amename",
   })
   public void applyGlobNotMatch(String arg, final String nonMatchName) throws IOException {
+    Assume.assumeTrue(!nonMatchName.toLowerCase().matches(arg.toLowerCase().replaceAll("\\*", "\\.\\*")));
     setup(arg);
     PathData item = new PathData("/directory/path/" + nonMatchName, mockFs.getConf());
     assertEquals(Result.FAIL, name.apply(item, -1));
