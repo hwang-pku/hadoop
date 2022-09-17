@@ -63,6 +63,7 @@ public class TestServiceLauncherCreationFailures extends
   @Test
   @Parameters(method = "valueSetForServiceCreationFails")
   public void testServiceCreationFails(String classname) throws Throwable {
+    Assume.assumeTrue(classname != "" && classname != null);
     assertServiceCreationFails(classname);
   }
 
