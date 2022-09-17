@@ -65,7 +65,7 @@ public class TestDurationInfo {
   })
   public void testDurationInfoWithMultipleClose(int countClose, long sleepTime) throws Exception {
     Assume.assumeTrue(countClose >= 1 && sleepTime > 0 && sleepTime < 10000);
-    Assume.assumeTrue(coundClose < 1024);
+    Assume.assumeTrue(countClose < 1024);
     DurationInfo info = new DurationInfo(log, "test");
     Thread.sleep(sleepTime);
     for (int i = 0; i < countClose; i++) {
