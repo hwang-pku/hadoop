@@ -60,6 +60,7 @@ public class TestRawErasureCoderBenchmark {
   @Parameters(method = "testParameters")
   public void testAllCoders(String opType, RawErasureCoderBenchmark.CODER coder,
                                  int numThreads, int dataSizeMB, int chunkSizeKB) throws Exception {
+    Assume.assumeTrue(opType == "encode" || opType == "decode");
     Assume.assumeTrue(numThreads > 0 && chunkSizeKB > 0 && dataSizeMB > 0);
     if (coder == RawErasureCoderBenchmark.CODER.ISAL_CODER) {
         Assume.assumeTrue(ErasureCodeNative.isNativeCodeLoaded());
