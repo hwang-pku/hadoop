@@ -57,6 +57,7 @@ public class TestCodecPool {
     "150, -2"})
   public void testCompressorPoolCountsAndCompressorNotReturnSameInstance(int compressorCount,
                                                                             int checkGetCompressorWhenEmptyCount) {
+    Assume.assumeTrue(compressorCount <= 200 || checkGetCompressorWhenEmptyCount <= 200);
     // Get #compressorCount compressors and return them
     Set<Compressor> compressors = new HashSet<>();
     for (int i = 0; i < compressorCount; i++) {
@@ -92,6 +93,7 @@ public class TestCodecPool {
     "150, -2"})
   public void testDecompressorPoolCountsAndNotReturnSameInstance(int decompressorCount,
                                                                     int checkGetDecompressorWhenEmptyCount) {
+    Assume.assumeTrue(decompressorCount <= 200 || checkGetDecompressorWhenEmptyCount <= 200);
     // Get #decompressorCount decompressors and return them
     Set<Decompressor> decompressors = new HashSet<>();
     for (int i = 0; i < decompressorCount; i++) {
