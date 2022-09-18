@@ -153,6 +153,7 @@ public class TestLists {
   @Parameters(method = "valueSetToProvideStringArrayAndPageSize")
   public void testListsPartition(String[] stringList, int pageSize) {
     Assume.assumeTrue(pageSize > 0);
+    Assume.assumeTrue(stringList != null && stringList.length > 0);
     List<String> list = new ArrayList<>();
     for(int i=0;i<stringList.length;i++) {
         list.add(stringList[i]);
