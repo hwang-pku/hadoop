@@ -18,6 +18,11 @@
 
 package org.apache.hadoop.util;
 
+import com.pholser.junit.quickcheck.From;
+import com.pholser.junit.quickcheck.generator.GenerationStatus;
+import com.pholser.junit.quickcheck.generator.Generator;
+import com.pholser.junit.quickcheck.random.SourceOfRandomness;
+
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,6 +32,7 @@ import java.util.Collection;import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import org.junit.Test;
+import org.junit.Before;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
@@ -45,26 +51,34 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class TestJsonSerialization extends HadoopTestBase {
 
-  @Parameterized.Parameter(0)
   public JsonSerialization<KeyVal> serDeser;
 
+  @Parameterized.Parameter(0)
+  public boolean failOnUnknownProperties; 
+
   @Parameterized.Parameter(1)
+  public boolean pretty;
+
+  @Parameterized.Parameter(2)
+  @From(KeyValGenerator.class)
   public KeyVal source;
 
   @Parameterized.Parameters
   public static Collection<Object> testData() {
-    Object[][] data = new Object[][] { {new JsonSerialization<>(KeyVal.class, true, true),
-                                            new KeyVal("key", "1")},
-                                       {new JsonSerialization<>(KeyVal.class, false, false),
+    Object[][] data = new Object[][] { {true, true, new KeyVal("key", "1")},
+                                       {false, false,
                                             new KeyVal(null, "123aA!@#$%^&*()?|/\\")},
-                                       {new JsonSerialization<>(KeyVal.class, true, false),
+                                       {true, false,
                                             new KeyVal("123aA!@#$%^&*()?|/\\", null)},
-                                       {new JsonSerialization<>(KeyVal.class, false, true),
-                                            new KeyVal()},
-                                       {new JsonSerialization<>(KeyVal.class, true, true),
-                                            new KeyVal("", "   ")},
+                                       {false, true, new KeyVal()},
+                                       {true, true, new KeyVal("", "   ")},
     };
     return Arrays.asList(data);
+  }
+
+  @Before
+  public void setup() {
+      this.serDeser = new JsonSerialization<>(KeyVal.class, failOnUnknownProperties, pretty);
   }
 
   private static class KeyVal implements Serializable {
@@ -120,6 +134,25 @@ public class TestJsonSerialization extends HadoopTestBase {
 
     public void setValue(String value) {
       this.value = value;
+    }
+  }
+
+  private class KeyValGenerator extends Generator<KeyVal> {
+    private static final int lengthLimit = 128;
+    public KeyValGenerator() {
+        super(KeyVal.class);
+    }
+
+    @Override
+    public KeyVal generate(SourceOfRandomness random, GenerationStatus generationStatus) {
+        String name = generateString(random);
+        String value = generateString(random);
+        return new KeyVal(name, value);
+    }
+    
+    private String generateString(SourceOfRandomness random) {
+        int length = random.nextInt(lengthLimit);
+        return random.nextBytes(length).toString();
     }
   }
 
