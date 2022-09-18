@@ -22,6 +22,7 @@ import static org.apache.hadoop.fs.shell.find.TestHelper.*;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -117,6 +118,7 @@ public class TestIname {
   "***, name@NAME ",
   })
   public void applyGlobAndMixedCases(String name, final String matchingName) throws IOException {
+    assumeStringIsRegex(name.replaceAll("\\*", "\\.\\*"));
     Assume.assumeTrue(matchingName.toLowerCase().matches(name.toLowerCase().replaceAll("\\*", "\\.\\*")));
     setup(name);
     PathData item = new PathData("/directory/path/" + matchingName, mockFs.getConf());
@@ -132,9 +134,18 @@ public class TestIname {
   "name**,amename",
   })
   public void applyGlobNotMatch(String arg, final String nonMatchName) throws IOException {
+    assumeStringIsRegex(arg.replaceAll("\\*", "\\.\\*"));
     Assume.assumeTrue(!nonMatchName.toLowerCase().matches(arg.toLowerCase().replaceAll("\\*", "\\.\\*")));
     setup(arg);
     PathData item = new PathData("/directory/path/" + nonMatchName, mockFs.getConf());
     assertEquals(Result.FAIL, name.apply(item, -1));
+  }
+
+  private void assumeStringIsRegex(String regex) {
+    try {
+      Pattern.compile(regex);
+    } catch(Exception e) {
+      Assume.assumeNoException(e);
+    }
   }
 }
