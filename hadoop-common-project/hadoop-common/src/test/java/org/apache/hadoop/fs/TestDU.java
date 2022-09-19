@@ -187,6 +187,7 @@ public class TestDU {
     Assume.assumeTrue(interval + jitter <= sleep);
     Assume.assumeTrue(fileSize >= 0 && initialUse >= 0);
     Assume.assumeTrue(fileSize % BLOCK_SIZE == 0);
+    Assume.assumeTrue(sleep >= Math.max(1, interval) + jitter);
     File file = new File(DU_DIR, "dataX");
     createFile(file, fileSize);
     DU du = new DU(file, interval, jitter, initialUse);
