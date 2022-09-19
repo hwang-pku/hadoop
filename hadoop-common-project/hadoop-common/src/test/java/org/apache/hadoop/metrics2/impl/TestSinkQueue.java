@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.concurrent.CountDownLatch;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -59,6 +60,8 @@ public class TestSinkQueue {
 
   @Parameterized.Parameter(5)
     public int capacity;
+
+  private static final int capacityLimit = 1024;
 
   @Parameterized.Parameters
   public static Collection<Object> testData() {
@@ -103,6 +106,8 @@ public class TestSinkQueue {
    // Class #1 PUT #2
   @Test(timeout = 2000)
   public void testEmptyBlocking() throws Exception {
+    Assume.assumeTrue(awhile1 + awhile2 < 1800);
+    Assume.assumeTrue(awhile1 < 1800 && awhile2 < 1800);
     testEmptyBlocking(awhile1);
     testEmptyBlocking(awhile2); // remove it already parameterized
   }
@@ -166,6 +171,7 @@ public class TestSinkQueue {
   // Class #1 PUT #4
   @Test(timeout = 2000)
   public void testConsumeAll() throws Exception {
+    Assume.assumeTrue(capacity < capacityLimit);
     final SinkQueue<Integer> q = new SinkQueue<Integer>(capacity);
     assertTrue("should enqueue", q.enqueue(0));
     for (int i = 1; i < capacity; ++i) {
@@ -216,6 +222,7 @@ public class TestSinkQueue {
   // Class #1 PUT #6
   @Test(timeout = 2000)
   public void testClear() {
+    Assume.assumeTrue(capacity < capacityLimit);
     final SinkQueue<Integer> q = new SinkQueue<Integer>(capacity);
     for (int i = 0; i < q.capacity() + 97; ++i) {
       q.enqueue(i);
