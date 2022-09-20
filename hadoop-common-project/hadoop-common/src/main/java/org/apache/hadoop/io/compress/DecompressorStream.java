@@ -89,7 +89,7 @@ public class DecompressorStream extends CompressionInputStream {
   @Override
   public int read() throws IOException {
     checkStream();
-    return (read(oneByte, 0, oneByte.length) == -1) ? -1 : (oneByte[0] & 0xff);
+    return (read(oneByte, 0, oneByte.length) == -1) ? -1 : oneByte[0];
   }
 
   @Override
