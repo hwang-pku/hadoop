@@ -72,8 +72,9 @@ public class TestDecompressorStream {
 
   @Test
   public void testReadOneByte() throws IOException {
-    for (int i = 0; i < TEST_STRING.length(); ++i) {
-      assertThat(decompressorStream.read()).isEqualTo(TEST_STRING.charAt(i));
+    byte[] TEST_ARRAY = TEST_STRING.getBytes();
+    for (int i = 0; i < TEST_ARRAY.length; ++i) {
+      assertThat(decompressorStream.read()).isEqualTo(TEST_ARRAY[i]);
     }
     try {
       int ret = decompressorStream.read();
@@ -87,14 +88,14 @@ public class TestDecompressorStream {
   public void testReadBuffer() throws IOException {
     // 32 buf.length < 52 TEST_STRING.length()
     byte[] buf = new byte[32];
-    int bytesToRead = TEST_STRING.length();
+    int bytesToRead = TEST_STRING.getBytes().length;
     int i = 0;
     while (bytesToRead > 0) {
       int n = Math.min(bytesToRead, buf.length);
       int bytesRead = decompressorStream.read(buf, 0, n);
       assertTrue(bytesRead > 0 && bytesRead <= n);
       assertThat(new String(buf, 0, bytesRead))
-          .isEqualTo(TEST_STRING.substring(i, i + bytesRead));
+          .isEqualTo(new String(Arrays.copyOfRange(TEST_STRING.getBytes(), i, i + bytesRead)));
       bytesToRead = bytesToRead - bytesRead;
       i = i + bytesRead;
     }
@@ -109,12 +110,16 @@ public class TestDecompressorStream {
   @Test
   public void testSkip() throws IOException {
     Assume.assumeTrue(TEST_STRING.length() > 25);
+    byte[] TEST_ARRAY = TEST_STRING.getBytes();
     assertThat(decompressorStream.skip(12)).isEqualTo(12L);
-    assertThat(decompressorStream.read()).isEqualTo(TEST_STRING.charAt(12));
-    assertThat(decompressorStream.read()).isEqualTo(TEST_STRING.charAt(13));
-    assertThat(decompressorStream.read()).isEqualTo(TEST_STRING.charAt(14));
+    assertThat(decompressorStream.read()).isEqualTo(TEST_ARRAY[12]);
+    assertThat(decompressorStream.read()).isEqualTo(TEST_ARRAY[13]);
+    assertThat(decompressorStream.read()).isEqualTo(TEST_ARRAY[14]);
+    //assertThat(decompressorStream.read()).isEqualTo(TEST_STRING.charAt(13));
+    //assertThat(decompressorStream.read()).isEqualTo(TEST_STRING.charAt(14));
     assertThat(decompressorStream.skip(10)).isEqualTo(10L);
-    assertThat(decompressorStream.read()).isEqualTo(TEST_STRING.charAt(25));
+    assertThat(decompressorStream.read()).isEqualTo(TEST_ARRAY[25]);
+    //assertThat(decompressorStream.read()).isEqualTo(TEST_STRING.charAt(25));
     try {
       long ret = decompressorStream.skip(1000);
       fail("Not reachable but got ret " + ret);
