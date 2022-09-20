@@ -19,9 +19,6 @@
 package org.apache.hadoop.util;
 
 import com.pholser.junit.quickcheck.From;
-import com.pholser.junit.quickcheck.generator.GenerationStatus;
-import com.pholser.junit.quickcheck.generator.Generator;
-import com.pholser.junit.quickcheck.random.SourceOfRandomness;
 
 import java.io.EOFException;
 import java.io.File;
@@ -81,7 +78,7 @@ public class TestJsonSerialization extends HadoopTestBase {
       this.serDeser = new JsonSerialization<>(KeyVal.class, failOnUnknownProperties, pretty);
   }
 
-  private static class KeyVal implements Serializable {
+  public static class KeyVal implements Serializable {
     private String name;
     private String value;
 
@@ -134,25 +131,6 @@ public class TestJsonSerialization extends HadoopTestBase {
 
     public void setValue(String value) {
       this.value = value;
-    }
-  }
-
-  private class KeyValGenerator extends Generator<KeyVal> {
-    private static final int lengthLimit = 128;
-    public KeyValGenerator() {
-        super(KeyVal.class);
-    }
-
-    @Override
-    public KeyVal generate(SourceOfRandomness random, GenerationStatus generationStatus) {
-        String name = generateString(random);
-        String value = generateString(random);
-        return new KeyVal(name, value);
-    }
-    
-    private String generateString(SourceOfRandomness random) {
-        int length = random.nextInt(lengthLimit);
-        return random.nextBytes(length).toString();
     }
   }
 
