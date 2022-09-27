@@ -38,6 +38,7 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.QueueMetrics;
 import org.apache.hadoop.yarn.util.resource.DefaultResourceCalculator;
 import org.apache.hadoop.yarn.util.resource.ResourceCalculator;
 import org.apache.hadoop.yarn.util.resource.Resources;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,14 +63,15 @@ import static org.mockito.Mockito.mock;
 @SuppressWarnings("VisibilityModifier")
 public class TestReservationAgents {
 
-  @Parameterized.Parameter(value = 0)
   public Class agentClass;
+  @Parameterized.Parameter(value = 0)
+  public int agentClassIndex;
 
   @Parameterized.Parameter(value = 1)
   public boolean allocateLeft;
 
   @Parameterized.Parameter(value = 2)
-  public String recurrenceExpression;
+  public long period;
 
   @Parameterized.Parameter(value = 3)
   public int numOfNodes;
@@ -86,27 +88,41 @@ public class TestReservationAgents {
 
   private static final Logger LOG =
       LoggerFactory.getLogger(TestReservationAgents.class);
+  private static final Class[] agentClasses = {
+      GreedyReservationAgent.class,
+      AlignedPlannerWithGreedy.class,
+      //DominantResourceFairnessReservationAgent.class,
+      //OpportunisticReservationAgent.class,
+      //CapacityOverTimeReservationAgent.class
+  };
 
   @Parameterized.Parameters(name = "Testing: agent {0}, allocateLeft: {1}," +
           " recurrenceExpression: {2}, numNodes: {3})")
   public static Collection<Object[]> data() {
     return Arrays.asList(
-        new Object[][] {{GreedyReservationAgent.class, true, "0", 100 },
-            {GreedyReservationAgent.class, false, "0", 100 },
-            {GreedyReservationAgent.class, true, "7200000", 100 },
-            {GreedyReservationAgent.class, false, "7200000", 100 },
-            {GreedyReservationAgent.class, true, "86400000", 100 },
-            {GreedyReservationAgent.class, false, "86400000", 100 },
-            {AlignedPlannerWithGreedy.class, true, "0", 100 },
-            {AlignedPlannerWithGreedy.class, false, "0", 100 },
-            {AlignedPlannerWithGreedy.class, true, "7200000", 100 },
-            {AlignedPlannerWithGreedy.class, false, "7200000", 100 },
-            {AlignedPlannerWithGreedy.class, true, "86400000", 100 },
-            {AlignedPlannerWithGreedy.class, false, "86400000", 100 } });
+        new Object[][] {{0, true, 0, 100 },
+            {0, false, 0, 100 },
+            {0, true, 7200000, 100 },
+            {0, false, 7200000, 100 },
+            {0, true, 86400000, 100 },
+            {0, false, 86400000, 100 },
+            {1, true, 0, 100 },
+            {1, false, 0, 100 },
+            {1, true, 7200000, 100 },
+            {1, false, 7200000, 100 },
+            {1, true, 86400000, 100 },
+            {1, false, 86400000, 100 } });
   }
 
   @Before
   public void setup() throws Exception {
+    Assume.assumeTrue(agentClassIndex < agentClasses.length && agentClassIndex >= 0);
+    Assume.assumeTrue(numOfNodes <= 100 && numOfNodes >= 0);
+    Assume.assumeTrue(period >= 0);
+    if (period != 0)
+        Assume.assumeTrue(86400000L % period == 0);
+     
+    agentClass = agentClasses[agentClassIndex];
 
     long seed = rand.nextLong();
     rand.setSeed(seed);
@@ -144,7 +160,7 @@ public class TestReservationAgents {
   @Test
   public void test() throws Exception {
 
-    long period = Long.parseLong(recurrenceExpression);
+    //long period = Long.parseLong(recurrenceExpression);
     for (int i = 0; i < 1000; i++) {
       ReservationDefinition rr = createRandomRequest(i);
       if (rr != null) {
@@ -163,7 +179,7 @@ public class TestReservationAgents {
   private ReservationDefinition createRandomRequest(int i)
       throws PlanningException {
     long arrival = (long) Math.floor(rand.nextDouble() * timeHorizon);
-    long period = Long.parseLong(recurrenceExpression);
+    //long period = Long.parseLong(recurrenceExpression);
 
     // min between period and rand around 30min
     long duration =
@@ -200,7 +216,7 @@ public class TestReservationAgents {
     ReservationDefinition rr = new ReservationDefinitionPBImpl();
     rr.setArrival(arrival);
     rr.setDeadline(deadline);
-    rr.setRecurrenceExpression(recurrenceExpression);
+    rr.setRecurrenceExpression(Long.toString(period));
     ReservationRequests reqs = new ReservationRequestsPBImpl();
     reqs.setInterpreter(ReservationRequestInterpreter.R_ORDER);
     reqs.setReservationResources(reservationRequests);
