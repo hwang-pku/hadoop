@@ -38,6 +38,7 @@ import com.amazonaws.services.s3.model.CompleteMultipartUploadRequest;
 import org.apache.hadoop.util.Sets;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -145,6 +146,7 @@ public class TestStagingCommitter extends StagingTestBase.MiniDFSTest {
 
   @Before
   public void setupCommitter() throws Exception {
+    Assume.assumeTrue(this.numThreads >= 0 || this.numThreads * -Runtime.getRuntime().availableProcessors() > 0);
     JobConf jobConf = getConfiguration();
     jobConf.setInt(FS_S3A_COMMITTER_THREADS, numThreads);
     jobConf.setBoolean(FS_S3A_COMMITTER_STAGING_UNIQUE_FILENAMES,
