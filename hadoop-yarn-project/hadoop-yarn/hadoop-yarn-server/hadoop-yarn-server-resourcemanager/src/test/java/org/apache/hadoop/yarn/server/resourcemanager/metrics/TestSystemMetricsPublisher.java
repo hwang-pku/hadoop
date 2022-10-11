@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Assume;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -98,6 +99,9 @@ public class TestSystemMetricsPublisher {
 
   @Before
   public void setup() throws Exception {
+    Assume.assumeTrue(!this.rmTimelineServerV1PublisherBatchEnabled|| 
+            (this.rmTimelineServerV1PublisherInterval > 0 &&
+             this.rmTimelineServerV1PublisherInterval <= 128));
     YarnConfiguration conf = new YarnConfiguration();
     conf.setBoolean(YarnConfiguration.TIMELINE_SERVICE_ENABLED, true);
     conf.setBoolean(YarnConfiguration.SYSTEM_METRICS_PUBLISHER_ENABLED, true);
