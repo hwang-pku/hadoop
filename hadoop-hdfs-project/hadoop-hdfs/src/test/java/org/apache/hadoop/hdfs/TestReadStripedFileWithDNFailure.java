@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hdfs;
 
+import org.junit.Assume;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -88,6 +89,8 @@ public class TestReadStripedFileWithDNFailure {
    */
   @Test
   public void testReadWithDNFailure() throws Exception {
+    Assume.assumeTrue(this.fileLength > 0 && this.dnFailureNum >= 0);
+    Assume.assumeTrue(this.dnFailureNum < NUM_PARITY_UNITS);
     try {
       // setup a new cluster with no dead datanode
       setup();
