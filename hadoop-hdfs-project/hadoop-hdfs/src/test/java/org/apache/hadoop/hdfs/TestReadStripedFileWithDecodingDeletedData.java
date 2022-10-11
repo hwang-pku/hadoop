@@ -82,7 +82,7 @@ public class TestReadStripedFileWithDecodingDeletedData {
    */
   @Test
   public void testReadCorruptedDataByDeleting() throws IOException {
-    Assume.assumeTrue(this.fileLength > 0 && this.dataDelNum > 0 && this.parityDelNum > 0);
+    Assume.assumeTrue(this.fileLength > 0 && this.dataDelNum > 0 && this.parityDelNum >= 0);
     Assume.assumeTrue(this.dataDelNum + this.parityDelNum <= ReadStripedFileWithDecodingHelper.NUM_PARITY_UNITS);
     String src = "/deleted_" + dataDelNum + "_" + parityDelNum;
     ReadStripedFileWithDecodingHelper.testReadWithBlockCorrupted(cluster,
