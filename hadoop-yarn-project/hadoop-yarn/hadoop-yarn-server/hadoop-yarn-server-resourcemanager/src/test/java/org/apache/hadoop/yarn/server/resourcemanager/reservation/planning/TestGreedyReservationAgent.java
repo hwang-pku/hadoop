@@ -55,6 +55,7 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.Capacity
 import org.apache.hadoop.yarn.util.resource.DefaultResourceCalculator;
 import org.apache.hadoop.yarn.util.resource.ResourceCalculator;
 import org.apache.hadoop.yarn.util.resource.Resources;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,6 +72,8 @@ public class TestGreedyReservationAgent {
   public boolean allocateLeft;
 
   @Parameterized.Parameter(value = 1)
+  public int factor;
+
   public String recurrenceExpression;
 
   private static final Logger LOG = LoggerFactory
@@ -88,17 +91,20 @@ public class TestGreedyReservationAgent {
           " recurrenceExpression {1})")
   public static Collection<Object[]> data() {
       return Arrays.asList(new Object[][] {
-              {true, "0"},
-              {false, "0"},
-              {true, "7200000"},
-              {false, "7200000"},
-              {true, "86400000"},
-              {false, "86400000"}
+              {true, 0},
+              {false, 0},
+              {true, 12},
+              {false, 12},
+              {true, 1},
+              {false, 1}
       });
   }
 
   @Before
   public void setup() throws Exception {
+    Assume.assumeTrue(this.factor > 0);
+    Assume.assumeTrue(this.factor == 0 || 86400000 % this.factor == 0);
+    this.recurrenceExpression = Integer.toString(factor == 0 ? 0 : 86400000 / factor);
 
     long seed = rand.nextLong();
     rand.setSeed(seed);
