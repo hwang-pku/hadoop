@@ -80,6 +80,8 @@ public class TestReadStripedFileWithDecodingCorruptData {
    */
   @Test
   public void testReadCorruptedData() throws IOException {
+    Assume.assumeTrue(this.fileLength > 0 && this.dataDelNum > 0 && this.parityDelNum >= 0);
+    Assume.assumeTrue(this.dataDelNum + this.parityDelNum <= ReadStripedFileWithDecodingHelper.NUM_PARITY_UNITS);
     String src = "/corrupted_" + dataDelNum + "_" + parityDelNum;
     ReadStripedFileWithDecodingHelper.testReadWithBlockCorrupted(cluster,
         dfs, src, fileLength, dataDelNum, parityDelNum, false);
