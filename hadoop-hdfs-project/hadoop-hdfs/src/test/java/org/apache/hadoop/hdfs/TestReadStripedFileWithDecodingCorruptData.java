@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hdfs;
 
+import org.junit.Assume;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
