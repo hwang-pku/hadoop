@@ -23,7 +23,6 @@ import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.adl.common.Parallelized;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -43,7 +42,7 @@ import static org.apache.hadoop.fs.adl.AdlConfKeys.WRITE_BUFFER_SIZE_KEY;
 /**
  * Verify data integrity with different data sizes with buffer size.
  */
-@RunWith(Parallelized.class)
+@RunWith(Parameterized.class)
 public class TestAdlDifferentSizeWritesLive {
   private static Random rand = new Random();
   private int totalSize;
@@ -82,6 +81,7 @@ public class TestAdlDifferentSizeWritesLive {
 
   @Before
   public void setup() throws Exception {
+    org.junit.Assume.assumeTrue(this.chunkSize > 0 && this.totalSize > 0);
     org.junit.Assume
         .assumeTrue(AdlStorageConfiguration.isContractTestEnabled());
   }
