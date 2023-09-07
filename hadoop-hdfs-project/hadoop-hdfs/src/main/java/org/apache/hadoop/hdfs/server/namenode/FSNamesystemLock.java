@@ -162,7 +162,7 @@ class FSNamesystemLock {
         this.metricsEnabled);
     this.detailedHoldTimeMetrics = detailedHoldTimeMetrics;
     if (metricsEnabled) {
-        Preconditions.checkNotNull(detailedHoldTimeMetrics, "Detailed lock hold time metrics enabled, detailed hold time metric should not be null!");
+        Preconditions.checkArgument(detailedHoldTimeMetrics != null, "Detailed lock hold time metrics enabled, detailed hold time metric should not be null!");
     }
   }
 
